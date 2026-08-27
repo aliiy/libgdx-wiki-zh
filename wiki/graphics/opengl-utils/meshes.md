@@ -1,13 +1,13 @@
 ---
-title: Meshes
+title: 网格
 ---
-A [mesh](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/Mesh.html) is a collection of vertices (and optionally indices) which describe a batch of geometry for rendering. The vertices are held either in VRAM in form of vertex buffer objects (VBOs) or in RAM in form of vertex arrays. VBOs are faster and are used by default if the hardware supports it. Like [Textures](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/Texture.html), meshes are managed and will be automatically reloaded when the context is lost.
+[网格](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/Mesh.html)是一组顶点（也可以包含索引），用于描述要渲染的一批几何体。顶点可以以顶点缓冲对象（VBO）的形式存放在 VRAM 中，也可以以顶点数组的形式存放在 RAM 中。如果硬件支持，默认会使用速度更快的 VBO。与[纹理](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/Texture.html)一样，网格由框架管理，在上下文丢失时会自动重新加载。
 
-Meshes are used by many core graphics classes in Libgdx, such as [SpriteBatch](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g2d/SpriteBatch.html) and [DecalBatch](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/decals/DecalBatch.html) as well as the various 3D format loaders. A key design principle of libGDX is in storing geometry in a mesh in order to upload all vertex information in one batch for rendering. Especially on mobile platforms, there are significant performance gains in batching by reducing the overhead of individual draw calls.
+libGDX 的许多核心图形类都会使用网格，例如 [SpriteBatch](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g2d/SpriteBatch.html)、[DecalBatch](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/decals/DecalBatch.html) 以及各种 3D 格式加载器。libGDX 的一个重要设计原则是将几何体存储在网格中，以便一次批量上传所有顶点信息进行渲染。尤其在移动平台上，减少单独绘制调用的开销可以显著提升批处理性能。
 
-## Creating a Mesh
+## 创建网格
 
-Sometimes a procedural mesh is preferred over the use of an imported model from a 3D modeling application. The following code creates a simple full screen quad often useful for frame-based shader effects:
+有时，与其使用从 3D 建模应用导入的模型，不如使用程序化网格。下面的代码创建了一个简单的全屏四边形，常用于基于帧的着色器效果：
 
 ```java
 public Mesh createFullScreenQuad() {
@@ -49,19 +49,19 @@ public Mesh createFullScreenQuad() {
 // original code by kalle_h
 ```
 
-Notice the use of a simple `float` array to build the basic vertex information. We define four vertices each composed of a position in window coordinates as well as a texture coordinate. Next we tell the mesh constructor this will be a static mesh with 4 vertices and no indices. We define two vertex attributes, stating their respective sizes and describing their properties using the built-in libGDX constants for common attribute types. The usage constants tell libGDX how to interpret each of the float values so that it can point OpenGL at the proper data when rendering. Note that in OpenGL ES2, the use of [Shaders](/wiki/graphics/opengl-utils/shaders) does free one up to include other types of attributes in vertices (ie. vertex illumination values in a baked vertex-lighting situation, or even physical properties like mesh flexibility for simple wind based vertex animation). Finally we set the the mesh vertices using our previously built `float` array.
+注意这里使用简单的 `float` 数组来构建基本顶点信息。我们定义了四个顶点，每个顶点包含窗口坐标中的位置和纹理坐标。然后告知网格构造函数这是一个包含 4 个顶点且没有索引的静态网格。我们定义两个顶点属性，声明它们各自的大小，并使用 libGDX 内置的常见属性类型常量描述其属性。使用常量告诉 libGDX 如何解释每个浮点值，以便渲染时将正确数据交给 OpenGL。在 OpenGL ES2 中，使用[着色器](/wiki/graphics/opengl-utils/shaders)后，还可以在顶点中加入其他类型的属性（例如烘焙顶点光照中的顶点照明值，甚至是用于简单风驱动顶点动画的网格柔性等物理属性）。最后，我们使用之前构建的 `float` 数组设置网格顶点。
 
-Notice also the use of ShaderProgram constants to name the attributes. While not mandatory, it can be useful to maintain the same name for shader attributes for common properties such as vertex positions, normals, or texture coordinates as these are the names used across common libGDX shaders. This naming uniformity can help when one wants to swap shaders on the same meshes. See [Shaders](/wiki/graphics/opengl-utils/shaders) for more information.
+还要注意这里使用 ShaderProgram 常量为属性命名。虽然不是必须的，但为顶点位置、法线或纹理坐标等常见属性使用统一的着色器属性名称很有帮助，因为这些名称在常见 libGDX 着色器中通用。统一命名便于在同一网格上替换着色器。更多信息请参阅[着色器](/wiki/graphics/opengl-utils/shaders)。
 
-## Rendering
+## 渲染
 
-To render a mesh, simply set up the environment and call render with the desired primitive type. To render the above full-screen quad, we use a triangle fan (because that was how we structured the vertex positions):
+要渲染网格，只需设置好环境，然后使用所需的图元类型调用 render。要渲染上面的全屏四边形，我们使用三角形扇（因为顶点位置就是按这种方式组织的）：
 
 ```java
 mesh.render( GL10.GL_TRIANGLE_FAN );
 ```
 
-More typically you will render with other primitives:
+更常见的是使用其他图元进行渲染：
 
 ```java
 mesh.render( GL10.GL_TRIANGLES );           // OpenGL ES1.0/1.1
@@ -71,4 +71,4 @@ mesh.render( shader, GL20.GL_TRIANGLES );   // OpenGL ES2 requires a shader
 mesh.render( shader, GL20.GL_LINES );       // renders lines instead
 ```
 
-By default, a mesh will auto-bind its data upon a call to `render()`. Prior to calling `render()`, you will need to bind the texture and set model transformations and if using OpenGL ES2 you will need bind an appropriate [Shaders](/wiki/graphics/opengl-utils/shaders) and pass whatever uniforms it requires.
+默认情况下，调用 `render()` 时网格会自动绑定其数据。在调用 `render()` 之前，需要绑定纹理并设置模型变换；如果使用 OpenGL ES2，还需要绑定合适的[着色器](/wiki/graphics/opengl-utils/shaders)，并传入它所需的 uniform。

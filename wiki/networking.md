@@ -1,115 +1,115 @@
 ---
-title: Networking
+title: 网络
 ---
-libGDX includes some classes for cross-platform network operations. These classes are more commonly known as [Gdx.net](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/Net.html) [(source)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/Net.java)
+libGDX 包含一些用于跨平台网络操作的类。这些类通常称为 [Gdx.net](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/Net.html) [(源码)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/Net.java)
 
-# Features
+# 功能
 
-* Cross-platform HTTP requests
-* Multi-platform TCP client and server socket support (excludes GWT) with configurable settings
-* Optimized  TCP client and server settings aiming for low-latency
-* Cross-platform browser access. (ex: You can create a link to your website in game and it will open the browser on all platforms.)
+* 跨平台 HTTP 请求
+* 多平台 TCP 客户端和服务器套接字支持（不包括 GWT），并提供可配置设置
+* 面向低延迟优化的 TCP 客户端和服务器设置
+* 跨平台浏览器访问。（例如：可以在游戏中创建指向网站的链接，并在所有平台上打开浏览器。）
 
-## Implementation
-Class Explanation:
-* [Net.java](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/Net.java) is an interface used for the cross-platform networking. This is where you can get the objects needed to communicate with the network.
-* [Socket.java](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/net/Socket.java) is an interface that provides you with the remote socket address, connection state, and a java.io.InputStream and java.io.OutputStream to work with the socket.
-* [SocketHints.java](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/net/SocketHints.java) is a class used to configure TCP client sockets
-* [ServerSocket.java](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/net/ServerSocket.java) is an interface used to create TCP server sockets. It provides the standard accept() method to get a TCP client that connected.
-* [ServerSocketHints.java](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/net/ServerSocketHints.java) is a class used to configure TCP server sockets.
-* [HttpStatus.java](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/net/HttpStatus.java) is a class used to give an easy way to see what the status code returned is.
-* [HttpParameterUtils.java](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/net/HttpParametersUtils.java) is a class used to provide utility methods for HTTP requests.
-* [HttpRequestBuilder](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/net/HttpRequestBuilder.java) is a class to help with creating `HttpRequests`.
+## 实现
+类说明：
+* [Net.java](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/Net.java) 是用于跨平台网络操作的接口，可从中获取与网络通信所需的对象。
+* [Socket.java](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/net/Socket.java) 是一个接口，提供远程套接字地址、连接状态，以及用于操作套接字的 java.io.InputStream 和 java.io.OutputStream。
+* [SocketHints.java](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/net/SocketHints.java) 是用于配置 TCP 客户端套接字的类。
+* [ServerSocket.java](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/net/ServerSocket.java) 是用于创建 TCP 服务器套接字的接口，提供标准的 accept() 方法来获取已连接的 TCP 客户端。
+* [ServerSocketHints.java](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/net/ServerSocketHints.java) 是用于配置 TCP 服务器套接字的类。
+* [HttpStatus.java](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/net/HttpStatus.java) 是用于方便查看返回状态码的类。
+* [HttpParameterUtils.java](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/net/HttpParametersUtils.java) 是为 HTTP 请求提供实用方法的类。
+* [HttpRequestBuilder](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/net/HttpRequestBuilder.java) 是用于创建 `HttpRequests` 的类。
 
-To create a TCP client socket use this little piece of code:
+要创建 TCP 客户端套接字，请使用以下代码：
 ```java
 Socket socket = Gdx.net.newClientSocket(Protocol protocol, String host, int port, SocketHints hints);
 ```
 
-To create a TCP server socket use this:
+要创建 TCP 服务器套接字，请使用：
 ```
 ServerSocket server = Gdx.net.newServerSocket(Protocol protocol, int port, ServerSocketHints hints);
 ```
 
-To send an HTTP Request use this:
+要发送 HTTP 请求，请使用：
 ```java
 HttpRequestBuilder requestBuilder = new HttpRequestBuilder();
 HttpRequest httpRequest = requestBuilder.newRequest().method(HttpMethods.GET).url("https://www.google.de").build();
 Gdx.net.sendHttpRequest(httpRequest, httpResponseListener);
 ```
 
-To send a GET HTTP Request with arguments use this:
+要发送带参数的 GET HTTP 请求，请使用：
 ```java
 HttpRequestBuilder requestBuilder = new HttpRequestBuilder();
 HttpRequest httpRequest = requestBuilder.newRequest().method(HttpMethods.GET).url("https://www.google.de").content("q=libgdx&example=example").build();
 Gdx.net.sendHttpRequest(httpRequest, httpResponseListener);
 ```
-To open the system browser use this:
+要打开系统浏览器，请使用：
 ```java
 Gdx.net.openURI(String URI)
 ```
 
-## Receiving Response
+## 接收响应
 
-There are different technique to flexibly receive response back from HTTP request as shown above. Example in Kotlin as follows.
+有多种方式可以灵活地接收上述 HTTP 请求的响应。以下是 Kotlin 示例。
 
-1. Via class which implemented [HttpResponseListener](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/Net.HttpResponseListener.html)
+1. 通过实现 [HttpResponseListener](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/Net.HttpResponseListener.html) 的类
 
-   For this, you have to create a class and implements `HTTPResponseListener`, then supply a method parameter with instance of such class.
+   为此，需要创建一个实现 `HTTPResponseListener` 的类，然后将该类的实例作为方法参数传入。
 
    ```kotlin
    class MyReceiverOfResult : HttpResponseListener {
       override fun cancelled() {
-          // do something when request gets cancelled
+       // 请求取消时执行某些操作
       }
 
       override fun failed(t: Throwable?) {
-          // do something when it fails
+           // 请求失败时执行某些操作
       }
 
       override fun handleHttpResponse(httpResponse: Net.HttpResponse) {
-          // do something when gets result back
+           // 收到结果时执行某些操作
       }
    }
 
    ...
 
-   // assume you hold instance of such class as variable namely `receiver`.
-   // then you just pass it to `sendHttpRequest()` method
+    // 假设你将此类的实例保存为名为 `receiver` 的变量。
+    // 然后只需将其传给 `sendHttpRequest()` 方法
    Gdx.net.sendHttpRequest(req, receiver)
    ```
-2. Anonymous object
+2. 匿名对象
    ```kotlin
    Gdx.net.sendHttpRequest(req, object: Net.HttpResponseListener {
          override fun cancelled() {
-             // do something when request gets cancelled
+              // 请求取消时执行某些操作
          }
 
          override fun failed(t: Throwable?) {
-             // do something when it fails
+              // 请求失败时执行某些操作
          }
 
          override fun handleHttpResponse(httpResponse: Net.HttpResponse) {
-             // do something when gets result back
+              // 收到结果时执行某些操作
          }
       })
    ```
-Depends on your use case and which way you find it more flexible to do so.
+具体采用哪种方式取决于用例以及你认为哪种方式更灵活。
 
-### Notes
-There are various notes needed when working with networking on different platforms.
+### 注意事项
+在不同平台上使用网络功能时需要注意以下事项。
 
-1. TCP client and server sockets do **not** work on GWT. This is due to java.net not being supported on GWT and there is not a viable alternative at this point other than websockets.
-2. Opening the browser is not supported on the headless backend, Android Daydreams, or Android Live Wallpapers. This is due to the limitations with the implementation and/or platform.
-3. On Android: You must have the following permission declared in the AndroidManifest.xml file to access the network: `<uses-permission android:name="android.permission.INTERNET" /> `
-4. On Android: You **cannot** access the network on the main thread without disabling strict mode. This is done to prevent network operations from hanging the main thread. See [here](https://developer.android.com/reference/android/os/StrictMode)
-5. When targeting mobile devices: Be careful about how you implement networking. The wireless radios themselves are a big power drain when on. Also be careful about data limits that could be imposed on a 1G/2G/3G/4G LTE network. libGDX has configuration optimizations done to allow low-latency, but still have the benefits of TCP.
-6. Supported networking configurations vary between backend and java implementation.
-7. Battery drain is more common when data is being sent and received due to the power needed by the radios.
-8. Be sure to set the `Content-Type` header for `POST` requests. Not all backends default to the same value (due to differences in the underlying implementations). The most common value for this header is `application/x-www-form-urlencoded`; however, depending on the type of data you are sending, you may need a different value (such as `application/xml` or `application/json`).
+1. TCP 客户端和服务器套接字在 GWT 上**无法工作**。这是因为 GWT 不支持 java.net，目前除 WebSocket 外没有可行替代方案。
+2. 无头后端、Android Daydream 和 Android 动态壁纸不支持打开浏览器。这是实现和/或平台限制所致。
+3. 在 Android 上：要访问网络，必须在 AndroidManifest.xml 文件中声明以下权限：`<uses-permission android:name="android.permission.INTERNET" /> `
+4. 在 Android 上：如果不禁用 strict mode，**不能**在主线程访问网络。这是为了防止网络操作阻塞主线程。请参阅[此处](https://developer.android.com/reference/android/os/StrictMode)。
+5. 面向移动设备时：请谨慎实现网络功能。无线电模块开启时本身会大量耗电；对于 1G/2G/3G/4G LTE 网络可能存在的数据流量限制也要加以注意。libGDX 已进行了配置优化，使其能够实现低延迟，同时保留 TCP 的优势。
+6. 支持的网络配置因后端和 Java 实现而异。
+7. 由于无线电模块需要耗电，发送和接收数据时更容易消耗电池。
+8. 请务必为 `POST` 请求设置 `Content-Type` 标头。由于底层实现存在差异，不同后端的默认值可能并不相同。该标头最常见的值是 `application/x-www-form-urlencoded`；不过，根据发送数据的类型，可能需要使用其他值（例如 `application/xml` 或 `application/json`）。
 
-**See Also**
+**另请参阅**
 
-Great articles about mobile data battery efficiency [here](https://developer.android.com/training/efficient-downloads/index.html)
+关于移动数据与电池效率的优秀文章请参阅[此处](https://developer.android.com/training/efficient-downloads/index.html)。
 
-Source code for Gdx.net classes [here](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/net)
+Gdx.net 类的源代码请参阅[此处](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/net)。

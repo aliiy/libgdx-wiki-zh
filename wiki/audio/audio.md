@@ -1,24 +1,24 @@
 ---
-title: Audio
+title: 音频
 ---
-# Introduction
+# 简介
 
-libGDX provides methods to playback small sound effects as well as stream larger music pieces directly from disk. It also provides convenient read and write access to the audio hardware.
+libGDX 提供播放短音效以及直接从磁盘流式播放较长音乐的方法，也提供了便捷的音频硬件读写访问能力。
 
-All access to the audio facilities is done through the [audio module](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/Audio.html), referenced by:
+所有音频功能都通过[audio 模块](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/Audio.html)访问，其引用方式如下：
 
 ```java
 Audio audio = Gdx.audio;
 ```
 
-libGDX will automatically pause and resume all audio playback for you if your application is paused and resumed.
+当应用暂停和恢复时，libGDX 会自动暂停和恢复所有音频播放。
 
 
-# Audio on Android
+# Android 上的音频
 
-libGDX Android backend uses the `SoundPool` API to play `Sound`s and the `MediaPlayer` for `Music`. These API have some limitations and known issues in certain scenarios:
-- Latency is not great and the default implementation is not recommended for latency sensitive apps like rhythm games.
-- Playing several sounds at the same time may cause performance issues on some devices. An easy way to fix it (with the limitation some methods are unsupported) is using the alternative Android implementation `AsynchronousAndroidAudio` by implementing `createAudio()`on `AndroidLauncher` like this:
+libGDX Android 后端使用 `SoundPool` API 播放 `Sound`，使用 `MediaPlayer` 播放 `Music`。这些 API 在某些场景下存在一些限制和已知问题：
+- 延迟表现不佳，因此不建议在节奏游戏等对延迟敏感的应用中使用默认实现。
+- 同时播放多个声音可能会在某些设备上造成性能问题。一种简单的解决方法是使用替代实现 `AsynchronousAndroidAudio`（但部分方法不受支持），在 `AndroidLauncher` 中这样实现 `createAudio()`：
 
 ```java
 @Override
@@ -27,13 +27,12 @@ public AndroidAudio createAudio(Context context, AndroidApplicationConfiguration
 }
 ```
 
-Generally speaking, Audio on Android is problematic and there may be other scenarios or device especific issues.
+总的来说，Android 上的音频存在不少问题，也可能有其他场景或特定设备的问题。
 
-## Alternatives
+## 替代方案
 
-In an attempt to fix some of these issues Google created [Oboe](https://github.com/google/oboe) that can be used on libGDX projects thanks to [libGDX Oboe](https://github.com/barsoosayque/libgdx-oboe).
+为解决其中一些问题，Google 创建了 [Oboe](https://github.com/google/oboe)，借助 [libGDX Oboe](https://github.com/barsoosayque/libgdx-oboe) 即可用于 libGDX 项目。
 
-Another alternative is [MiniAudio](https://miniaud.io/) through [gdx-miniaudio](https://github.com/rednblackgames/gdx-miniaudio) project which is an actively mantained cross-platform audio engine already used in production by some libGDX games.
+另一种方案是通过 [gdx-miniaudio](https://github.com/rednblackgames/gdx-miniaudio) 使用 [MiniAudio](https://miniaud.io/)。这是一个持续维护的跨平台音频引擎，已经被一些 libGDX 游戏用于生产环境。
 
-The libGDX setup tool gdx-liftoff has options to load libGDX-Oboe and gdx-miniaudio.  You'll find these under the Third-Party Section of gdx-liftoff.
-
+libGDX 设置工具 gdx-liftoff 提供加载 libGDX-Oboe 和 gdx-miniaudio 的选项，可在 gdx-liftoff 的 Third-Party 部分找到。

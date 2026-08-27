@@ -1,38 +1,38 @@
 ---
-title: 3D Particle Effects
+title: 3D 粒子效果
 ---
-Because of issues with perspective and depth, the 2D particle effects are not suitable for 3D applications. Additionally, the 3d particle effects take full advantage of movement through 3d space, allowing a wide variety of dynamic graphical effects.
+由于透视和深度方面的问题，2D 粒子效果不适合 3D 应用。此外，3D 粒子效果可以充分利用 3D 空间中的运动，实现各种动态图形效果。
 
 ![images/flamedemo.gif](/assets/wiki/images/flamedemo.gif)
 
-### Flame - 3D Particle Editor
-Much like their 2D cousins, 3D particle effects can be edited with a GUI editor included in libgdx.
-The editor is called Flame, and can be downloaded [here](https://libgdx-nightlies.s3.eu-central-1.amazonaws.com/libgdx-runnables/runnable-3D-particles.jar).
+### Flame - 3D 粒子编辑器
+与 2D 粒子效果类似，3D 粒子效果可以使用 libGDX 附带的 GUI 编辑器编辑。
+该编辑器名为 Flame，可从[这里](https://libgdx-nightlies.s3.eu-central-1.amazonaws.com/libgdx-runnables/runnable-3D-particles.jar)下载。
 
-### Particle Effect Types
-There are 3 different kinds of 3D particle effects:
+### 粒子效果类型
+3D 粒子效果有三种不同类型：
 * Billboards
 * PointSprites
 * ModelInstance
 
-**Billboards** are sprites that always face the camera (the Decal class in libGDX is essentially a billboard).
+**Billboard** 是始终面向摄像机的精灵（libGDX 中的 Decal 类本质上就是 billboard）。
 
-**PointSprites** draw a sprite to a single 3d point. They are simpler than billboards, but more efficient. More information about point sprites in OpenGL: [https://www.informit.com/articles/article.aspx?p=770639&seqNum=7](https://www.informit.com/articles/article.aspx?p=770639&seqNum=7)
+**PointSprites** 将精灵绘制到单个 3D 点上。它比 billboard 更简单，但效率更高。有关 OpenGL 点精灵的更多信息：[https://www.informit.com/articles/article.aspx?p=770639&seqNum=7](https://www.informit.com/articles/article.aspx?p=770639&seqNum=7)
 
-**ModelInstances** are familiar to you if you have done any 3D work in libgdx. They are instances of 3D models. Not surprisingly, this is the most taxing type of particle effect in terms of performance.
+如果使用过 libGDX 的 3D 功能，就会熟悉 **ModelInstance**。它们是 3D 模型的实例。不出所料，从性能角度看，这是开销最大的粒子效果类型。
 
-Due to those differences, each particle effect type has its own dedicated batch renderer: [BillboardParticleBatch](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/particles/batches/BillboardParticleBatch.html), [PointSpriteParticleBatch](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/particles/batches/PointSpriteParticleBatch.html), [ModelInstanceParticleBatch](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/particles/batches/ModelInstanceParticleBatch.html).
+由于这些差异，每种粒子效果类型都有专用的批处理渲染器：[BillboardParticleBatch](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/particles/batches/BillboardParticleBatch.html)、[PointSpriteParticleBatch](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/particles/batches/PointSpriteParticleBatch.html) 和 [ModelInstanceParticleBatch](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/particles/batches/ModelInstanceParticleBatch.html)。
 
 -----------------
 
-# Using 3D Particle Effects
-The easiest way to use 3D particle effects is by taking advantage of the ParticleSystem class, abstracting away various details and managing them for you. First we will create the batch of the type(s) we wish to use, then create the ParticleSystem. In this case, we are going to use PointSprites.
+# 使用 3D 粒子效果
+使用 3D 粒子效果最简单的方式是借助 ParticleSystem 类，由它抽象并管理各种细节。首先创建所需类型的批处理器，然后创建 ParticleSystem。本例使用 PointSprites。
 
-For a more in depth look at how to use 3d particles programmatically, [take a look at the test class](https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests/src/com/badlogic/gdx/tests/g3d/ParticleControllerTest.java).
+有关以编程方式使用 3D 粒子的深入介绍，请参阅[测试类](https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests/src/com/badlogic/gdx/tests/g3d/ParticleControllerTest.java)。
 
-**IMPORTANT**: When you import the **ParticleEffect** class into your IDE, make sure you do not accidentally import the 2D effect ParticleEffect class. They share the same name, but have different import paths. You are looking for: **com.badlogic.gdx.graphics.g3d.particles.ParticleEffect**
+**重要：** 在 IDE 中导入 **ParticleEffect** 类时，请注意不要误导入 2D 效果的 ParticleEffect 类。两者名称相同，但导入路径不同。需要导入的是：**com.badlogic.gdx.graphics.g3d.particles.ParticleEffect**
 
-### Step 1: Create Batches and ParticleSystem
+### 步骤 1：创建批处理器和 ParticleSystem
 ```java
 ParticleSystem particleSystem = new ParticleSystem();
 // Since our particle effects are PointSprites, we create a PointSpriteParticleBatch
@@ -41,10 +41,10 @@ pointSpriteBatch.setCamera(cam);
 particleSystem.add(pointSpriteBatch);
 ```
 
-### Step 2: Load Effects Using AssetManager
-Now we need to load our particle effects that we have created using the Flame GUI editor.
-First, create a ParticleEffectLoadParameter to pass to the asset manager when loading.
-Then the assets may be loaded.
+### 步骤 2：使用 AssetManager 加载效果
+现在需要加载使用 Flame GUI 编辑器创建的粒子效果。
+首先创建 ParticleEffectLoadParameter，在加载时传递给资源管理器。
+然后即可加载资源。
 ```java
 AssetManager assets = new AssetManager();
 ParticleEffectLoader.ParticleEffectLoadParameter loadParam = new ParticleEffectLoader.ParticleEffectLoadParameter(particleSystem.getBatches());
@@ -52,7 +52,7 @@ assets.load("particle/effect.pfx", ParticleEffect.class, loadParam);
 assets.finishLoading()
 ```
 
-### Step 3: Add Loaded ParticleEffects to the ParticleSystem
+### 步骤 3：将已加载的 ParticleEffect 添加到 ParticleSystem
 ```java
 ParticleEffect originalEffect = assets.get("particle/effect.pfx");
 // we cannot use the originalEffect, we must make a copy each time we create new particle effect
@@ -62,9 +62,9 @@ effect.start();  // optional: particle will begin playing immediately
 particleSystem.add(effect);
 ```
 
-Your game most likely will have many particle effects, either at once or over time during game play. You really don't want to make a new copy of the particle effect each time you create an object or graphical effect that needs it. Instead, you should pool the effects to avoid new object creation. You can read more about Pooling [in this wiki](/wiki/articles/memory-management#object-pooling) or the libGDX Pool class documentation.
+游戏中很可能会同时存在或随时间产生许多粒子效果。每次创建需要粒子效果的对象或图形效果时，都不应重新复制粒子效果。应将效果放入对象池，以避免创建新对象。有关对象池的更多信息，请参阅[本 Wiki](/wiki/articles/memory-management#object-pooling)或 libGDX Pool 类文档。
 
-Here is an example of a Pool:
+下面是一个 Pool 示例：
 ```java
 private static class PFXPool extends Pool<ParticleEffect> {
 	private ParticleEffect sourceEffect;
@@ -85,10 +85,10 @@ private static class PFXPool extends Pool<ParticleEffect> {
 	}
 }
 ```
-Note that we reset the particle when it is freed, not during obtain. This avoids a NullPointerException that occurs because of how the ParticleSystem works.
+注意，我们是在释放粒子时重置它，而不是在 obtain 时重置。这样可以避免因 ParticleSystem 的工作方式而产生的 NullPointerException。
 
-### Step 4: Rendering our 3D Particles Using the ParticleSystem
-A ParticleSystem must update and draw its own components, then be passed to a ModelBatch instance to be rendered to the scene.
+### 步骤 4：使用 ParticleSystem 渲染 3D 粒子
+ParticleSystem 必须更新并绘制自身组件，然后传递给 ModelBatch 实例，渲染到场景中。
 ```java
 private void renderParticleEffects() {
 	particleSystem.update(); // technically not necessary for rendering
@@ -99,7 +99,7 @@ private void renderParticleEffects() {
 }
 ```
 
-You can also translate and rotate the effect. Depending on how your engine works you might want to use a specific matrix that is reset to identity on changes or only add the delta transformation/rotation.
+也可以平移和旋转效果。根据引擎的工作方式，可以使用在变更时重置为单位矩阵的特定矩阵，也可以只添加增量变换或旋转。
 
 ```java
 private void renderParticleEffects() {
@@ -114,7 +114,7 @@ private void renderParticleEffects() {
 }
 ```
 
-or
+或者
 
 ```java
 private void renderParticleEffects() {
@@ -127,8 +127,8 @@ private void renderParticleEffects() {
 }
 ```
 
-### Stop New Particle Emission, But Let Existing Particles Finish Playing
-It is a little bit more complicated to do this in the 3D Particle System:
+### 停止发射新粒子，但让现有粒子播放完毕
+在 3D 粒子系统中实现这一点稍微复杂一些：
 
 ```java
 Emitter emitter = pfx.getControllers().first().emitter;
@@ -138,14 +138,13 @@ Emitter emitter = pfx.getControllers().first().emitter;
 		}
 ```
 
-### Simple Examples
-A simplified example of the above GdxTest.java can be found [here](https://github.com/SeanFelipe/SimpleParticles3d/blob/master/java/core/src/sbourges/game/gdxtest/GdxTest.java).
+### 简单示例
+上面 GdxTest.java 的简化示例见[这里](https://github.com/SeanFelipe/SimpleParticles3d/blob/master/java/core/src/sbourges/game/gdxtest/GdxTest.java)。
 
 
-### Custom Textures
-In order to create new particle images, you must save them as RGBA PNG with exactly 8 bytes per channel otherwise they will not be rendered properly.
+### 自定义纹理
+要创建新的粒子图像，必须将其保存为每通道恰好 8 位的 RGBA PNG，否则无法正确渲染。
 
-GIMP Settings:
+GIMP 设置：
 
 ![gimp](https://user-images.githubusercontent.com/1824878/177935714-039f11df-d022-487c-9dc6-a372e1f02110.png)
-

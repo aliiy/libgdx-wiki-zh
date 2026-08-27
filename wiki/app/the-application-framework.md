@@ -1,18 +1,18 @@
 ---
-title: The application framework
+title: 应用程序框架
 ---
-## Modules
-At its core, libGDX consists of six [modules](/wiki/app/modules-overview) in the form of interfaces that provide means to interact with the operating system. Each backend implements these interfaces.
+## 模块
+libGDX 的核心由六个[模块](/wiki/app/modules-overview)组成，它们以接口的形式提供与操作系统交互的能力。每个后端都会实现这些接口。
 
-  * *[Application](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/Application.java)*: runs the application and informs an API client about application level events, such as window resizing. Provides logging facilities and querying methods, e.g., memory usage.
-  * *[Files](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/Files.java)*: exposes the underlying file system(s) of the platform. Provides an abstraction over different types of file locations on top of a custom file handle system (which does not inter-operate with Java's File class).
-  * *[Input](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/Input.java)*: informs the API client of user input such as mouse, keyboard, touch or accelerometer events. Both polling and event driven processing are supported.
-  * *[Net](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/Net.java)*: provides means to access resources via HTTP/HTTPS in a cross-platform way, as well as create TCP server and client sockets.
-  * *[Audio](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/Audio.java)*: provides means to playback sound effects and streaming music as well as directly accessing audio devices for PCM audio input/output.
-  * *[Graphics](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/Graphics.java)*: exposes OpenGL ES 2.0 (where available) and allows querying/setting video modes and similar things.
+  * *[Application](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/Application.java)*：运行应用程序，并将窗口调整大小等应用程序级事件通知 API 使用者。提供日志功能和查询方法，例如查询内存占用。
+  * *[Files](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/Files.java)*：公开平台底层文件系统，基于自定义文件句柄系统抽象不同类型的文件位置（该系统不与 Java 的 File 类互操作）。
+  * *[Input](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/Input.java)*：向 API 使用者提供鼠标、键盘、触摸或加速度计事件等用户输入。支持轮询和事件驱动处理。
+  * *[Net](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/Net.java)*：提供跨平台访问 HTTP/HTTPS 资源，以及创建 TCP 服务端和客户端套接字的方式。
+  * *[Audio](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/Audio.java)*：提供播放音效和流式音乐，以及直接访问音频设备进行 PCM 音频输入/输出的方式。
+  * *[Graphics](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/Graphics.java)*：公开 OpenGL ES 2.0（如果可用），并允许查询/设置视频模式及类似属性。
 
-## Starter Classes
-The only platform specific code that needs to be written, are so called [starter classes](/wiki/app/starter-classes-and-configuration). For each platform that is targeted, a piece of code will instantiate a concrete implementation of the Application interface, provided by the back-end for the platform. For the desktop, this might look something like this, using the LWJGL 3 backend:
+## 启动类
+需要编写的唯一平台特定代码是所谓的[启动类](/wiki/app/starter-classes-and-configuration)。对于每个目标平台，都需要一段代码实例化该平台后端提供的 Application 接口具体实现。以 LWJGL 3 后端为例，桌面端代码可能如下：
 
 ```java
 public class DesktopLauncher {
@@ -23,7 +23,7 @@ public class DesktopLauncher {
 }
 ```
 
-For Android, the corresponding starter class might look like this:
+Android 对应的启动类可能如下：
 
 ```java
 public class AndroidStarter extends AndroidApplication {
@@ -35,20 +35,20 @@ public class AndroidStarter extends AndroidApplication {
 }
 ```
 
-These two classes usually live in separate projects, e.g., a desktop and an Android project. The [Project Generation](/wiki/start/project-generation) page describes the layout of these projects.
+这两个类通常位于不同的项目中，例如桌面项目和 Android 项目。[项目生成](/wiki/start/project-generation)页面介绍了这些项目的布局。
 
-The actual code of the application is located in a class that implements the [ApplicationListener](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/ApplicationListener.java) interface (MyGame in the above example). An instance of this class is passed to the respective initialization methods of each back-end's Application implementation (see above). The application will then call into the methods of the ApplicationListener at appropriate times (see [The Life-Cycle](/wiki/app/the-life-cycle)).
+应用程序的实际代码位于实现 [ApplicationListener](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/ApplicationListener.java) 接口的类中（上例中的 MyGame）。该类的实例会传递给各后端 Application 实现相应的初始化方法（见上文）。应用程序随后会在适当的时机调用 ApplicationListener 的方法（见[生命周期](/wiki/app/the-life-cycle)）。
 
-See [Starter Classes & Configuration](/wiki/app/starter-classes-and-configuration) for details on starter classes.
+有关启动类的详细信息，请参阅[启动类与配置](/wiki/app/starter-classes-and-configuration)。
 
-## Accessing Modules
-The modules described earlier can be accessed via static fields of the [Gdx class](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/Gdx.java). This is essentially a set of global variables that allows easy access to any module of libGDX. While generally viewed as bad coding practice, we decided on using this mechanism to ease the pain usually associated with passing around references to things that are used often in all kinds of places within the code base.
+## 访问模块
+前面介绍的模块可以通过 [Gdx 类](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/Gdx.java)的静态字段访问。它本质上是一组全局变量，可以方便地访问 libGDX 的任意模块。虽然这通常被视为不良编码实践，但我们采用这种机制，以免在代码各处频繁传递常用对象的引用。
 
-To access, for example, the audio module one can simply write the following:
+例如，要访问音频模块，只需编写如下代码：
 
 ```java
 // creates a new AudioDevice to which 16-bit PCM samples can be written
 AudioDevice audioDevice = Gdx.audio.newAudioDevice(44100, false);
 ```
 
-`Gdx.audio` is a reference to the backend implementation that has been instantiated on application startup by the Application instance. Other modules are accessed in the same fashion, e.g., `Gdx.app` to get the Application, `Gdx.files` to access the Files implementation and so on.
+`Gdx.audio` 是应用程序启动时由 Application 实例化的后端实现的引用。其他模块也以相同方式访问，例如使用 `Gdx.app` 获取 Application，使用 `Gdx.files` 访问 Files 实现，依此类推。

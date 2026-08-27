@@ -1,17 +1,17 @@
 ---
-title: Saved game serialization
+title: 已保存游戏的序列化
 ---
-For saving simple data types, libGDX offers [Preferences](/wiki/preferences). However, if you want to save custom objects, in particular your whole game state – usually to save it to disk so it can be restored later – you need to serialize it first. There are a couple of different ways for doing this.
+对于简单数据类型的保存，libGDX 提供了 [Preferences](/wiki/preferences)。但如果想保存自定义对象，尤其是整个游戏状态（通常需要保存到磁盘以便稍后恢复），就必须先将其序列化。有几种不同的实现方式。
 
-# JSON serialization
+# JSON 序列化
 
-libGDX's [JSON](/wiki/utils/reading-and-writing-json) classes can automatically convert Java objects to and from JSON. Check out the corresponding wiki article to find out more.
+libGDX 的 [JSON](/wiki/utils/reading-and-writing-json) 类可以自动将 Java 对象转换为 JSON，或从 JSON 转换回来。详情请参阅对应的 wiki 文章。
 
-# Binary serialization
+# 二进制序列化
 
-Another option for [efficiently](https://github.com/eishay/jvm-serializers/wiki) serializing Java objects is the [Kryo](https://github.com/EsotericSoftware/kryo) library. Kryo can handle most POJOs and other classes, but some classes need special handling. Below are a few custom serializers for libGDX classes.
+另一种[高效](https://github.com/eishay/jvm-serializers/wiki)序列化 Java 对象的方案是使用 [Kryo](https://github.com/EsotericSoftware/kryo) 库。Kryo 可以处理大多数 POJO 和其他类，但某些类需要特殊处理。下面是一些适用于 libGDX 类的自定义序列化器。
 
-Note that classes like `Texture` should not be serialized in most cases. It would be better to have a String instead of a Texture object in your object graph. After serializing you would process the objects and look up the texture using the string path.
+请注意，大多数情况下不应序列化 `Texture` 之类的类。在对象图中使用 String 代替 Texture 对象会更好。序列化后，可以处理对象，并通过字符串路径查找纹理。
 {: .notice--warning}
 
 ```java

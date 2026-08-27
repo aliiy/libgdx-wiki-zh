@@ -22,3 +22,7 @@ group :jekyll_plugins do
   gem "jekyll-github-metadata"
 #  gem "jekyll-last-modified-at"
 end
+
+gem "csv", "~> 3.3"
+
+gem "erb", "~> 6.0"

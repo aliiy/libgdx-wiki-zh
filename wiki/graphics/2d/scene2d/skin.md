@@ -1,33 +1,33 @@
 ---
 title: Skin
 ---
- * [Overview](#overview)
- * [Resources](#resources)
- * [Convenience methods](#convenience-methods)
- * [Conversions](#conversions)
- * [Modifying resources](#modifying-resources)
- * [Widget styles](#widget-styles)
- * [Skin JSON](#skin-json)
+  * [概述](#overview)
+  * [资源](#resources)
+  * [便捷方法](#convenience-methods)
+  * [转换](#conversions)
+  * [修改资源](#modifying-resources)
+  * [控件样式](#widget-styles)
+  * [Skin JSON](#skin-json)
    * [Color](#color)
    * [BitmapFont](#bitmapfont)
    * [TintedDrawable](#tinteddrawable)
 
-## Overview
+ ## 概述
 
-The Skin class stores resources for UI widgets to use. It is a convenient container for texture regions, ninepatches, fonts, colors, etc. Skin also provides convenient conversions, such as retrieving a texture region as a ninepatch, sprite, or drawable.
+Skin 类存储 UI 控件使用的资源，是存放纹理区域、九宫格、字体、颜色等内容的便捷容器。Skin 还提供方便的转换功能，例如将纹理区域作为九宫格、精灵或 Drawable 获取。
 
-Skin files from the [libGDX tests](https://github.com/libgdx/libgdx/tree/master/tests/gdx-tests-android/assets/data) can be used as a starting point. You will need: `uiskin.png`, `uiskin.atlas`, `uiskin.json`, and `default.fnt`. This enables you to quickly get started using `scene2d.ui` and replace the skin assets later.
+可以将 [libGDX 测试](https://github.com/libgdx/libgdx/tree/master/tests/gdx-tests-android/assets/data) 中的 Skin 文件作为起点。需要准备：`uiskin.png`、`uiskin.atlas`、`uiskin.json` 和 `default.fnt`。这样即可快速开始使用 `scene2d.ui`，之后再替换 Skin 资源。
 
-Resources in a skin typically come from a [texture atlas](/wiki/tools/texture-packer#textureatlas), widget styles and other objects defined using JSON, and objects added to the skin via code. Even when JSON is not used, it is still recommended to use Skin with a texture atlas and objects added via code. This is much more convenient to obtain instances of drawables and serves as a central place to obtain UI resources.
+Skin 中的资源通常来自[纹理图集](/wiki/tools/texture-packer#textureatlas)、通过 JSON 定义的控件样式和其他对象，以及通过代码添加到 Skin 的对象。即使不使用 JSON，也建议将 Skin 与纹理图集及通过代码添加的对象配合使用。这样获取 Drawable 实例更加方便，也能作为集中获取 UI 资源的位置。
 
-Useful resources:
+有用的资源：
 * [Ready to use skins.](https://github.com/czyzby/gdx-skins)
-* [Skin Composer](https://ray3k.wordpress.com/software/skin-composer-for-libgdx/) is a UI tool for creating and editing skins.
+* [Skin Composer](https://ray3k.wordpress.com/software/skin-composer-for-libgdx/) 是用于创建和编辑 Skin 的 UI 工具。
 * [Basic skin Label tutorial ](https://libgdxinfo.wordpress.com/basic-label/)
 
-## Resources
+## 资源
 
-Each resource in the skin has a name and type. The regions from a [texture atlas](/wiki/tools/texture-packer#textureatlas) can be made available as resources in the skin. Texture regions can be retrieved as a ninepatch, sprite, tiled drawable, or drawable.
+Skin 中每个资源都有名称和类型。[纹理图集](/wiki/tools/texture-packer#textureatlas)中的区域可以作为 Skin 资源使用。纹理区域可以作为九宫格、精灵、平铺 Drawable 或 Drawable 获取。
 
 ```java
 TextureAtlas atlas = ...
@@ -37,7 +37,7 @@ skin.addRegions(atlas);
 TextureRegion hero = skin.get("hero", TextureRegion.class);
 ```
 
-Resources can also be defined for a skin using JSON ([see below](#skin-json)) or added using code:
+也可以使用 JSON（[见下文](#skin-json)）为 Skin 定义资源，或通过代码添加：
 
 ```java
 Skin skin = new Skin();
@@ -46,9 +46,9 @@ skin.add("logo", new Texture("logo.png"));
 Texture logo = skin.get("logo", Texture.class);
 ```
 
-## Convenience Methods
+## 便捷方法
 
-There are convenience methods to retrieve resources for commons types.
+对于常见类型，Skin 提供了获取资源的便捷方法。
 
 ```java
 Skin skin = ...
@@ -61,11 +61,11 @@ TiledDrawable tiled = skin.getTiledDrawable("pattern");
 Drawable drawable = skin.getDrawable("enemy");
 ```
 
-These methods are identical to passing in the appropriate class, but allow for slightly more concise code.
+这些方法与传入相应类相同，但代码略加简洁。
 
-## Conversions
+## 转换
 
-All styles for UI widgets use a [Drawable](https://github.com/sinistersnare/libgdx/wiki/Scene2d.ui#drawable) when they need an image. This allows a texture region, ninepatch, sprite, etc to be used anywhere in the UI. Skin makes it easy to convert textures and texture regions to drawables and other types:
+UI 控件的所有样式需要图像时都使用 [Drawable](https://github.com/sinistersnare/libgdx/wiki/Scene2d.ui#drawable)。因此可以在 UI 的任意位置使用纹理区域、九宫格、精灵等。Skin 可以方便地将纹理和纹理区域转换为 Drawable 及其他类型：
 
 ```java
 Skin skin = new Skin();
@@ -79,15 +79,15 @@ TiledDrawable tiled = skin.getTiledDrawable("logo");
 Drawable drawable = skin.getDrawable("logo");
 ```
 
-A texture region can be retrieved as a ninepatch, sprite, tiled drawable, or drawable. The first time a conversion is made, a new object is allocated and stored in the skin. Subsequent retrievals will return the stored object.
+纹理区域可以作为九宫格、精灵、平铺 Drawable 或 Drawable 获取。首次转换时会分配新对象并存储在 Skin 中，之后的获取会返回已存储的对象。
 
-When converting a texture region to a drawable, the skin will choose the most appropriate drawable for that region. If the region is an AtlasRegion with ninepatch split information, then a NinePatchDrawable is returned. If the region is an AtlasRegion that has been rotated or whitespace stripped, then a SpriteDrawable is returned so the region will be drawn correctly. Otherwise, a TextureRegionDrawable is returned.
+将纹理区域转换为 Drawable 时，Skin 会为该区域选择最合适的 Drawable。如果区域是带九宫格分割信息的 AtlasRegion，则返回 NinePatchDrawable；如果区域是经过旋转或去除空白的 AtlasRegion，则返回 SpriteDrawable，以确保正确绘制；否则返回 TextureRegionDrawable。
 
-## Modifying resources
+## 修改资源
 
-Resources obtained from the skin are not new instances, the same object is returned each time. If the object is modified, the changes will be reflected throughout the application. If this is not desired, a copy of the object should be made.
+从 Skin 获取的资源不是新实例，每次都会返回同一个对象。如果修改对象，修改会反映到整个应用中。如果不希望这样，应创建对象副本。
 
-The `newDrawable` method copies a drawable. The new drawable's size information can be changed without affecting the original. The method can also tint a drawable.
+`newDrawable` 方法会复制 Drawable。可以修改新 Drawable 的尺寸信息而不影响原对象，也可以使用该方法为 Drawable 着色。
 
 ```java
 Skin skin = ...
@@ -95,24 +95,24 @@ Skin skin = ...
 Drawable redDrawable = skin.newDrawable("whiteRegion", Color.RED);
 ```
 
-Note the new drawable is not stored in the skin. To store it in the skin it must be explicitly added with a name like any other resource.
+注意，新 Drawable 不会存储在 Skin 中。若要存储它，必须像其他资源一样显式添加名称。
 
-## Widget styles
+## 控件样式
 
-Skin is a useful container for providing texture regions and other resources that UI widgets need. It can also store the UI widget styles that define how widgets look.
+Skin 是提供 UI 控件所需纹理区域和其他资源的实用容器，也可以存储定义控件外观的 UI 控件样式。
 
 ```java
 TextButtonStyle buttonStyle = skin.get("bigButton", TextButtonStyle.class);
 TextButton button = new TextButton("Click me!", buttonStyle);
 ```
 
-All widgets have convenience methods for passing the skin and the style name:
+所有控件都有用于传入 Skin 和样式名称的便捷方法：
 
 ```java
 TextButton button = new TextButton("Click me!", skin, "bigButton");
 ```
 
-If the style name is omitted, the name "default" is used:
+如果省略样式名称，则使用 “default”：
 
 ```java
 TextButton button = new TextButton("Click me!", skin);
@@ -120,7 +120,7 @@ TextButton button = new TextButton("Click me!", skin);
 
 ## Skin JSON
 
-A skin can be [populated programmatically](https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests/src/com/badlogic/gdx/tests/UISimpleTest.java#L37). Alternatively, JSON can be used to describe named objects in the skin. This makes it convenient to define the UI widget styles. Note the JSON does not describe texture regions, ninepatche splits, or other information which comes from the [texture atlas](/wiki/tools/texture-packer). However, the JSON may reference the regions, ninepatches, and other resources in the skin by name. The JSON looks like this:
+Skin 可以[通过程序填充](https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests/src/com/badlogic/gdx/tests/UISimpleTest.java#L37)。也可以使用 JSON 描述 Skin 中的命名对象，这便于定义 UI 控件样式。注意，JSON 不描述纹理区域、九宫格分割或来自[纹理图集](/wiki/tools/texture-packer)的其他信息，但可以按名称引用 Skin 中的区域、九宫格和其他资源。JSON 如下：
 
 ```
 {
@@ -136,7 +136,7 @@ A skin can be [populated programmatically](https://github.com/libgdx/libgdx/blob
 }
 ```
 
-`className` is the fully qualified Java class name for the objects. `name` is the name of each resource. `resource` is the JSON for the actual resource object. The JSON corresponds exactly to the names of the fields in the resource's class. Here is a real example:
+`className` 是对象的 Java 完全限定类名，`name` 是每个资源的名称，`resource` 是实际资源对象的 JSON。JSON 中的字段名称与资源类中的字段名称完全对应。下面是一个实际示例：
 
 ```
 {
@@ -165,19 +165,19 @@ A skin can be [populated programmatically](https://github.com/libgdx/libgdx/blob
 }
 ```
 
-First, some colors and a font are defined. Next, some text button styles are defined. The fields `down`, `up`, and `checked` are of type Drawable. An object is expected but a string is found in the JSON, so the string is used as a name to look up the drawable in the skin. The same thing happens for the font and colors, except for the "green" text button style, which defines a new color inline.
+首先定义一些颜色和字体，然后定义若干文本按钮样式。`down`、`up` 和 `checked` 字段的类型是 Drawable。虽然这里需要对象，但 JSON 中提供的是字符串，因此该字符串会作为名称，用于在 Skin 中查找 Drawable。字体和颜色也遵循相同规则，但 “green” 文本按钮样式例外，它在 JSON 中直接定义了新颜色。
 
-Note that order is important. A resource must be declared in the JSON above where it is referenced. Also note that the JSON that libGDX uses differentiates from the standard, where quotes are not used to define keys or values.
+注意，顺序很重要。资源必须在 JSON 中先于引用它的位置声明。还要注意，libGDX 使用的 JSON 与标准格式不同，定义键和值时不使用引号。
 
-Skin files from the [libGDX tests](https://github.com/libgdx/libgdx/tree/master/tests/gdx-tests-android/assets/data) can be used as a starting point: uiskin.png, uiskin.atlas, uiskin.json, and default.fnt.
+可以将 [libGDX 测试](https://github.com/libgdx/libgdx/tree/master/tests/gdx-tests-android/assets/data) 中的 Skin 文件作为起点：uiskin.png、uiskin.atlas、uiskin.json 和 default.fnt。
 
-Loading and configuring a freetype font via the skin json file requires some additional steps. [Scene Composer](https://github.com/raeleus/skin-composer/wiki/Creating-FreeType-Fonts#using-a-custom-serializer) can help.
+通过 Skin JSON 文件加载和配置 freetype 字体需要一些额外步骤。[Scene Composer](https://github.com/raeleus/skin-composer/wiki/Creating-FreeType-Fonts#using-a-custom-serializer) 可以提供帮助。
 
-### Color
+### 颜色
 
-Colors are defined in JSON as shown above. If the `r`, `g`, or `b` properties are omitted, 0 is used. If `a` is omitted, 1 is used.
+颜色在 JSON 中按上面的方式定义。如果省略 `r`、`g` 或 `b` 属性，则使用 0；如果省略 `a`，则使用 1。
 
-Alternatively, you can specify the color by hex value:
+也可以使用十六进制值指定颜色：
 ```
 com.badlogic.gdx.graphics.Color: {
 	skyblue: { hex: 489affff }
@@ -186,7 +186,7 @@ com.badlogic.gdx.graphics.Color: {
 
 ### BitmapFont
 
-A bitmap font is declared in the JSON like this:
+位图字体在 JSON 中声明如下：
 
 ```
 {
@@ -199,13 +199,13 @@ A bitmap font is declared in the JSON like this:
 }
 ```
 
-To find the font's BMFont file, first the skin looks in the directory containing the skin file. If not found, it uses the specified path as an internal path.
+查找字体的 BMFont 文件时，Skin 首先搜索 Skin 文件所在目录。如果找不到，则将指定路径作为内部路径使用。
 
-To find the font's image file, first the skin looks for a texture region with the same name as the font file, without the file extension. If not found, it will look in the directory containing the font file for an image with the same name as the font file, but with a "png" file extension.
+查找字体图像文件时，Skin 首先查找与字体文件同名但不含扩展名的纹理区域。如果找不到，则在字体文件所在目录中查找同名且扩展名为 “png” 的图像。
 
 ### TintedDrawable
 
-It is very useful to tint regions various colors. For example, the regions for a white button can be tinted to have a button of any color. Drawables can be tinted in code using the `newDrawable` method. The Skin.TintedDrawable class provides a way to tint drawables in JSON:
+为区域着色非常有用。例如，可以为白色按钮的区域着色，从而得到任意颜色的按钮。可以在代码中使用 `newDrawable` 方法为 Drawable 着色。Skin.TintedDrawable 类提供了在 JSON 中为 Drawable 着色的方式：
 
 ```
 {
@@ -218,4 +218,4 @@ It is very useful to tint regions various colors. For example, the regions for a
 }
 ```
 
-This makes a copy of the drawable named "round", tints it green, and adds it to the skin as a drawable under the name "round-green".
+这会复制名为 “round” 的 Drawable，将其染成绿色，并以 “round-green” 为名称作为 Drawable 添加到 Skin 中。

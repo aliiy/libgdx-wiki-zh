@@ -1,57 +1,57 @@
 ---
-title: Bundling a JRE
+title: 捆绑 JRE
 ---
-Java apps need a Java Runtime Environment to run. Typically this is installed by the user and hopefully already available when they go to run your app. Unfortunately users may not have Java installed and there are differences between JREs that can cause problems with your app. These can be difficult for users to explain and worse, difficult for them to fix themselves. Also, you may require, as a minimum, a certain JRE version.
+Java 应用需要 Java 运行时环境才能运行。通常由用户安装，并且希望他们运行应用时已经可用。不幸的是，用户可能没有安装 Java，而不同 JRE 之间的差异也可能导致应用出现问题。这些问题用户很难描述，更难自行修复。此外，你可能至少要求某个特定版本的 JRE。
 
-The solution is to bundle a JRE with your app. This way you know exactly what users will be running and users will have fewer problems and they will not have to install a JVM.
+解决方案是将 JRE 与应用一起捆绑。这样你能确切知道用户运行的环境，用户遇到的问题也会更少，并且无需自行安装 JVM。
 
-## Packaging
-There are a number of tools available for bundling a JRE:
+## 打包
+有许多工具可以用来捆绑 JRE：
 
 ### [Construo](https://github.com/fourlastor-alexandria/construo?tab=readme-ov-file#construo)
-The modern way to minimize and package your libGDX apps for deployment on Windows, Linux, and Mac. Simply call the corresponding gradle command for the target platform. These commands can be called from any OS:
+这是在 Windows、Linux 和 Mac 上最小化并打包 libGDX 应用以进行部署的现代方式。只需调用目标平台对应的 Gradle 命令即可。这些命令可以在任意操作系统上调用：
 
 **Mac M1** lwjgl3:packageMacM1<br>
 **Mac OSX** lwjgl3:packageMacX64<br>
 **Linux** lwjgl3:packageLinuxX64<br>
 **Windows** lwjgl3:packageWinX64<br>
 
-This creates a zip file in `lwjgl3/build/construo/dist` containing your game and the minimized JRE for the target platform. See [this section](https://www.youtube.com/watch?v=VF6N_X_oWr0&t=1088s) in the GDX-Liftoff video.
+这会在 `lwjgl3/build/construo/dist` 中创建一个 zip 文件，其中包含游戏和目标平台的最小化 JRE。参见 GDX-Liftoff 视频中的[这一节](https://www.youtube.com/watch?v=VF6N_X_oWr0&t=1088s)。
 
 ### [Graal Native Image](https://www.graalvm.org/latest/reference-manual/native-image/)
-Graal Native Image is a way to compile Java code ahead-of-time to create a native executable. This differs from other techniques requiring you to bundle a Java JRE with your game. Native executables are much smaller and require less resources to run, starting up almost instantaneously. To enable it you must set the following in your gradle.properties file:
+Graal Native Image 可以提前编译 Java 代码，生成本机可执行文件。这不同于必须随游戏捆绑 Java JRE 的其他技术。本机可执行文件更小、运行所需资源更少，几乎可以瞬间启动。启用它需要在 gradle.properties 文件中设置：
 
 ```
 enableGraalNative=true
 ```
 
-You must also have a Graal JDK installed. Please note that there is a higher burden regarding reflection/resource use and it is not expected to work out of the box. For more information take a look at the [official docs](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html).
+还必须安装 Graal JDK。请注意，反射和资源使用方面的要求更高，通常不能开箱即用。更多信息请参阅[官方文档](https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html)。
 
 ### [Packr](https://github.com/libgdx/packr)
-A packaging tool created and maintained by the libGDX team. Take a look at the [repository](https://github.com/libgdx/packr#usage) if you are interested in using it.
+由 libGDX 团队创建和维护的打包工具。如果想使用它，请查看[仓库](https://github.com/libgdx/packr#usage)。
 
 ### [Parcl](https://github.com/mini2Dx/parcl)
-A Gradle plugin that performs similar actions as launch4j. See its [README](https://github.com/mini2Dx/parcl#how-to-use) for instructions.
+执行类似 launch4j 操作的 Gradle 插件。使用说明请参阅其 [README](https://github.com/mini2Dx/parcl#how-to-use)。
 
 ### [jpackage](https://docs.oracle.com/en/java/javase/14/jpackage/packaging-overview.html#GUID-C1027043-587D-418D-8188-EF8F44A4C06A)
 
-Jpackage is a tool to provide native packaging options on Windows, MacOS and Linux introduced with [JEP-343](https://openjdk.java.net/jeps/343). It can be used to create an EXE that starts your bundled application via an embedded JRE. A significant downside is that it must be run directly on the target platforms (Windows, Linux, Mac) in order to create executables specific to those users.
+jpackage 是由 [JEP-343](https://openjdk.java.net/jeps/343) 引入的工具，可在 Windows、MacOS 和 Linux 上提供本机打包选项。它可以创建通过内置 JRE 启动捆绑应用的 EXE。一个明显缺点是，必须直接在目标平台（Windows、Linux、Mac）上运行它，才能创建适用于该平台用户的可执行文件。
 
-See [this guide](https://github.com/raeleus/skin-composer/wiki/libGDX-and-JPackage) for more information on how to use it. A video version can be found [here](https://www.youtube.com/watch?v=R7CMXeQ11GM). Note that these guides are outdated and no longer recommended.
+有关使用方法，请参阅[这份指南](https://github.com/raeleus/skin-composer/wiki/libGDX-and-JPackage)。视频版本见[此处](https://www.youtube.com/watch?v=R7CMXeQ11GM)。请注意，这些指南已经过时，不再推荐。
 
 ### [Jpackage Gradle Plugin](https://github.com/petr-panteleyev/jpackage-gradle-plugin)
-A Gradle plugin that conveniently wraps jpackage in line with modern gradle standards. See its [README](https://github.com/petr-panteleyev/jpackage-gradle-plugin/blob/master/README.md) for usage instructions.
+按照现代 Gradle 标准方便地封装 jpackage 的 Gradle 插件。使用说明请参阅其 [README](https://github.com/petr-panteleyev/jpackage-gradle-plugin/blob/master/README.md)。
 
 ### [launch4j](http://launch4j.sourceforge.net/)
-_-- seems to be no longer maintained --_
+_-- 似乎已不再维护 --_
 
-## MacOS Specifics
+## MacOS 特性
 
-If you're planning to deploy to MacOS as well, [notarization](https://developer.apple.com/documentation/xcode/notarizing_macos_software_before_distribution) (MacOS 10.15+) can be an issue. See [here](https://www.joelotter.com/2020/08/14/macos-java-notarization.html) on how to notarize your libGDX app.
+如果也计划部署到 MacOS，[公证](https://developer.apple.com/documentation/xcode/notarizing_macos_software_before_distribution)（MacOS 10.15+）可能会成为问题。有关如何为 libGDX 应用进行公证，请参阅[此处](https://www.joelotter.com/2020/08/14/macos-java-notarization.html)。
 
-## Reducing Size
+## 减小体积
 
-There are a number of files and classes that can be removed from the JRE to reduce the size. Below is a list of files to delete from the Windows JRE. Other platforms are very similar, though you may need classes on some platforms but not others (eg, xml classes are needed on Linux to use java.util.preferences). This list leaves Swing intact, if you don't need Swing the size could be reduced further.
+可以从 JRE 中删除一些文件和类来减小体积。下面列出的是 Windows JRE 中可以删除的文件。其他平台非常相似，但某些平台可能需要而另一些平台不需要某些类（例如，在 Linux 上使用 java.util.preferences 需要 XML 类）。此列表保留了 Swing；如果不需要 Swing，还可以进一步减小体积。
 
 ```
 **.diz
@@ -98,6 +98,6 @@ lib\resources.jar\com\sun\xml\
 lib\jsse.jar\sun\security\ssl\
 ```
 
-To make this list I went through the files and JARs sorting by largest size first. I then deleted the largest files that looked like that were not needed and ran my app to make sure everything still works.
+制作此列表时，我按大小从大到小检查了文件和 JAR，然后删除看起来不需要的最大文件，并运行应用以确保一切仍然正常。
 
-This list reduces the JRE size to about 36MB. Note that for faster start up the JRE JARs are not compressed. After zipping the entire JRE, the size is reduced to about 13.5MB. If Swing packages are also removed from rt.jar, the zipped size goes down to about 9.8MB.
+此列表可将 JRE 体积减小到约 36MB。请注意，为了更快启动，JRE JAR 未压缩。将整个 JRE 压缩后，体积约为 13.5MB。如果还从 rt.jar 中删除 Swing 包，压缩后的体积可降至约 9.8MB。

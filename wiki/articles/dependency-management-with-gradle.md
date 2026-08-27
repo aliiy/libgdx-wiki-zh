@@ -1,35 +1,35 @@
 ---
-title: Dependency management with Gradle
+title: 使用 Gradle 管理依赖
 ---
-## Contents
+## 目录
 
-* [**Useful Links**](#useful-links)
-* [**Guide to build.gradle**](#guide-to-buildgradle)
-* [**libGDX Dependencies**](#libgdx-dependencies)
- * [Available libGDX extensions](#libgdx-extensions)
-* [**External Dependencies**](#external-dependencies)
- * [Adding Repositories](#adding-external-repositories)
- * [Mavenizing Local Dependencies](#mavenizing-local-dependencies)
- * [File Dependencies](#file-dependencies)
-   * [Android pitfall](#android-pitfall)
-* [**Declaring Dependencies with HTML**](#gwt-inheritance)
- * [libGDX Extension Inherits](#libgdx-extension-inherits)
-* [**Dependency Management for Libraries**](#dependency-management-for-libraries)
+* [**有用链接**](#useful-links)
+* [**build.gradle 指南**](#guide-to-buildgradle)
+* [**libGDX 依赖**](#libgdx-dependencies)
+ * [可用的 libGDX 扩展](#libgdx-extensions)
+* [**外部依赖**](#external-dependencies)
+ * [添加仓库](#adding-external-repositories)
+ * [将本地依赖 Maven 化](#mavenizing-local-dependencies)
+ * [文件依赖](#file-dependencies)
+   * [Android 陷阱](#android-pitfall)
+* [**使用 HTML 声明依赖**](#gwt-inheritance)
+ * [libGDX 扩展继承](#libgdx-extension-inherits)
+* [**库的依赖管理**](#dependency-management-for-libraries)
 
-### Useful links
-Dependency management with Gradle is easy to understand, and has many different approaches. If you are familiar with Maven or Ivy, Gradle is fully compatible with both approaches, as well as being able to support custom approaches. If you aren't familiar with Gradle, there are great resources on their site to learn, it is recommended you give them a read to get comfortable with Gradle.
-* [Gradle's User Guide](https://docs.gradle.org/current/userguide/userguide.html)
-* [Gradle's Dependency Management Guide](https://docs.gradle.org/current/userguide/dependency_management.html)
-* [Declare your dependencies](https://docs.gradle.org/current/userguide/dependency_management.html#declaring-dependencies)
+### 有用链接
+使用 Gradle 管理依赖很容易理解，而且有多种实现方式。如果你熟悉 Maven 或 Ivy，Gradle 完全兼容这两种方式，同时也支持自定义方式。如果你不熟悉 Gradle，其网站上有很好的学习资源，建议阅读这些资源以熟悉 Gradle。
+* [Gradle 用户指南](https://docs.gradle.org/current/userguide/userguide.html)
+* [Gradle 依赖管理指南](https://docs.gradle.org/current/userguide/dependency_management.html)
+* [声明依赖](https://docs.gradle.org/current/userguide/dependency_management.html#declaring-dependencies)
 
-### Guide to build.gradle
-Gradle projects are managed by `build.gradle` files in their root directory. If you have used the gdx-setup.jar to build your libGDX project you will notice the structure: [Structure Example](/wiki/start/project-generation#project-layout)
+### build.gradle 指南
+Gradle 项目由根目录中的 `build.gradle` 文件管理。如果你使用过 gdx-setup.jar 构建 libGDX 项目，会注意到其结构：[结构示例](/wiki/start/project-generation#project-layout)
 
-The root directory, and each sub directory contains a `build.gradle` file, for clarity we will define the dependencies in the root directory's `build.gradle` file. (Note it can be done in each of the `build.gradle` scripts in the sub directories, it is just cleaner and easier to follow when it is handled all in one place)
+根目录及每个子目录都包含一个 `build.gradle` 文件。为清晰起见，我们将在根目录的 `build.gradle` 文件中定义依赖。（也可以在各子目录的 `build.gradle` 脚本中完成，但集中处理更整洁，也更容易理解。）
 
-Here is a small section of the _default_ buildscript that is generated from the setup:
+下面是设置工具生成的_默认_构建脚本的一小段：
 
-_Full script you will see will differ slightly depending on what other modules you have_
+_根据拥有的其他模块，完整脚本会略有不同_
 ```gradle
 //Configuration for the script itself (aka, listing the dependencies of the script that lists dependencies - InSCRIPTion!)
 buildscript {
@@ -113,19 +113,19 @@ subprojects {
 eclipse.project.name = 'MyOriginalGame' + '-parent'
 ```
 
-### libGDX Dependencies
-Dependencies are configured in the respective `build.gradle` file of each subproject. For example: `core/build.gradle`,`android/build.gradle`,`html/build.gradle`, etc.
-In order to add an external dependency to a project, you must declare the dependency correctly under the correct part of the buildscript.
+### libGDX 依赖
+依赖在每个子项目对应的 `build.gradle` 文件中配置。例如：`core/build.gradle`、`android/build.gradle`、`html/build.gradle` 等。
+要向项目添加外部依赖，必须在构建脚本的正确部分正确声明该依赖。
 
-(Some) libGDX extensions are mavenized and pushed to the maven repo, which means we can very easily pull them into our projects from the `build.gradle` file. You can see in the list [below](#libgdx-extensions) of the format that these dependencies take.
-If you are familiar with maven, notice the format:
+（部分）libGDX 扩展已经 Maven 化并发布到 Maven 仓库，因此可以很容易地从 `build.gradle` 文件将它们引入项目。此类依赖的格式请见下方[列表](#libgdx-extensions)。
+如果你熟悉 Maven，请注意其格式：
 ```gradle
 implementation '<groupId>:<artifactId>:<version>:<classifier>'
 ```
 
-Let's take a quick example to see how this works with the android `build.gradle` file.
+下面以 android `build.gradle` 文件为例快速说明其工作方式。
 
-[Here](#freetypefont-gradle) we see the dependencies for the FreeType Extension, say we want our Android project to have this dependency:
+在[这里](#freetypefont-gradle)可以看到 FreeType 扩展的依赖。假设我们希望 Android 项目拥有这一依赖：
 ```gradle
 dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
@@ -139,7 +139,7 @@ dependencies {
 }
 ```
 
-**We know our FreeType extension has the following android declarations:**
+**我们知道 FreeType 扩展在 Android 中有以下声明：**
 ```gradle
 natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-arm64-v8a"
 natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a"
@@ -147,7 +147,7 @@ natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"
 natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
 ```
 
-**So all we need to do is whack it in the dependencies stub**
+**因此，只需将它添加到 dependencies 模板中即可。**
 
 ```gradle
 dependencies {
@@ -166,7 +166,7 @@ dependencies {
 }
 ```
 
-**Ensure that your Core project has the freetype extension in core/build.gradle**
+**确保 Core 项目的 core/build.gradle 中包含 freetype 扩展。**
 
 ```gradle
 dependencies {
@@ -174,11 +174,11 @@ dependencies {
   api "com.badlogicgames.gdx:gdx:$gdxVersion"
 }
 ```
-And we are done, our android project now has the freetype dependency.
-After this you will need to refresh your dependencies. Easy eh.
+这样就完成了，android 项目现在拥有 freetype 依赖。
+之后需要刷新依赖。很简单，对吧？
 
-#### libGDX Extensions
-Mavenized libGDX extensions ready to import from the `build.gradle` script include:
+#### libGDX 扩展
+可以从 `build.gradle` 脚本直接导入、且已经 Maven 化的 libGDX 扩展包括：
 * [Box2D](#box2d-gradle)
 * [Bullet](#bullet-gradle)
 * [FreeTypeFont](#freetypefont-gradle)
@@ -189,44 +189,44 @@ Mavenized libGDX extensions ready to import from the `build.gradle` script inclu
 * [AI](#ai-gradle)
 
 #### Box2D Gradle
-**Core Dependency:**
+**Core 依赖：**
 ```gradle
 api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
 ```
-**Desktop Dependency:**
+**桌面端依赖：**
 ```gradle
 implementation "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
 ```
-**Android Dependency:**
+**Android 依赖：**
 ```gradle
 natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-arm64-v8a"
 natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi-v7a"
 natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86"
 natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86_64"
 ```
-**iOS Dependency:**
+**iOS 依赖：**
 ```gradle
 implementation "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-ios"
 ```
-**HTML Dependency:**
+**HTML 依赖：**
 ```gradle
 implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion:sources"
 implementation("com.badlogicgames.gdx:gdx-box2d-gwt:$gdxVersion:sources") {exclude group: "com.google.gwt", module: "gwt-user"}
 ```
-and in `./html/src/yourgamedomain/GdxDefinition*.gwt.xml` add `<inherits name="com.badlogic.gdx.physics.box2d.box2d-gwt" />`
+并在 `./html/src/yourgamedomain/GdxDefinition*.gwt.xml` 中添加 `<inherits name="com.badlogic.gdx.physics.box2d.box2d-gwt" />`
 
 ***
 
 #### Bullet Gradle
-**Core Dependency:**
+**Core 依赖：**
 ```gradle
 api "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
 ```
-**Desktop Dependency:**
+**桌面端依赖：**
 ```gradle
 implementation "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop"
 ```
-**Android Dependency:**
+**Android 依赖：**
 ```gradle
 natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-arm64-v8a"
 natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-armeabi-v7a"
@@ -234,12 +234,12 @@ natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-x86"
 natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-x86_64"
 natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-arm64-v8a"
 ```
-**iOS Dependency:**
+**iOS 依赖：**
 ```gradle
 implementation "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-ios"
 ```
-**HTML Dependency:**
-Not compatible!
+**HTML 依赖：**
+不兼容！
 
 ***
 
@@ -268,7 +268,7 @@ implementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-
 natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-ios"
 ```
 **HTML Dependency:**
-Not compatible! See [gdx-freetype-gwt](https://github.com/intrigus/gdx-freetype-gwt) for an alternative.
+不兼容！替代方案请参阅 [gdx-freetype-gwt](https://github.com/intrigus/gdx-freetype-gwt)。
 
 ***
 
@@ -295,53 +295,53 @@ implementation "com.badlogicgames.gdx-controllers:gdx-controllers-ios:$gdxContro
 implementation "com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion:sources"
 implementation("com.badlogicgames.gdx-controllers:gdx-controllers-gwt:$gdxControllersVersion:sources"){exclude group: "com.badlogicgames.gdx", module: "gdx-backend-gwt"}
 ```
-and in `./html/src/yourgamedomain/GdxDefinition*.gwt.xml` add `<inherits name="com.badlogic.gdx.controllers" />`  and `<inherits name="com.badlogic.gdx.controllers.controllers-gwt" />`
+并在 `./html/src/yourgamedomain/GdxDefinition*.gwt.xml` 中添加 `<inherits name="com.badlogic.gdx.controllers" />` 和 `<inherits name="com.badlogic.gdx.controllers.controllers-gwt" />`
 
 ***
 
 #### Tools Gradle
 **Core Dependency:**
-Don't put me in core!
+不要将其放入 core！
 
 **Desktop Dependency (LWJGL2 Legacy Desktop only):**
 ```gradle
 api "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
 ```
 **Android Dependency:**
-Not compatible!
+不兼容！
 
 **iOS Dependency:**
-Not compatible!
+不兼容！
 
 **HTML Dependency:**
-Not compatible!
+不兼容！
 
 ***
 
 #### Box2DLights Gradle
-* **Note:** this extension also requires the [Box2D](#box2d-gradle) extension
+* **注意：**此扩展还需要 [Box2D](#box2d-gradle) 扩展
 
 **Core Dependency:**
 ```gradle
 api "com.badlogicgames.box2dlights:box2dlights:$box2dlightsVersion"
 ```
 **Desktop Dependency:**
-No native dependency required.
+不需要原生依赖。
 
 **Android Dependency:**
-No native dependency required.
+不需要原生依赖。
 
 **HTML Dependency:**
 ```gradle
 implementation "com.badlogicgames.box2dlights:box2dlights:$box2dlightsVersion:sources"
 ```
-and in `./html/src/yourgamedomain/GdxDefinition*.gwt.xml` add `<inherits name="Box2DLights" />`
+并在 `./html/src/yourgamedomain/GdxDefinition*.gwt.xml` 中添加 `<inherits name="Box2DLights" />`
 
 ***
 
 #### Ashley Gradle
 
-* **Note:** This extension release cycle is not dependent on the main libGDX library, and so it is not unusual to have a new version published between two libGDX releases. If you want to pull in a new (or different) version, check [https://repo1.maven.org/maven2/com/badlogicgames/ashley/ashley/](https://repo1.maven.org/maven2/com/badlogicgames/ashley/ashley/) and change the `ashleyVersion` value in the `ext` section.
+* **注意：**此扩展的发布周期不依赖主 libGDX 库，因此在两个 libGDX 版本之间发布新版本并不罕见。如果想引入新版本（或其他版本），请查看 [https://repo1.maven.org/maven2/com/badlogicgames/ashley/ashley/](https://repo1.maven.org/maven2/com/badlogicgames/ashley/ashley/)，并修改 `ext` 部分的 `ashleyVersion` 值。
 
 **Core Dependency:**
 ```gradle
@@ -349,22 +349,22 @@ api "com.badlogicgames.ashley:ashley:$ashleyVersion"
 ```
 
 **Desktop Dependency:**
-No native dependency required.
+不需要原生依赖。
 
 **Android Dependency:**
-No native dependency required.
+不需要原生依赖。
 
 **HTML Dependency:**
 ```gradle
 implementation "com.badlogicgames.ashley:ashley:$ashleyVersion:sources"
 ```
-and in `./html/src/yourgamedomain/GdxDefinition*.gwt.xml` add `<inherits name="com.badlogic.ashley_gwt" />`
+并在 `./html/src/yourgamedomain/GdxDefinition*.gwt.xml` 中添加 `<inherits name="com.badlogic.ashley_gwt" />`
 
 ***
 
 #### AI Gradle
 
-* **Note:** This extension release cycle is not dependent on the main libGDX library, and so it is not unusual to have a new version published between two libGDX releases. If you want to pull in a new (or different) version, check [https://repo1.maven.org/maven2/com/badlogicgames/gdx/gdx-ai/](https://repo1.maven.org/maven2/com/badlogicgames/gdx/gdx-ai/) and change the `aiVersion` value in the `ext` section.
+* **注意：**此扩展的发布周期不依赖主 libGDX 库，因此在两个 libGDX 版本之间发布新版本并不罕见。如果想引入新版本（或其他版本），请查看 [https://repo1.maven.org/maven2/com/badlogicgames/gdx/gdx-ai/](https://repo1.maven.org/maven2/com/badlogicgames/gdx/gdx-ai/)，并修改 `ext` 部分的 `aiVersion` 值。
 
 **Core Dependency:**
 ```gradle
@@ -372,26 +372,26 @@ api "com.badlogicgames.gdx:gdx-ai:$aiVersion"
 ```
 
 **Desktop Dependency:**
-No native dependency required.
+不需要原生依赖。
 
 **Android Dependency:**
-No native dependency required.
+不需要原生依赖。
 
 **HTML Dependency:**
 ```gradle
 implementation "com.badlogicgames.gdx:gdx-ai:$aiVersion:sources"
 ```
-and in `./html/src/yourgamedomain/GdxDefinition*.gwt.xml` add `<inherits name="com.badlogic.gdx.ai" />`
+并在 `./html/src/yourgamedomain/GdxDefinition*.gwt.xml` 中添加 `<inherits name="com.badlogic.gdx.ai" />`
 
 ***
 
 
 
-### External Dependencies
-#### Adding external repositories
-Gradle finds files defined as dependencies by looking through all the repositories defined in the buildscript. Gradle understands several repository formats, which include Maven and Ivy.
+### 外部依赖
+#### 添加外部仓库
+Gradle 会遍历构建脚本中定义的所有仓库，以查找定义为依赖的文件。Gradle 支持多种仓库格式，包括 Maven 和 Ivy。
 
-Under the `subprojects` stub of the root build.gradle, you can see how repositories are defined. Here is an example:
+在根 build.gradle 的 `subprojects` 模板中可以看到仓库的定义方式。示例如下：
 ```gradle
 subprojects {
     version = '1.0.0'
@@ -399,7 +399,7 @@ subprojects {
     repositories {
         mavenCentral()
         maven { url 'https://s01.oss.sonatype.org' }
-        // You may want to remove the following line if you have errors downloading dependencies.
+         // You may want to remove the following line if you have errors downloading dependencies.
         mavenLocal()
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
         maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
@@ -407,15 +407,15 @@ subprojects {
     }
 }
 ```
-#### Adding Dependencies
-External dependencies are identified by their group, name, version and sometimes classifier attributes.
+#### 添加依赖
+外部依赖通过 group、name、version，有时还包括 classifier 属性来标识。
 
 ```gradle
 dependencies {
     implementation group: 'com.badlogicgames.gdx', name: 'gdx', version: '1.0-SNAPSHOT', classifier: 'natives-desktop'
 }
 ```
-Gradle allows you to use shortcuts when defining external dependencies, the above configuration is the same as:
+定义外部依赖时，Gradle 允许使用简写；上面的配置等同于：
 
 ```gradle
 dependencies {
@@ -423,8 +423,8 @@ dependencies {
 }
 ```
 
-### Mavenizing Local Dependencies
-If you would prefer to use maven repositories to manage local .jar files, these two commands will take any local .jar file and install them (and their source) to your local maven repository.
+### 将本地依赖 Maven 化
+如果希望使用 Maven 仓库管理本地 .jar 文件，下面两条命令会将任意本地 .jar 文件及其源代码安装到本地 Maven 仓库。
 
 ```bash
 mvn install:install-file -Dfile=<path-to-file> -DgroupId=<group-id> -DartifactId=<artifact-id> -Dversion=<version> -Dpackaging=<packaging>
@@ -433,7 +433,7 @@ mvn install:install-file -Dfile=<path-to-file> -DgroupId=<group-id> -DartifactId
 mvn install:install-file -Dfile=<path-to-source-file> -DgroupId=<group-id> -DartifactId=<artifact-id> -Dversion=<version> -Dpackaging=<packaging> -Dclassifier=sources
 ```
 
-To then set up gradle to include your new dependency, edit your build.gradle file in the root project directory and edit the core project entry:
+要让 Gradle 引入新依赖，请编辑根项目目录中的 build.gradle 文件，并修改 core 项目条目：
 ```gradle
 project(":core") {
    ...
@@ -446,17 +446,17 @@ project(":core") {
 }
 ```
 
-After this you will need to refresh your dependencies for your IDE to see, so run:  
+之后需要刷新依赖，IDE 才能看到它，因此请运行：
 Command line - `$ ./gradlew --refresh-dependencies`  
 Eclipse - `$ ./gradlew eclipse`  
 IntelliJ - `$ ./gradlew idea`  
 
-Also, don't forget that any dependencies added this way also need to be included in the [GWT inheritance file](#gwt-inheritance).
+另外不要忘记，以这种方式添加的依赖也必须加入 [GWT 继承文件](#gwt-inheritance)。
 
-### File Dependencies
-If you have a dependency that is not mavenized, you can still depend on them!
+### 文件依赖
+如果依赖尚未 Maven 化，仍然可以使用它！
 
-To do this, in your project stub in the subproject's corresponding `build.gradle` file, locate the dependencies { } section and add the following:
+为此，请在子项目对应的 `build.gradle` 文件的项目模板中找到 dependencies { } 部分，并添加以下内容：
 
 ```gradle
 dependencies {
@@ -464,12 +464,12 @@ dependencies {
 }
 ```
 
-This will include all the .jar files in the libs directory as dependencies.
+这会将 libs 目录中的所有 .jar 文件作为依赖引入。
 
 
-**NOTE**: "dir" is relative to the project root, if you add the dependencies to your android project, 'libs' would need to be in the android/ directory. If you added the dependencies in the core project, 'libs' would need to be in the core/ directory.
+**注意**：“dir”相对于项目根目录。如果将依赖添加到 android 项目，`libs` 应位于 android/ 目录中；如果添加到 core 项目，`libs` 应位于 core/ 目录中。
 
-An example with a more _complete_ script:
+下面是一个更_完整_的脚本示例：
 ```gradle
 project(":android") {
     apply plugin: "android"
@@ -494,12 +494,12 @@ project(":android") {
 }
 ```
 
-It is worth nothing that these file dependencies are not included in the published dependency descriptor for your project, but they are included in transitive project dependencies within the same build.
+需要注意的是，这些文件依赖不会包含在项目发布的依赖描述符中，但会包含在同一构建中的传递项目依赖里。
 
-##### Android Pitfall
-When adding `flat file` dependencies to a project, for example the core project, you would need to duplicate the dependency declaration for the android project. This is because the Android Gradle plugin currently [can't handle](https://code.google.com/p/android/issues/detail?id=186012) transitive `flat file` dependencies.
+##### Android 陷阱
+向项目（例如 core 项目）添加 `flat file` 依赖时，还需要在 android 项目中重复声明依赖。这是因为 Android Gradle plugin 目前[无法处理](https://code.google.com/p/android/issues/detail?id=186012)传递的 `flat file` 依赖。
 
-For example, if you were to add the all the jars in your `libs` directory as dependencies for your project, you would need to do the following.
+例如，如果要将 `libs` 目录中的所有 jar 添加为项目依赖，需要执行以下操作。
 
 ```gradle
 project(":core") {
@@ -517,14 +517,14 @@ project(":android") {
 }
 ```
 
-This is only required for the android project, all other projects inherit `flat file` dependencies OK.
+这只对 android 项目有要求，其他项目都能正常继承 `flat file` 依赖。
 
-### Gwt Inheritance
-Gwt is special, so in order to let the GWT compiler know what modules the project depends on, and _inherits_ from, you need to let it know.
+### GWT 继承
+GWT 比较特殊。为了让 GWT 编译器知道项目依赖哪些模块并从哪些模块 _inherits_，需要明确告知它。
 
-This is done in the `gwt.xml` files in the gwt sub directory. You will need to make the changes both to the `GdxDefinition.gwt.xml` and also the `GdxDefinitionSuperdev.gwt.xml`.
+这需要在 gwt 子目录中的 `gwt.xml` 文件里完成。你需要同时修改 `GdxDefinition.gwt.xml` 和 `GdxDefinitionSuperdev.gwt.xml`。
 
-**The _default_ gwt.xml:**
+**_默认的_ gwt.xml：**
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit trunk//EN" "http://google-web-toolkit.googlecode.com/svn/trunk/distro-source/core/src/gwt-module.dtd">
@@ -536,10 +536,10 @@ This is done in the `gwt.xml` files in the gwt sub directory. You will need to m
 	<set-configuration-property name="gdx.assetpath" value="../android/assets" />
 </module>
 ```
-We depend on the libGDX gwt backend, as well as the core project, so we have them defined in a <inherits> tag. So when you add your dependency via methods above, you need to add it here too!
+我们依赖 libGDX gwt 后端和 core 项目，因此在 <inherits> 标签中定义了它们。使用上述方法添加依赖时，也需要在这里添加！
 
-#### libGDX Extension Inherits
-These are the libGDX extensions that are supported in gwt
+#### libGDX 扩展继承
+以下是 gwt 支持的 libGDX 扩展。
 
 * libGDX Core - `<inherits name='com.badlogic.gdx.backends.gdx_backends_gwt' />`
 * Box2d       - `<inherits name='com.badlogic.gdx.physics.box2d.box2d-gwt' />`
@@ -548,6 +548,6 @@ These are the libGDX extensions that are supported in gwt
 * Ashley      - `<inherits name='com.badlogic.ashley_gwt' />`
 * AI          - `<inherits name='com.badlogic.gdx.ai' />`
 
-### Dependency management for libraries
-If you're creating a library that people can include in their projects via gradle, you might need to replace the _implementation_ keyword by _api_.
-Any dependency of your library that you declare with _api_ will be visible and usable by others that depend on your library while _implementation_ makes it only accessible for you.
+### 库的依赖管理
+如果你正在创建一个供他人通过 Gradle 引入项目的库，可能需要将 _implementation_ 关键字替换为 _api_。
+使用 _api_ 声明的库依赖对所有依赖你的库的人可见且可用，而使用 _implementation_ 声明的依赖只能由你访问。

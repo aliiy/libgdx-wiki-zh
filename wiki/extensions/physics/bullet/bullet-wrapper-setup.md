@@ -1,13 +1,13 @@
 ---
-title: Bullet Wrapper Setup
+title: Bullet 封装设置
 ---
-The Bullet wrapper (`gdx-bullet` extension) is currently supported on desktop, android and ios. The Bullet wrapper isn't supported for GWT at the moment.
+Bullet 封装（`gdx-bullet` 扩展）目前支持桌面、Android 和 iOS。Bullet 封装暂不支持 GWT。
 
-The easiest method to setup your project to use the Bullet Wrapper is by using the [setup utility](/wiki/start/project-generation) which has an option to include the gdx-bullet extension.
+设置项目以使用 Bullet 封装的最简单方法是使用[设置工具](/wiki/start/project-generation)，其中提供了包含 gdx-bullet 扩展的选项。
 
-The instruction for manually adding the Bullet Wrapper to your Gradle project can be found [here](/wiki/articles/dependency-management-with-gradle#bullet-gradle)
+手动将 Bullet 封装添加到 Gradle 项目的说明见[此处](/wiki/articles/dependency-management-with-gradle#bullet-gradle)。
 
-If you're not using Gradle, then you can manually add it:
-* To use bullet physics in your project, you’ll need to add gdx-bullet.jar to your core project. Alternatively you can add the gdx-bullet project to the projects of the build path of your main project.
-* For your desktop project you’ll need to add the gdx-bullet-natives.jar to the libraries.
-* For your android project you’ll need to copy the armeabi/libgdx-bullet.so and armeabi-v7a/libgdx-bullet.so files to the libs folder in your android project.
+如果不使用 Gradle，可以手动添加：
+* 要在项目中使用 Bullet 物理，需要将 gdx-bullet.jar 添加到核心项目。也可以将 gdx-bullet 项目添加到主项目构建路径的项目中。
+* 对于桌面项目，需要将 gdx-bullet-natives.jar 添加到库中。
+* 对于 Android 项目，需要将 armeabi/libgdx-bullet.so 和 armeabi-v7a/libgdx-bullet.so 文件复制到 Android 项目的 libs 文件夹。

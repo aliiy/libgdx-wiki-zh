@@ -1,11 +1,11 @@
 ---
-title: Taking a Screenshot
+title: 截取屏幕截图
 ---
-Screenshots are easy in libGDX!
+在 libGDX 中截取屏幕截图很简单！
 
-## No post-processing
+## 不进行后处理
 
-The basic way of taking a screenshot is to call `Pixmap.createFromFrameBuffer` (formerly: `ScreenUtils#getFrameBufferPixmap`) and then write that pixmap to the disk:
+截取屏幕截图的基本方式是调用 `Pixmap.createFromFrameBuffer`（此前为 `ScreenUtils#getFrameBufferPixmap`），然后将该 pixmap 写入磁盘：
 
 ```java
 Pixmap pixmap = Pixmap.createFromFrameBuffer(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -13,9 +13,9 @@ PixmapIO.writePNG(Gdx.files.external("mypixmap.png"), pixmap, Deflater.DEFAULT_C
 pixmap.dispose();
 ```
 
-## Post processing to guarantee clarity
+## 通过后处理确保清晰度
 
-However, if your screens have layered transparency, you need to postprocess the screenshot to remove any transparency. Otherwise the screenshots won't look like what the user is expecting:
+但是，如果画面包含多层透明效果，就需要对屏幕截图进行后处理以移除透明度，否则截图看起来可能与用户看到的画面不一致：
 
 ```java
 Pixmap pixmap = Pixmap.createFromFrameBuffer(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
@@ -31,4 +31,4 @@ PixmapIO.writePNG(Gdx.files.external("mypixmap.png"), pixmap, Deflater.DEFAULT_C
 pixmap.dispose();
 ```
 
-The **GWT backend has some limitations** in this regard, which require additional steps outlined [here](https://github.com/libgdx/libgdx.github.io/pull/108#issuecomment-1175176650).
+在这方面，**GWT 后端存在一些限制**，需要执行[这里](https://github.com/libgdx/libgdx.github.io/pull/108#issuecomment-1175176650)所述的额外步骤。

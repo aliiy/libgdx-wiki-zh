@@ -1,12 +1,12 @@
 ---
-title: ProGuard DexGuard and libGDX
+title: ProGuard、DexGuard 与 libGDX
 ---
 
-[ProGuard](https://www.guardsquare.com/proguard) and the newer [R8](https://developer.android.com/studio/build/shrink-code) are optimizers and obfuscators for Java and Android applications. You can use these tools with your libGDX application to make it harder for 3rd parties to decompile your app, reduce your apps size and even increase the runtime speed by ahead-of-time optimizations like inlining.
+[ProGuard](https://www.guardsquare.com/proguard) 和较新的 [R8](https://developer.android.com/studio/build/shrink-code) 是用于 Java 和 Android 应用的优化与混淆工具。你可以在 libGDX 应用中使用这些工具，提高第三方反编译应用的难度、减小应用体积，甚至通过内联等提前优化来提升运行速度。
 
-UPDATE: GDX-Liftoff has a proguard configuration built in to all new projects. See proguard-rules.pro and project.properties in your Android subproject. Otherwise, continue with the following instructions.
+更新：GDX-Liftoff 已在所有新项目中内置 ProGuard 配置。请查看 Android 子项目中的 proguard-rules.pro 和 project.properties。否则，请继续按照以下说明操作。
 
-The following configuration file will make your libGDX app work with ProGuard/R8:
+以下配置文件可以让 libGDX 应用与 ProGuard/R8 配合工作：
 
 ```
 # To enable ProGuard in your project, edit project.properties
@@ -50,9 +50,9 @@ The following configuration file will make your libGDX app work with ProGuard/R8
 }
 ```
 
-Note that you will also have to keep any classes that you access via reflection yourself! Please refer to the [ProGuard/R8 documentation](https://developer.android.com/studio/build/shrink-code) for more details.
+请注意，你还必须自行保留通过反射访问的所有类！更多详情请参阅 [ProGuard/R8 文档](https://developer.android.com/studio/build/shrink-code)。
 
-To apply ProGuard/R8 to your Android project on Release builds, you need to add the following config to `build.gradle` file (the one in the `android/` folder of your project, not the root `build.gradle`)
+要在 Release 构建中对 Android 项目应用 ProGuard/R8，需要将以下配置添加到 `build.gradle` 文件（即项目 `android/` 文件夹中的文件，而不是根目录的 `build.gradle`）：
 
 
 ```gradle

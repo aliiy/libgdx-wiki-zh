@@ -1,26 +1,26 @@
 ---
-title: "Demos & Tutorials"
+title: "演示与教程"
 redirect_from:
   - /dev/tutorials/
 ---
 
-# Tutorials
+# 教程
 
-After you have [created](/wiki/start/setup) your very first libGDX project, we highly recommend our [A Simple Game](/wiki/start/a-simple-game) and [Extending the Simple Game](/wiki/start/simple-game-extended) pages. If you're completely new to game dev and have never developed a game before, this (even more straight-forward) [tutorial](https://colourtann.github.io/HelloLibgdx/) by tann is also worth a look as an alternative.
+创建第一个 libGDX 项目后，我们强烈推荐阅读[一个简单的游戏](/wiki/start/a-simple-game)和[扩展简单游戏](/wiki/start/simple-game-extended)。如果你完全没有游戏开发经验，也可以参考 tann 编写的这篇更加直观的[教程](https://colourtann.github.io/HelloLibgdx/)。
 
-From then on, our [wiki](/wiki/#developers-guide) is your best companion: it provides extensive documentation on nearly every feature offered by libGDX. For any further questions, our official [Discord server](/community/) is good starting point.
+之后，[Wiki](/wiki/#developers-guide)会是最好的伴侣：它几乎覆盖 libGDX 提供的所有功能。如有其他问题，可以从官方 [Discord 服务器](/community/)开始寻求帮助。
 
-There are also many third-party tutorials. A (non-exhaustive) list of them can be found [here](/wiki/articles/external-tutorials).
+此外还有许多第三方教程，这里列出了一份并不完整的[清单](/wiki/articles/external-tutorials)。
 
-# Demos
+# 演示
 
-If you want to inspect some open source libGDX games for reference, this [wiki article](/wiki/articles/external-tutorials#some-simple-open-source-projects-for-reference) is the right place to start looking.
+如果想参考一些开源 libGDX 游戏，可以从这篇 [Wiki 文章](/wiki/articles/external-tutorials#some-simple-open-source-projects-for-reference)开始。
 
-The official libGDX organization on GitHub also offers a few **demo projects** that you can play around with to get a feeling for how to do things. Note that many of these demos have been created during game jams and may not necessarily reflect best practices. To use them [setup your development environment](/wiki/start/setup), then simple clone the repositories on Github (or click on the "Download ZIP" button of a project's site) and import the project into your favorite IDE as a Gradle project.
+libGDX 官方 GitHub 组织还提供了一些可以动手体验的**演示项目**，帮助你了解实现方式。请注意，其中许多演示是在 Game Jam 期间创建的，不一定体现最佳实践。使用它们前请先[设置开发环境](/wiki/start/setup)，然后克隆 GitHub 仓库（也可以在项目页面点击“Download ZIP”），再将项目作为 Gradle 项目导入喜欢的 IDE。
 
-* [Cuboc - a simple platformer with a twist](https://github.com/libgdx/libgdx-demo-cuboc)
-* [Gdx Invaders - a 3D space invaders clone](https://github.com/libgdx/libgdx-demo-invaders)
-* [Pax Britannica - a one button RTS game](https://github.com/libgdx/libgdx-demo-pax-britannica)
-* [Super Jumper - a Doodle jump clone with programmer's art](https://github.com/libgdx/libgdx-demo-superjumper)
-* [Vector Pinball - a Box2D-based pinball game](https://github.com/libgdx/libgdx-demo-vector-pinball)
-* [The Plane that couldn't fly good - a flappy bird's clone](https://github.com/badlogic/theplanethatcouldntflygood)
+* [Cuboc - 带有独特玩法的简单平台游戏](https://github.com/libgdx/libgdx-demo-cuboc)
+* [Gdx Invaders - 3D 太空侵略者复刻游戏](https://github.com/libgdx/libgdx-demo-invaders)
+* [Pax Britannica - 单键操作的 RTS 游戏](https://github.com/libgdx/libgdx-demo-pax-britannica)
+* [Super Jumper - 使用程序员美术的 Doodle Jump 复刻游戏](https://github.com/libgdx/libgdx-demo-superjumper)
+* [Vector Pinball - 基于 Box2D 的弹球游戏](https://github.com/libgdx/libgdx-demo-vector-pinball)
+* [The Plane that couldn't fly good - Flappy Bird 复刻游戏](https://github.com/badlogic/theplanethatcouldntflygood)

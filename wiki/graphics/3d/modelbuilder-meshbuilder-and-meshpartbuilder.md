@@ -1,10 +1,10 @@
 ---
-title: ModelBuilder, MeshBuilder and MeshPartBuilder
+title: ModelBuilder、MeshBuilder 与 MeshPartBuilder
 ---
 # ModelBuilder
-[ModelBuilder](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/utils/ModelBuilder.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g3d/utils/ModelBuilder.java) is a utility class to create one or more [models](/wiki/graphics/3d/models) on code. It allows you to include one or more [nodes](/wiki/graphics/3d/models#nodes), each node consisting of one or more [parts](/wiki/graphics/3d/models#nodepart). It does, however, not support building a node hierarchy (child nodes). Be aware that building a model on code can be a costly operation and might trigger the garbage collector.
-## Building one or more models
-To start building a model use the `begin()` method, after which you must call the `end()` when you're done building the model. The `end()` method will return the newly created model. You can build multiple models using the same ModelBuilder, but not at the same time. For example:
+[ModelBuilder](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/utils/ModelBuilder.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g3d/utils/ModelBuilder.java)）是一个用于通过代码创建一个或多个[模型](/wiki/graphics/3d/models)的工具类。它允许包含一个或多个[节点](/wiki/graphics/3d/models#nodes)，每个节点由一个或多个[部件](/wiki/graphics/3d/models#nodepart)组成。但它不支持构建节点层级（子节点）。请注意，通过代码构建模型可能开销较大，并可能触发垃圾回收。
+## 构建一个或多个模型
+使用 `begin()` 方法开始构建模型，完成后必须调用 `end()`。`end()` 方法会返回新创建的模型。可以使用同一个 ModelBuilder 构建多个模型，但不能同时构建。例如：
 ```java
 ModelBuilder modelBuilder = new ModelBuilder();
 
@@ -16,10 +16,10 @@ modelBuilder.begin();
 ... //build one or more nodes
 Model model2 = modelBuilder.end();
 ```
-## Managing resources
-Keep in mind that models contain one or more meshes and therefore [needs to be disposed](/wiki/graphics/3d/models#managing-resources). A model built via ModelBuilder will always be responsible for disposing all meshes it contains, even if you provide the Mesh yourself. Do not share a Mesh along multiple Models.
+## 管理资源
+请记住，模型包含一个或多个网格，因此[需要释放](/wiki/graphics/3d/models#managing-resources)。通过 ModelBuilder 构建的模型始终负责释放其包含的所有网格，即使 Mesh 是由你自行提供的。不要在多个 Model 之间共享 Mesh。
 
-A Model built via ModelBuilder will not be made responsible for disposing any textures or any other resources contained in the [materials](/wiki/graphics/3d/material-and-environment). You can, however, use the `manage(disposable)` method to make the model responsible for disposing those resources. For example:
+通过 ModelBuilder 构建的 Model 不会负责释放[材质](/wiki/graphics/3d/material-and-environment)中包含的纹理或其他资源。不过，可以使用 `manage(disposable)` 方法让模型负责释放这些资源。例如：
 ```java
 ModelBuilder modelBuilder = new ModelBuilder();
 modelBuilder.begin();
@@ -30,8 +30,8 @@ Model model = modelBuilder.end();
 ... //use the model and when done:
 model.dispose(); // this will dispose the texture as well
 ```
-## Creating nodes
-A Model consists of one or more [nodes](/wiki/graphics/3d/models#nodes). To start building a new node inside the model you can use the `node()` method. This will add a new node and make it active for building. It will also return the [`Node`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/model/Node.html) so you can reference it for later use or for example set its `id`.
+## 创建节点
+Model 由一个或多个[节点](/wiki/graphics/3d/models#nodes)组成。要开始在模型中构建新节点，可以使用 `node()` 方法。该方法会添加一个新节点并将其设为当前构建节点，同时返回 [`Node`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/model/Node.html)，以便稍后引用或设置其 `id`。
 ```java
 ModelBuilder modelBuilder = new ModelBuilder();
 modelBuilder.begin();
@@ -44,7 +44,7 @@ node2.id = "node2";
 ...//build node2
 Model model = modelBuilder.end();
 ```
-Note that node id's should unique within the model. A typical use-case would be:
+请注意，节点 id 在模型中应保持唯一。典型用法如下：
 ```java
 ModelBuilder modelBuilder = new ModelBuilder();
 modelBuilder.begin();
@@ -54,20 +54,20 @@ modelBuilder.node().id = "node2";
 ...//build node2
 Model model = modelBuilder.end();
 ```
-Using the `node()` method for the first node is optional. For example, for models consisting of only a single node, you can immediately start creating the node parts without having to call the `node()` method.
+第一个节点可以不调用 `node()` 方法。例如，对于只包含单个节点的模型，可以直接开始创建节点部件。
 
-There can only be one `Node` active for building at a time. Calling the `node()` method will stop building the previous node (if any) and start building the newly created node. The nodes will only be valid (complete), however, after the Model is completely built (the call to `end()` is made).
+同一时间只能有一个 `Node` 处于构建状态。调用 `node()` 方法会停止构建之前的节点（如果有），并开始构建新创建的节点。不过，只有 Model 完成构建（调用 `end()`）后，节点才有效（完整）。
 
-## Creating node parts
-A `Node` can contain one or more [parts](/wiki/graphics/3d/models#nodepart). Each part of a node will be rendered at the same location (the [node transformation](/wiki/graphics/3d/models#node-transformation)), but can be made up of a different [material](/wiki/graphics/3d/material-and-environment) (e.g. shader uniforms) and/or mesh (e.g. shader (vertex) attributes).
+## 创建节点部件
+一个 `Node` 可以包含一个或多个[部件](/wiki/graphics/3d/models#nodepart)。节点的每个部件都会在同一位置（[节点变换](/wiki/graphics/3d/models#node-transformation)）渲染，但可以使用不同的[材质](/wiki/graphics/3d/material-and-environment)（例如着色器 uniform）和/或网格（例如着色器顶点属性）。
 
-> A NodePart is the smallest renderable part of a Model. Every visible NodePart implies a render call (or "draw call" if you prefer). Reducing the number of render calls can help to decrease the time it takes to render the model. Therefore it is advised to try to combine multiple parts to a single part where possible.
+> NodePart 是 Model 中最小的可渲染部件。每个可见的 NodePart 都意味着一次渲染调用（也可以称为“绘制调用”）。减少渲染调用次数有助于缩短模型的渲染时间。因此，在可行时，建议尽量将多个部件合并为一个部件。
 
-To add a [`NodePart`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/model/NodePart.html) to the current node you can use one of the `part(...)` methods. A NodePart is basically the combination of a [`MeshPart`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/model/MeshPart.html) and [`Material`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/Material.html). You must always supply the material when calling one of the `part(...)` methods. For the `MeshPart`, however, `ModelBuilder` allows you to either specify the (part of the) mesh yourself, or to start building the `MeshPart` using a `MeshPartBuilder`.
+要向当前节点添加 [`NodePart`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/model/NodePart.html)，可以使用某个 `part(...)` 方法。NodePart 本质上是 [`MeshPart`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/model/MeshPart.html) 与 [`Material`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/Material.html) 的组合。调用 `part(...)` 方法时必须提供材质；而对于 `MeshPart`，`ModelBuilder` 既允许自行指定网格（的一部分），也允许使用 `MeshPartBuilder` 开始构建 `MeshPart`。
 
-> Keep in mind that the `Model` will always be made responsible for disposing the `Mesh`, regardless the method used to create part.
+> 请注意，无论使用哪种方法创建部件，`Model` 始终会负责释放 `Mesh`。
 
-A `MeshPartBuilder` is an interface (implemented by `MeshBuilder`, see below) which contains various helper methods to create a mesh. If you use the `part(...)` method to construct the MeshPart using a MeshPartBuilder, then ModelBuilder will try to combine multiple parts into the same Mesh. This will in most cases reduce the number of Mesh binds. This is only possible if the parts are made up using the same vertex attributes. For example:
+`MeshPartBuilder` 是一个接口（由下文的 `MeshBuilder` 实现），包含用于创建网格的各种辅助方法。如果使用 `part(...)` 方法通过 MeshPartBuilder 构建 MeshPart，ModelBuilder 会尝试将多个部件合并到同一个 Mesh 中。这样通常可以减少 Mesh 绑定次数。只有部件使用相同顶点属性时才能进行合并。例如：
 ```java
 ModelBuilder modelBuilder = new ModelBuilder();
 modelBuilder.begin();
@@ -80,13 +80,13 @@ meshBuilder = modelBuilder.part("part2", GL20.GL_TRIANGLES, Usage.Position | Usa
 meshBuilder.sphere(5, 5, 5, 10, 10);
 Model model = modelBuilder.end();
 ```
-This will create a model consisting of two nodes. Each node consisting of one part. The Mesh of both parts is shared, so there's only a single Mesh created for this Model. Note that in this example the vertex attributes are specified using a bit mask, which will cause `ModelBuilder` to create default (3D) `VertexAttributes`. You could also specify the [`VertexAttributes`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/VertexAttributes.html) yourself.
+这会创建一个包含两个节点的模型，每个节点包含一个部件。两个部件共享 Mesh，因此该 Model 只创建一个 Mesh。注意，本例使用位掩码指定顶点属性，这会让 `ModelBuilder` 创建默认的（3D）`VertexAttributes`。也可以自行指定 [`VertexAttributes`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/VertexAttributes.html)。
 
-> Because `ModelBuilder` reuses the `MeshPartBuilder` instances for multiple parts, you cannot build multiple parts at the same time. Per `ModelBuilder` you can only build one `Model`, `Node` and `MeshPart` at any given time. **Calling the `part(...)` method will make the previous `MeshPartBuilder` invalid.**
+> 由于 `ModelBuilder` 会为多个部件复用 `MeshPartBuilder` 实例，因此不能同时构建多个部件。每个 `ModelBuilder` 在任意时刻只能构建一个 `Model`、`Node` 和 `MeshPart`。**调用 `part(...)` 方法会使之前的 `MeshPartBuilder` 失效。**
 
-See the MeshPartBuilder section below for more information on how to use the `MeshPartBuilder` to create the shape of the part.
+有关如何使用 `MeshPartBuilder` 创建部件形状的更多信息，请参阅下面的 MeshPartBuilder 一节。
 # MeshBuilder
-[MeshBuilder](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/utils/MeshBuilder.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g3d/utils/MeshBuilder.java) is a utility class to create one or more [meshes](/wiki/graphics/opengl-utils/meshes), optionally consisting of one or more [MeshParts](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/model/MeshPart.html). While a `MeshBuilder` is typically constructed and maintained by the `ModelBuilder` using the `ModelBuilder#part(...)` method, it is possible to use `MeshBuilder` without using a `ModelBuilder`. For this, you can use the `begin(...)` method to start building a mesh, after which you must call the `end()` method when you're done building the mesh. The begin methods accepts various arguments to specify the vertex attributes and optionally primitive type (required when not creating mesh part(s)). The `end()` method will return the newly created [`Mesh`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/Mesh.html). You can build multiple meshes using the same `MeshBuilder` instance, but not at the same time:
+[MeshBuilder](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/utils/MeshBuilder.html) [（代码）](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g3d/utils/MeshBuilder.java) 是用于创建一个或多个[网格](/wiki/graphics/opengl-utils/meshes)的工具类，也可以选择包含一个或多个 [MeshPart](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/model/MeshPart.html)。通常，ModelBuilder 会通过 `ModelBuilder#part(...)` 方法构建并维护 `MeshBuilder`，但也可以脱离 ModelBuilder 单独使用 MeshBuilder。此时可以使用 `begin(...)` 方法开始构建网格，完成后必须调用 `end()`。begin 方法接受各种参数，用于指定顶点属性和可选的图元类型（不创建 mesh part 时必须指定）。`end()` 方法会返回新创建的 [`Mesh`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/Mesh.html)。可以使用同一个 `MeshBuilder` 实例构建多个网格，但不能同时构建：
 ```java
 MeshBuilder meshBuilder = new MeshBuilder();
 meshBuilder.begin(Usage.Position | Usage.Normal, GL20.GL_TRIANGLES);
@@ -98,9 +98,9 @@ meshBuilder.begin(Usage.Position | Usage.Normal | Usage.ColorPacked, GL20.GL_TRI
 Mesh mesh2 = meshBuilder.end();
 ```
 
-> Keep in mind that the `Mesh` must be disposed when you no longer need it.
+> 请记住，不再需要 `Mesh` 时必须将其释放。
 
-Use the `part(...)` method to create a Mesh consisting of multiple parts. This will create a new `MeshPart` and set it active for building.
+使用 `part(...)` 方法可以创建由多个部件组成的 Mesh。该方法会创建一个新的 `MeshPart` 并将其设为当前构建部件。
 ```java
 MeshBuilder meshBuilder = new MeshBuilder();
 meshBuilder.begin(Usage.Position | Usage.Normal);
@@ -110,9 +110,9 @@ MeshPart part2 = meshBuilder.part("part2", GL20.GL_TRIANGLES);
 ... // build the second part
 Mesh mesh = meshBuilder.end();
 ```
-While the `part(...)` method returns the `MeshPart` so you can reference it for later use, it will not be valid until the `end()` method is called. You can only create one `MeshPart` at a time, calling the `part(...)` method will stop building the previous part and start building the new part.
+虽然 `part(...)` 方法会返回 `MeshPart` 以便稍后引用，但在调用 `end()` 方法之前它并不有效。同一时间只能创建一个 `MeshPart`；调用 `part(...)` 方法会停止构建之前的部件，并开始构建新部件。
 
-All parts of the same `Mesh` share the same `VertexAttributes`. The primitive type can vary among parts though. For example, the following snippet creates two parts each with a different primitive type, but sharing the same mesh:
+同一个 `Mesh` 的所有部件共享相同的 `VertexAttributes`，但各部件的图元类型可以不同。例如，下面的代码片段创建了两个图元类型不同、但共享同一网格的部件：
 ```java
 meshBuilder.begin(Usage.Position | Usage.Normal);
 MeshPart part1 = meshBuilder.part("part1", GL20.GL_TRIANGLES);
@@ -122,19 +122,19 @@ MeshPart part2 = meshBuilder.part("part2", GL20.GL_TRIANGLE_STRIP);
 Mesh mesh = meshBuilder.end();
 ```
 
-`MeshBuilder` implements `MeshPartBuilder`. Creating the actual shape of the (part of the) mesh, is described in the MeshPartBuilder section.
+`MeshBuilder` 实现了 `MeshPartBuilder`。如何创建网格（或网格部件）的实际形状，将在 MeshPartBuilder 一节介绍。
 
 # MeshPartBuilder
-[MeshPartBuilder](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/utils/MeshPartBuilder.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g3d/utils/MeshPartBuilder.java)) is a utility interface which supplies various methods for creating a (part of a) mesh. You can either use `ModelBuilder.part(...)` or construct a `MeshBuilder` to obtain a `MeshPartBuilder`. All methods of the `MeshPartBuilder` interface can only be called as long as the `MeshPart` is being built (most commonly between the call to the `part(...)` method and the call to the next `part(...)` or `end()` method of either `ModelBuilder` or `MeshBuilder`).
+[MeshPartBuilder](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/utils/MeshPartBuilder.html) ([代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g3d/utils/MeshPartBuilder.java)) 是一个工具接口，提供用于创建网格（或网格部件）的各种方法。可以使用 `ModelBuilder.part(...)` 或构造 MeshBuilder 来获取 MeshPartBuilder。只有在构建 `MeshPart` 期间才能调用 MeshPartBuilder 接口的方法（通常是在调用 `part(...)` 方法之后、调用 ModelBuilder 或 MeshBuilder 的下一个 `part(...)` 或 `end()` 方法之前）。
 
-Use the `getMeshPart()` method to obtain the `MeshPart` currently being build.
-Use the `getAttributes()` method to obtain the `VertexAttributes` of the `Mesh` being build.
+使用 `getMeshPart()` 方法获取当前正在构建的 `MeshPart`。
+使用 `getAttributes()` 方法获取当前正在构建的 `Mesh` 的 `VertexAttributes`。
 
-A `VertexAttribute` of `Usage.Position` (either 2D or 3D) is required. There are no further restriction on the specified vertex attributes. However, most (especially higher level) methods are only implemented for position, normal, color (either packed or unpacked) and texture coordinates attributes. If you use other attributes as well, then a default (commonly zero) value will be used.
+必须包含 `Usage.Position` 的 `VertexAttribute`（2D 或 3D 均可）。对指定的其他顶点属性没有更多限制。不过，大多数方法（尤其是高级方法）只针对位置、法线、颜色（打包或未打包）和纹理坐标属性实现。如果还使用其他属性，则会使用默认值（通常为零）。
 
-Most methods allow multiple signatures to specify the values for the vertex attributes. A little helper class [`VertexInfo`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/utils/MeshPartBuilder.VertexInfo.html) is used to specify these on a per vertex basis. For example the `rect(...)` method accepts a `VertexInfo` for each corner, instead of using a method with all possible combinations or arguments for the vertex values of each corner. Be aware that the `VertexInfo` keeps track of whether a specific value has been set, therefor you should always use the setXXX methods. Use `null` in case you want to unset a value.
+大多数方法提供了多种签名，用于指定顶点属性的值。辅助类 [`VertexInfo`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/utils/MeshPartBuilder.VertexInfo.html) 用于逐顶点指定这些值。例如，`rect(...)` 方法为每个角点接受一个 `VertexInfo`，而不是提供包含所有可能组合或参数的单一方法。请注意，`VertexInfo` 会跟踪特定值是否已设置，因此应始终使用 setXXX 方法。要取消设置某个值，请使用 `null`。
 
-Use the `setColor(...)` method to specify the default color that will be used when the `VertexAttributes` contain a color `VertexAttribute`, but no color is set in e.g. the `VertexInfo`. For example:
+使用 `setColor(...)` 方法可以指定默认颜色：当 `VertexAttributes` 包含颜色 `VertexAttribute`，但例如 `VertexInfo` 中未设置颜色时，就会使用该默认颜色。例如：
 ```java
 meshPartBuilder.setColor(Color.RED);
 VertexInfo v1 = new VertexInfo().setPos(0, 0, 0).setNor(0, 0, 1).setCol(null).setUV(0.5f, 0.0f);
@@ -143,12 +143,12 @@ VertexInfo v3 = new VertexInfo().setPos(3, 3, 0).setNor(0, 0, 1).setCol(null).se
 VertexInfo v4 = new VertexInfo().setPos(0, 3, 0).setNor(0, 0, 1).setCol(null).setUV(0.5f, 0.5f);
 meshPartBuilder.rect(v1, v2, v3, v4);
 ```
-In this example, because the `VertexInfo` has no color set (`setCol(null)`), the default will be used which is set to a red color.
+在此例中，由于 `VertexInfo` 未设置颜色（`setCol(null)`），因此会使用设为红色的默认颜色。
 
-Use the `setUVRange` to specify the default texture coordinates range that will be used when no texture coordinates are specified. Along with the default color, this is especially useful for simple shapes where only positions are needed and other vertex information can be derived from the shape. For example:
+使用 `setUVRange` 可以指定未设置纹理坐标时使用的默认纹理坐标范围。结合默认颜色，这对只需要位置、其他顶点信息可以从形状推导出的简单形状尤其有用。例如：
 ```java
 meshPartBuilder.setColor(Color.RED);
 meshPartBuilder.setUVRange(0.5f, 0f, 0f, 0.5f);
 meshPartBuilder.rect(0,0,0, 3,0,0, 3,3,0, 0,3,0, 0,0,1); // the last three arguments specify the normal
 ```
-Use the `setVertexTransform(...)` method to supply a transformation matrix that should be applied to all vertices following after that call.
+使用 `setVertexTransform(...)` 方法可以提供一个变换矩阵，该矩阵会应用于此调用之后的所有顶点。

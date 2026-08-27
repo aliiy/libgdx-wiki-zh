@@ -1,7 +1,7 @@
 ---
-title: Quick start
+title: 快速开始
 ---
-This is a series of articles, originally written by Xoppa. You can find the original versions here:
+这是一系列最初由 Xoppa 编写的文章，原始版本位于：
 
   * [Basic 3D using libGDX](https://xoppa.github.io/blog/basic-3d-using-libgdx/)
   * [Loading models using libGDX](https://xoppa.github.io/blog/loading-models-using-libgdx/)
@@ -16,4 +16,4 @@ This is a series of articles, originally written by Xoppa. You can find the orig
   * [3D collision detection](https://xoppa.github.io/blog/using-the-libgdx-3d-physics-bullet-wrapper-part1/)
   * [3D physics simulation](https://xoppa.github.io/blog/using-the-libgdx-3d-physics-bullet-wrapper-part2/)
 
-These articles give you a good quick overview on how to achieve basic tasks with the new 3D API. For more information, take a look at the Javadocs of the classes in the com.badlogic.gdx.graphics.g3d package or check out the [tests and demos](https://libgdx.com/dev/tutorials/).
+这些文章可以帮助你快速了解如何使用新的 3D API 完成基础任务。更多信息请参阅 `com.badlogic.gdx.graphics.g3d` 包中各类的 Javadoc，或查看[测试和演示](https://libgdx.com/dev/tutorials/)。

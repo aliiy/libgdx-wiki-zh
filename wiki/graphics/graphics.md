@@ -1,18 +1,18 @@
 ---
-title: Graphics
+title: 图形
 ---
-# REWRITE THIS
-This page needs to be rewritten.
+# 需要重写
+此页面需要重写。
 
-# Introduction
+# 简介
 
-The [Graphics](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/Graphics.html) module provides information about the current device display and application window as well as information about and access to the current OpenGL context. Specifically, information regarding screen size, pixel density, and frame-buffer properties such as color-depth, depth/stencil buffers, and anti-aliasing capabilities can all be found within this class. As with other common modules, access is provided via static fields of the [Gdx class](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/Gdx.html).
+[`Graphics`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/Graphics.html) 模块提供当前设备显示屏和应用窗口的信息，以及当前 OpenGL 上下文的信息和访问方式。具体来说，屏幕尺寸、像素密度，以及帧缓冲区的颜色深度、深度/模板缓冲区和抗锯齿能力等属性，都可以在此类中获取。与其他公共模块一样，可以通过 [`Gdx` 类](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/Gdx.html) 的静态字段访问它。
 
-# OpenGL Context
+# OpenGL 上下文
 
-A particular use of this module concerns more direct access to the current OpenGL context for lower-level commands and queries.
+此模块的一个用途是直接访问当前 OpenGL 上下文，以执行更底层的命令和查询。
 
-The following example accesses the context in an OpenGL ES2 application to set the viewport and clear the frame and depth buffers:
+下面的示例在 OpenGL ES2 应用中访问上下文，设置视口并清除帧缓冲区和深度缓冲区：
 
 ```java
 Gdx.gl20.glViewport( 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() );
@@ -20,26 +20,26 @@ Gdx.gl20.glClearColor( 0, 0, 0, 1 );
 Gdx.gl20.glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
 ```
 
-Note the use of `getWidth()` / `getHeight()` to access the current application window dimensions in setting the viewport as well as the use of constants from the `GL20` class just as one would do in a regular OpenGL program. A key advantage in libGDX is the ability to access low level functionality whenever higher level abstraction does not suffice.
+注意，设置视口时使用了 `getWidth()` / `getHeight()` 获取当前应用窗口尺寸，也使用了 `GL20` 类中的常量，这与普通 OpenGL 程序相同。libGDX 的一个重要优势是：当更高层的抽象无法满足需求时，仍然可以访问底层功能。
 
-Each version of OpenGL ES is available through its own respective interface as well as a GLCommon ( **that doesn't exist, this article needs to be rewritten!** ) interface for version agnostic commands. Note that use of [GL20](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/GL20.html) requires instructing the application to use OpenGL ES2 upon start-up.
+每个版本的 OpenGL ES 都可以通过各自的接口访问；此外还可以通过 GLCommon（**该接口并不存在，此文章需要重写！**）接口执行与版本无关的命令。请注意，使用 [GL20](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/GL20.html) 要求在启动时指示应用使用 OpenGL ES2。
 
-Access to the OpenGL Utility class ( **that doesn't exist, this article needs to be rewritten!** ) is also provided, although this functionality may be better handled through Libgdx's own [Orthographic](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/graphics/OrthographicCamera.java) and [Perspective](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/graphics/PerspectiveCamera.java) camera classes. There is also a simple method for querying support for named extensions in `supportsExtension()`. Just supply the name of the extension to determine support on the current device.
+此外还提供了对 OpenGL Utility 类（**该类并不存在，此文章需要重写！**）的访问，不过这项功能可能更适合通过 libGDX 自己的 [Orthographic](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/graphics/OrthographicCamera.java) 和 [Perspective](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/graphics/PerspectiveCamera.java) 相机类处理。`supportsExtension()` 还提供了一个简单方法，用于查询对指定名称扩展的支持情况。只需提供扩展名称，即可确定当前设备是否支持它。
 
-# Frame Time
+# 帧时间
 
-One particularly useful method in the Graphics class is `getDeltaTime()`, which provides the time elapsed since the last rendered frame. This can be useful for time-based animation when frame independence is not necessary. For instance [Actor](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/scenes/scene2d/Actor.java) or [UI](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/#gdx%2Fscenes%2Fscene2d%2Fui) animation in a [Stage](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/scenes/scene2d/Stage.java) instance might be controlled by a call such as the following in the application's render method:
+`Graphics` 类中一个特别有用的方法是 `getDeltaTime()`，它返回自上一帧渲染以来经过的时间。当不要求动画与帧率完全独立时，这对基于时间的动画很有用。例如，可以在应用的渲染方法中使用下面这样的调用，控制 [Stage](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/scenes/scene2d/Stage.java) 实例中的 [Actor](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/scenes/scene2d/Actor.java) 或 [UI](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/#gdx%2Fscenes%2Fscene2d%2Fui) 动画：
 
 ```java
 stage.act( Math.min( Gdx.graphics.getDeltaTime(), 1/30 ) );
 ```
 
-Notice the use of a maximum time step of 1/30 seconds. This is to avoid potentially large jerks in the resulting animation. This illustrates the fact that while `getDeltaTime()` can be useful for simple animations, it is still frame dependent and more sensitive actions such as game logic or physics simulation may benefit from [other timing strategies](https://gafferongames.com/post/fix_your_timestep/).
+注意这里将最大时间步长限制为 1/30 秒，以避免动画出现过大的跳动。这说明 `getDeltaTime()` 虽然适合简单动画，但仍然依赖帧率；游戏逻辑或物理模拟等更敏感的操作，可能更适合使用[其他计时策略](https://gafferongames.com/post/fix_your_timestep/)。
 
-Another useful method is `getFramesPerSecond()`, which returns a running average of the current frame-rate for simple diagnostic purposes. However for more serious profiling efforts, the use of [FPSLogger](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/graphics/FPSLogger.java) is recommended.
+另一个有用的方法是 `getFramesPerSecond()`，它返回当前帧率的滑动平均值，可用于简单诊断。但对于更严肃的性能分析，建议使用 [FPSLogger](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/graphics/FPSLogger.java)。
 
-# Platform Differences
+# 平台差异
 
-On the desktop, the Graphics class also provides the ability to set a window's icon and title values. Obviously these methods have no effect on platforms which lack an icon or title.
+在桌面平台上，`Graphics` 类还可以设置窗口图标和标题。显然，在不支持图标或标题的平台上，这些方法不会产生效果。
 
-The methods `setDisplayMode()` and `setVSync()` set the display mode to full-screen/windowed and enable/disable vertical display sync respectively. Keep in mind these methods have effects only on certain platforms.
+`setDisplayMode()` 和 `setVSync()` 方法分别用于将显示模式设置为全屏/窗口模式，以及启用/禁用垂直同步。请注意，这些方法只在部分平台上有效。

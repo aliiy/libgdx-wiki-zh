@@ -1,15 +1,15 @@
 ---
-title: 2D ParticleEffects
+title: 2D 粒子效果
 ---
-* [Basic ParticleEffect usage](#basic-particleeffect-usage)
-* [Efficiently using ParticleEffects](#efficiency)
-* [Examples](#examples)
-  * [Pooled Effect example](#pooled-effect-example)
-  * [Batched Effect example](#batched-effect-example)
-* [Video example](#video-example)
+* [ParticleEffect 基本用法](#basic-particleeffect-usage)
+* [高效使用 ParticleEffect](#efficiency)
+* [示例](#examples)
+  * [对象池效果示例](#pooled-effect-example)
+  * [批处理效果示例](#batched-effect-example)
+* [视频示例](#video-example)
 
-# Basic ParticleEffect usage
-Using Particle effects is easy, load up your particle that has been generated in the [ParticleEditor](/wiki/tools/2d-particle-editor)
+# ParticleEffect 基本用法
+使用粒子效果很简单，只需加载在 [ParticleEditor](/wiki/tools/2d-particle-editor) 中生成的粒子效果。
 ```java
 TextureAtlas particleAtlas; //<-load some atlas with your particle assets in
 ParticleEffect effect = new ParticleEffect();
@@ -25,34 +25,32 @@ effect.draw(batch, delta);
 
 ```
 
-# Efficiency
-Rendering particles is great, rendering lots of particles is even better, here is how you do it without melting your users devices.
+# 效率
+渲染粒子很棒，渲染大量粒子更棒。下面介绍如何在不让用户设备不堪重负的情况下做到这一点。
 
-ParticleEffects are no different than Sprites, in fact they [ARE](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g2d/ParticleEmitter.java#L98) sprites. Take everything you know already about efficiently rendering sprites and carry them across.
+ParticleEffect 与 Sprite 没有区别，事实上它们[就是](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g2d/ParticleEmitter.java#L98)精灵。关于高效渲染精灵的知识同样适用于这里。
 
- * Use an atlas!
+  * 使用图集！
 
- If your particle effect sprite shares a texture with all of your other gameplay assets, or at least the ones that are being batched together, you wont have to switch
- textures, which causes the Batch to flush. You don't want the batch to flush too often as its an expensive operation, and you won't get the most out of your Batch.
+ 如果粒子效果精灵与其他游戏资源（至少是会一起批处理的资源）共享纹理，就不必切换纹理，也就不会导致 Batch 刷新。Batch 刷新开销很大，不应过于频繁，否则无法充分发挥 Batch 的性能。
 
- * Pool your effects
+  * 将效果放入对象池
 
- Creating new ParticleEffects willy nilly? Great, now stop doing that and use a Pool! Unfortunately garbage collection degrades the performance of your game, especially on the mobile platforms, so you want to avoid garbage at all costs. Use of the `ParticleEffectPool` completely mitigates garbage generation as you will be reusing your `ParticleEffect` when you are finished with them. No more wasted memory! No more garbage collection
+ 随意创建新的 ParticleEffect？请停止这样做，改用 Pool！垃圾回收会降低游戏性能，在移动平台上尤其明显，因此应尽量避免产生垃圾。使用 `ParticleEffectPool` 可以完全避免这类垃圾：使用完 `ParticleEffect` 后将其复用。不再浪费内存，也不再频繁垃圾回收。
 
- In simple terms, grab a new object from the Pool, use it, when you are finished, return it so you can use it again.
+ 简单来说，就是从 Pool 获取对象，使用完后归还，以便再次使用。
 
- See [the example below](#pooled-effect-example) for how to implement pooling.
+ 实现对象池请参阅[下面的示例](#pooled-effect-example)。
 
-* Batch your effects
-  Draw all your ParticleEffects that have the same Textures/blend modes together. We don't want to interrupt the Batch, which means no texture swapping, no blend state changing. This gets the most out of our Batch, and keeps our device happy.
+  * 批处理效果
+   将使用相同纹理或混合模式的 ParticleEffect 一起绘制。不要打断 Batch，也就是不要切换纹理或混合状态。这样可以充分发挥 Batch 的性能，减轻设备负担。
 
-  If you have ParticleEffects that have different blending, for example some may have Additive, and others dont, group them together when you draw so you only swap the blend mode once.
+   如果 ParticleEffect 使用不同的混合方式，例如有些使用 Additive 而有些不使用，请在绘制时分别分组，以便每种混合模式只切换一次。
 
-  This also applies to ParticleEffects that may have a `Sprite` that belongs to a different `Texture` than another effect. Draw all your instances that use the same Texture first, then the rest. If you interleave these ParticleEffects with different Textures, you will be causing lots of draw calls.
-  See [the example below](#batched-effect-example) for how to implement batching.
+   这同样适用于包含 `Sprite` 的 ParticleEffect：如果它们使用的 `Texture` 不同，应先绘制使用同一 Texture 的所有实例，再绘制其余实例。如果交错绘制使用不同 Texture 的 ParticleEffect，就会产生大量绘制调用。批处理实现方式请参阅[下面的示例](#batched-effect-example)。
 
-* Clean up the blend modes yourself
-  Particles that have Additive Blending will change the state of the `Batch`. By default the ParticleEffect returns the Batch's state to the original state it was in, so the following draws are not effected by the ParticleEffect's blend mode. This is great, apart from if you want to draw multiple ParticleEffect instances, as this will change the blend mode after EACH instance is drawn, resulting in a draw call.
+* 自行清理混合模式
+   使用 Additive Blending 的粒子会改变 `Batch` 的状态。默认情况下，ParticleEffect 会将 Batch 恢复到原始状态，因此后续绘制不会受其混合模式影响。这在绘制单个效果时很好，但如果要绘制多个 ParticleEffect 实例，每个实例绘制后都会切换混合模式，导致额外的绘制调用。
 
   ```java
   //original blendstate
@@ -65,7 +63,7 @@ ParticleEffects are no different than Sprites, in fact they [ARE](https://github
   //repeat
   ```
 
-  To avoid this, we can use ParticleEffect's `setEmittersCleanUpBlendFunction` function, and set it to false. This will prevent the ParticleEffect from resetting the blend mode to the original, and avoiding the extra flush of the Batch.
+   为避免这种情况，可以使用 ParticleEffect 的 `setEmittersCleanUpBlendFunction` 方法并将其设为 false。这样 ParticleEffect 不会将混合模式恢复为原始状态，也就避免了 Batch 的额外刷新。
 
   ```java
   //original blendstate
@@ -77,14 +75,14 @@ ParticleEffects are no different than Sprites, in fact they [ARE](https://github
   //repeat
   ```
 
-  This is great, efficiently drawing lots of ParticleEffects with the same blend state! Be careful with this function, you are now in charge of returning the Batch's blend state to the original, so you must do this after you are finished drawing all your particles.
+   这样就能高效绘制大量具有相同混合状态的 ParticleEffect！使用此方法时要小心：现在需要自行将 Batch 的混合状态恢复为原始状态，因此绘制完所有粒子后必须执行恢复操作。
 
-# Examples
+# 示例
 
-For a collection of community created particle effects for LibGDX see the [Particle Park](https://github.com/raeleus/Particle-Park)<br/>
-A coding example is available on [https://libgdxinfo.wordpress.com](https://libgdxinfo.wordpress.com/particleeffect/)
+LibGDX 社区制作的粒子效果合集请参阅 [Particle Park](https://github.com/raeleus/Particle-Park)<br/>
+代码示例见 [https://libgdxinfo.wordpress.com](https://libgdxinfo.wordpress.com/particleeffect/)
 
-## Pooled effect example:
+## 对象池效果示例：
 ```java
 ParticleEffectPool bombEffectPool;
 Array<PooledEffect> effects = new Array();
@@ -127,7 +125,7 @@ for (int i = effects.size - 1; i >= 0; i--)
 effects.clear(); //clear the current effects array
 ```
 
-## Batched effect example:
+## 批处理效果示例：
 ```java
 Array<PooledEffect> additiveEffects;
 Array<PooledEffect> normalEffects;
@@ -152,7 +150,7 @@ for (PooledEffect normalEffect : normalEffects) {
 batch.end();
 ```
 
-## video-example
+## 视频示例
 
 
   * [Particle Effect Example on LibGDX.info](https://libgdxinfo.wordpress.com/particleeffect/)

@@ -1,122 +1,122 @@
 ---
-title: Querying and Configuring Graphics (monitors, display modes, vsync, display cutouts)
+title: 查询和配置图形（显示器、显示模式、vsync、屏幕缺口）
 ---
-# Configuration & querying
-libGDX has an elaborate API that lets you query monitors and display modes, and toggle vertical synchronization (vsync). This can be done either when configuring your application, or at runtime. **Note: Display mode changes are not supported by Android, iOS or HTML5.**
+# 配置与查询
+libGDX 提供了完善的 API，可用于查询显示器和显示模式，以及切换垂直同步（vsync）。这些操作既可以在配置应用时完成，也可以在运行时完成。**注意：Android、iOS 和 HTML5 不支持更改显示模式。**
 
-## Querying and setting monitors & display modes at configuration time
-Querying monitors and display modes at configuration time is platform specific. The following subsections illustrate what you can do on each platform with regards to monitors and display modes.
+## 在配置时查询和设置显示器与显示模式
+在配置时查询显示器和显示模式与平台有关。下面的小节介绍各个平台可执行的相关操作。
 
-### Desktop LWJGL 3 backend
-Unlike the legacy LWJGL 2 backend, LWJGL 3 supports multi-monitor setups.
+### 桌面端 LWJGL 3 后端
+与旧版 LWJGL 2 后端不同，LWJGL 3 支持多显示器配置。
 
-Querying all available monitors at configuration time works like this:
+在配置时查询所有可用显示器的方式如下：
 ```java
 Monitor[] monitors = Lwjgl3ApplicationConfiguration.getMonitors();
 ```
 
-To get the primary monitor, call:
+要获取主显示器，请调用：
 ```java
 Monitor primary = Lwjgl3ApplicationConfiguration.getPrimaryMonitor();
 ```
 
-To get all supported display modes of a monitor, call:
+要获取显示器支持的所有显示模式，请调用：
 ```java
 DisplayMode[] displayModes = Lwjgl3ApplicationConfiguration.getDisplayModes(monitor);
 ```
 
-To get the current display mode of a monitor, call:
+要获取显示器当前的显示模式，请调用：
 ```java
 DisplayMode desktopMode = Lwjgl3ApplicationConfiguration.getDisplayMode(monitor);
 ```
 
-There are shorthands for getting the display modes of the primary monitor as well:
+获取主显示器显示模式也有简写方法：
 ```java
 DisplayMode[] primaryDisplayModes = Lwjgl3ApplicationConfiguration.getDisplayModes();
 DisplayMode primaryDesktopMode = Lwjgl3ApplicationConfiguration.getDisplayMode();
 ```
 
-With a display mode in hand, you can set it on the `Lwjgl3ApplicationConfiguration`:
+取得显示模式后，可以将其设置到 `Lwjgl3ApplicationConfiguration`：
 ```java
 DisplayMode primaryMode = Lwjgl3ApplicationConfiguration.getDisplayMode();
 Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 config.setFullscreenMode(primaryMode);
 new Lwjgl3Application(new MyAppListener(), config);
 ```
-This will start your app in full-screen mode on the primary monitor, using that monitor's current resolution. If you pass a display mode from a different monitor, the app will be started in full-screen mode on that montior. **Note: it is recommended to always use the current display mode of a monitor. Other display modes may fail.**
+这会让应用在主显示器上以全屏模式启动，并使用该显示器的当前分辨率。如果传入其他显示器的显示模式，应用会在对应显示器上以全屏模式启动。**注意：建议始终使用显示器的当前显示模式，其他显示模式可能失败。**
 
-To start your app in windowed mode, call this method on the configuration:
+要让应用以窗口模式启动，请在配置上调用此方法：
 ```java
 Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 config.setWindowedMode(800, 600);
 ```
 
-This will start your app in windowed mode on the primary monitor. To set the position of your window call:
+这会让应用在主显示器上以窗口模式启动。要设置窗口位置，请调用：
 ```java
 config.setWindowPosition(100, 100);
 ```
 
-This will position the window's top-left corner at the coordinates `100,100` relative to the virtual surface all your monitors span. To check the position of a monitor, simply access it's `virtualX` and `virtualY` members. These coordinates are also relative to the virtual surface your monitors span. By positioning your window relative to these coordinates, you can move a window to that specific monitor.
+这会将窗口左上角放置在相对于所有显示器组成的虚拟平面的 `100,100` 坐标处。要检查显示器位置，只需访问其 `virtualX` 和 `virtualY` 成员。这些坐标同样相对于显示器组成的虚拟平面。将窗口定位到这些坐标即可把窗口移动到对应显示器。
 
-You can also specify if your window should be resizable and whether it has decoration (window title bar, borders):
+还可以指定窗口是否可调整大小，以及是否显示装饰（窗口标题栏和边框）：
 ```java
 config.setResizable(false);
 config.setDecorated(false);
 ```
 
-The LWJGL 3 backend also allows you to specify how to deal with HDPI monitors. The operating system may report logical sizes and coordinates instead of pixel-based coordinates to you for drawing surface sizes or mouse events. E.g. on a Macbook Pro with a retina display running Mac OS X, the OS reports only half the width/height of the underlying pixel surface. The LWJGL 3 backend can report drawing surface sizes as returned by `Gdx.graphics.getWidth()/getHeight()` and mouse coordinates either in those logical coordinates, or in pixel coordinates. To configure this behaviour, set a HDPI mode:
+LWJGL 3 后端还允许指定如何处理 HDPI 显示器。操作系统可能为绘制表面尺寸或鼠标事件报告逻辑尺寸和坐标，而不是基于像素的坐标。例如，在运行 Mac OS X 的 Retina MacBook Pro 上，操作系统只会报告底层像素表面一半的宽度和高度。LWJGL 3 后端可以让 `Gdx.graphics.getWidth()/getHeight()` 返回绘制表面尺寸，并将鼠标坐标报告为逻辑坐标或像素坐标。要配置此行为，请设置 HDPI 模式：
 
 ```java
 config.setHdpiMode(HdpiMode.Logical);
 ```
 
-This will report mouse coordinates and drawing surface sizes in logical coordinates. It is also the default for this backend. If you want to work in raw pixels, use `HdpiMode.Pixels`. Note that when using logical coordinates, you will have to convert these to pixel coordinates for OpenGL functions like `glScissor`, `glViewport` or `glReadPixels`. All libGDX classes calling these functions will take into account the `HdpiMode` you set. If you call these functions yourself, use `HdpiUtils`.
+这会以逻辑坐标报告鼠标坐标和绘制表面尺寸，也是该后端的默认行为。如果想使用原始像素，请使用 `HdpiMode.Pixels`。注意，使用逻辑坐标时，需要将其转换为像素坐标才能调用 `glScissor`、`glViewport` 或 `glReadPixels` 等 OpenGL 函数。libGDX 中调用这些函数的类都会考虑所设置的 `HdpiMode`；如果自行调用，请使用 `HdpiUtils`。
 
-## Querying and setting monitors & display modes at runtime
-libGDX provides an API via the `Graphics` interface that lets you query monitors, display modes and other related aspects at runtime. Once you know about possible configurations, you can set them, e.g. switch to full-screen mode, or toggle vsync.
+## 在运行时查询和设置显示器与显示模式
+libGDX 通过 `Graphics` 接口提供 API，可在运行时查询显示器、显示模式及其他相关信息。了解可用配置后，可以设置它们，例如切换全屏模式或切换 vsync。
 
-### Checking if display mode changes are supported
-Only a subset of platforms supports display mode changes. Notably, Android and iOS do not support switching to arbitrary full-screen display modes. It is therefor good practice to check if the platform your application currently runs on supports display mode changes:
+### 检查是否支持更改显示模式
+只有部分平台支持更改显示模式。尤其是 Android 和 iOS 不支持切换到任意全屏显示模式。因此，最好检查应用当前运行的平台是否支持更改显示模式：
 ```java
 if(Gdx.graphics.supportsDisplayModeChange()) {
    // change display mode if necessary
 }
 ```
-Note that all display mode related functions in `Graphics` will simply not do anything on platforms that don't support display mode changes.
+请注意，在不支持更改显示模式的平台上，`Graphics` 中所有与显示模式相关的函数都不会执行任何操作。
 
-### Querying monitors
-To query all connected monitors, use this method:
+### 查询显示器
+要查询所有已连接的显示器，请使用：
 ```java
 Monitor[] monitors = Gdx.graphics.getMonitors();
 ```
 
-On Android, iOS, GWT and the LWJGL 2 backend, only the primary monitor will be reported. The LWJGL 3 backend reports all connected monitors.
+在 Android、iOS、GWT 和 LWJGL 2 后端中，只会报告主显示器。LWJGL 3 后端会报告所有已连接的显示器。
 
-To query the primary monitor, use:
+要查询主显示器，请使用：
 ```java
 Monitor primary = Gdx.graphics.getPrimaryMonitor();
 ```
 
-To query the monitor the window is currently on, use:
+要查询窗口当前所在的显示器，请使用：
 ```java
 Monitor currMonitor = Gdx.graphics.getMonitor();
 ```
 
-It is good practice to toggle full-screen on the monitor the window is on, instead of say the primary monitor. This allows users to move the application window to another monitor, and then enable full-screen mode there.
+最好在窗口所在的显示器上切换全屏，而不是始终使用主显示器。这样用户可以先将应用窗口移动到其他显示器，再在那里启用全屏模式。
 
-### Querying display modes
-Once you have a `Monitor` instance, you can query its supported display modes:
+### 查询显示模式
+取得 `Monitor` 实例后，可以查询其支持的显示模式：
 ```java
 DisplayMode[] modes = Gdx.graphics.getDisplayModes(monitor);
 ```
 
-To get the current display mode, use this method:
+要获取当前显示模式，请使用此方法：
 ```java
 DisplayMode currMode = Gdx.graphics.getDisplayMode(monitor);
 ```
 
-### Switching to full-screen mode
-With a `DisplayMode` from a specific `Monitor`, you can switch to full-screen as follows:
+### 切换到全屏模式
+取得指定 `Monitor` 的 `DisplayMode` 后，可以按如下方式切换到全屏模式：
 ```java
 Monitor currMonitor = Gdx.graphics.getMonitor();
 DisplayMode displayMode = Gdx.graphics.getDisplayMode(currMonitor);
@@ -124,30 +124,30 @@ if(!Gdx.graphics.setFullscreenMode(displayMode)) {
    // switching to full-screen mode failed
 }
 ```
-If the switch to full-screen mode failed, the backend will restore the last windowed-mode configuration.
+如果切换全屏模式失败，后端会恢复上一次的窗口模式配置。
 
-### Switching to windowed mode
-To change the size of a window, or to switch from full-screen mode to windowed mode, use this method:
+### 切换到窗口模式
+要更改窗口大小，或从全屏模式切换到窗口模式，请使用此方法：
 ```java
 Gdx.graphics.setWindowedMode(800, 600);
 ```
 
-This will set the window to windowed mode, centering it on the monitor it was on before the call to this method.
+这会将窗口设为窗口模式，并让它居中显示在调用此方法前所在的显示器上。
 
-## Querying display cutouts on mobile
-On Android and iOS, displays don't have to be a perfect rectangle but might have cutouts, round edges or overlaying status bars. You can query the areas that are not safe to use for your important game content with the `Gdx.graphics.getSafeInsetLeft()`, `Gdx.graphics.getSafeInsetRight()`, `Gdx.graphics.getSafeInsetTop()` and `Gdx.graphics.getSafeInsetBottom()` methods.
+## 查询移动设备显示屏缺口
+在 Android 和 iOS 上，显示屏不一定是完整矩形，可能存在缺口、圆角或覆盖内容的状态栏。可以使用 `Gdx.graphics.getSafeInsetLeft()`、`Gdx.graphics.getSafeInsetRight()`、`Gdx.graphics.getSafeInsetTop()` 和 `Gdx.graphics.getSafeInsetBottom()` 方法查询不适合放置重要游戏内容的区域。
 
-## Desktop & multi-window API of the LWJGL 3 backend
-Some applications like editors or other desktop-only tools can benefit from multi-window setups. The LWJGL 3 backend provides an additional, non-cross-platform API to create multiple windows.
+## LWJGL 3 后端的桌面端与多窗口 API
+编辑器等桌面专用工具可以从多窗口配置中受益。LWJGL 3 后端提供了额外的非跨平台 API，用于创建多个窗口。
 
-Every application starts with one window that is set up during configuration time:
+每个应用都会从一个在配置阶段设置的窗口开始：
 ```java
 Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 config.setWindowedMode(800, 600);
 new Lwjgl3Application(new MyMainWindowListener(), config);
 ```
 
-In this example, the window is driven by `MyMainWindowListener`, a standard `ApplicationListener`. libGDX does not report events like iconification or focus loss directly. For this, the LWJGL 3 backend introduces a desktop specific interface called `Lwjgl3WindowListener`. You can provide an implementation of this interface to receive and react to such events:
+本例中的窗口由标准 `ApplicationListener` `MyMainWindowListener` 驱动。libGDX 不会直接报告最小化或失去焦点等事件。为此，LWJGL 3 后端引入了桌面专用接口 `Lwjgl3WindowListener`。可以提供该接口的实现来接收并响应这些事件：
 ```java
 config.setWindowListener(new Lwjgl3WindowListener() {
    @Override
@@ -186,9 +186,9 @@ config.setWindowListener(new Lwjgl3WindowListener() {
 });
 ```
 
-The LWJGL 3 backend does not report pause and resume events if the window loses focus. It will only report pause and resume events in case the app is iconfified/deiconified, or if the app is being closed.
+如果窗口失去焦点，LWJGL 3 后端不会报告暂停和恢复事件。只有应用被最小化/恢复，或应用正在关闭时，才会报告暂停和恢复事件。
 
-To spawn additional windows, your code needs to cast `Gdx.app` to `Lwjgl3Application`. This is only possible if your project directly depends on the LWJGL 3 backend. You will not be able to share such code with other platforms. Once you have an `Lwjgl3Application`, you can create a new window like this:
+要创建额外窗口，需要将 `Gdx.app` 转换为 `Lwjgl3Application`。这只有在项目直接依赖 LWJGL 3 后端时才可行，因此此类代码无法与其他平台共享。取得 `Lwjgl3Application` 后，可以这样创建新窗口：
 ```java
 Lwjgl3Application lwjgl3App = (Lwjgl3Application)Gdx.app;
 Lwjgl3WindowConfiguration windowConfig = new Lwjgl3WindowConfiguration();
@@ -197,18 +197,18 @@ windowConfig.setTitle("My other window");
 Lwjgl3Window window = Lwjgl3App.newWindow(new MyOtherWindowAppListener(), windowConfig);
 ```
 
-It is recommended to let every window have its own `ApplicationListener`. All windows of an application are updated on the same thread, one after the other. The LWJGL 3 backend will ensure that the statics `Gdx.graphics` and `Gdx.input` are setup for the window that's currently being updated. This means that your `ApplicationListener` can essentially ignore the other windows, and pretend it's the only listener in town.
+建议让每个窗口拥有自己的 `ApplicationListener`。应用的所有窗口都在同一线程上依次更新。LWJGL 3 后端会确保静态对象 `Gdx.graphics` 和 `Gdx.input` 已针对当前正在更新的窗口进行设置。这意味着你的 `ApplicationListener` 基本可以忽略其他窗口，把自己当作唯一的监听器。
 
-There is one exception to this. When using `Gdx.app.postRunnable()`, the LWJGL 3 backend can not decide for which window the `Runnable` has been posted. E.g. the method may have been called from a worker thread, and by the time the `Runnable` is posted, a different window may currently be updated. To fix this, it is recommended to post window-specific `Runnable` instances directly to the window:
+但有一个例外：使用 `Gdx.app.postRunnable()` 时，LWJGL 3 后端无法判断 `Runnable` 是为哪个窗口提交的。例如，该方法可能由工作线程调用，而提交 `Runnable` 时可能正在更新另一个窗口。为解决此问题，建议直接向目标窗口提交专属于该窗口的 `Runnable` 实例：
 
 ```java
 // e.g. in a worker thread
 window.postRunnable(new MyRunnable());
 ```
 
-This ensures that the statics `Gdx.graphics` and `Gdx.input` will be setup for the specific window when the `Runnable` is executed.
+这样可以确保执行 `Runnable` 时，静态对象 `Gdx.graphics` 和 `Gdx.input` 已针对指定窗口进行设置。
 
-The `Lwjgl3Window` class has additional methods that let you modify the window's properties. You can fetch the current window in your `ApplicationListener`, then proceed to modify it:
+`Lwjgl3Window` 类还提供了用于修改窗口属性的方法。可以在 `ApplicationListener` 中获取当前窗口，然后修改它：
 ```java
 // in ApplicationListener#render()
 Lwjgl3Window window = ((Lwjgl3Graphics)Gdx.graphics).getWindow();

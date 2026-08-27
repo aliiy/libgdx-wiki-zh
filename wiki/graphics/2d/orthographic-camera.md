@@ -1,25 +1,25 @@
 ---
-title: Orthographic camera
+title: 正交摄像机
 ---
-This page presents the [OrthographicCamera](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/OrthographicCamera.html) class and usage.
-The orthographic camera is to be used in 2D environments only as it implements a parallel (orthographic) projection and there will be no scale factor for the final image regardless where the objects are placed in the world.
+本页介绍 [OrthographicCamera](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/OrthographicCamera.html) 类及其用法。
+正交摄像机仅用于 2D 环境，因为它实现平行（正交）投影；无论对象位于世界中的什么位置，最终图像都不会产生缩放因子。
 
-Code for a simple example of a Camera zooming and moving is available on [https://libgdxinfo.wordpress.com](https://libgdxinfo.wordpress.com/basic_camera/)
+一个实现摄像机缩放和移动的简单示例代码见 [https://libgdxinfo.wordpress.com](https://libgdxinfo.wordpress.com/basic_camera/)。
 
-# Description
+# 说明
 
-The Camera class operates as a very simple real world camera. It is possible to
- * move and rotate the camera around,
- * zoom in and out,
- * change the viewport,
- * project/unproject points to and from window coordinate/ world space
+Camera 类的工作方式类似现实世界中的简易摄像机。它可以：
+ * 移动和旋转摄像机；
+ * 放大和缩小；
+ * 更改视口；
+ * 在窗口坐标和世界空间之间投影/反投影点。
 
-Using the camera is the easy way to move around a game world without having to manually operate on the matrices. All the projection and view matrix operations are hidden in the implementation.
+使用摄像机可以轻松在游戏世界中移动，而无需手动操作矩阵。所有投影矩阵和视图矩阵操作都封装在实现中。
 
-The position field referes to the position of the center of the camera.
-The camera extends the selected viewport of the world so this matches the screen size of the device.
+position 字段表示摄像机中心的位置。
+摄像机会扩展世界中选定的视口，使其匹配设备屏幕尺寸。
 
-The following little app demonstrates the use of a simple `OrthographicCamera` to move around a flat world.
+下面的小应用展示如何使用简单的 `OrthographicCamera` 在平面世界中移动。
 
 
 ```java
@@ -152,17 +152,17 @@ public class DesktopLauncher {
 }
 ```
 
-The above class is the libGDX application that will use the orthographic camera to move around the world. Our world size is in arbitrary units that we can define however we want to. In this specific case, our world is 100x100 units.
+上面的类是使用正交摄像机在世界中移动的 libGDX 应用。世界大小使用可以自行定义的任意单位；在本例中，世界大小为 100x100 个单位。
 
 ```java
     static final int WORLD_WIDTH = 100;
     static final int WORLD_HEIGHT = 100;
 ```
 
-Many people make the mistake of thinking in pixels when it comes to their world, and this is something that you should avoid doing. It leads to unnecessary multiplying and dividing by constants, having weird "Pixel per unit" ratios dotted around your code, poor understanding of the pipeline and it confuses you!  There are many other problems, which can be easily avoided when you stop "thinking" in pixels.
+很多人会错误地用像素来思考世界单位，这是应该避免的做法。它会导致不必要的常量乘除运算、代码中充斥奇怪的“每单位像素数”比例、对渲染管线理解不足，并使代码变得混乱！停止用像素“思考”后，还可以轻松避免许多其他问题。
 
 
-What are these units though? What do they mean? How will I know what size to make objects? How many units are displayed on the screen?  We will get to that shortly! Stick tight.
+那么这些单位究竟是什么？它们代表什么？应该将对象设置为多大？屏幕上会显示多少单位？下面很快就会说明这些问题。
 
 
 
@@ -177,13 +177,13 @@ What are these units though? What do they mean? How will I know what size to mak
 
 
 
-**#1** - The `OrthographicCamera` instance we will control to look at the world.
+**#1** - 用于观察世界并由我们控制的 `OrthographicCamera` 实例。
 
-**#2** - The `SpriteBatch` instance we will use to render our world
+**#2** - 用于渲染世界的 `SpriteBatch` 实例。
 
-**#3** - A `Sprite` that we will use to draw our world map
+**#3** - 用于绘制世界地图的 `Sprite`。
 
-**#4** - Rotation speed for rotating our camera
+**#4** - 摄像机旋转速度。
 
 
 
@@ -210,46 +210,46 @@ public void create() {
 ```
 
 
-The `create` method is called when we create a new instance of our ApplicationListener, and it is where we initialize our variables
+创建 ApplicationListener 新实例时会调用 `create` 方法，我们在这里初始化变量。
 
-**#1** - Sets the current rotation speed to 0.5 degree.
+**#1** - 将当前旋转速度设为 0.5 度。
 
-**#2** - Creates our `Sprite`, from a new Texture that uses the file: `sc_map.png` Download the file [here](https://user-images.githubusercontent.com/12996613/34653163-6a5c206c-f3e8-11e7-8913-87738e62bc81.png), rename it to `sc_map.png` and place it in the `assets/` directory.
+**#2** - 使用 `sc_map.png` 文件创建新的 Texture 和 `Sprite`。从[这里](https://user-images.githubusercontent.com/12996613/34653163-6a5c206c-f3e8-11e7-8913-87738e62bc81.png)下载文件，将其重命名为 `sc_map.png`，并放入 `assets/` 目录。
 
-**#3** - We set the position of our `mapSprite` to `0,0`.(This isn't strictly required as the Sprite has default x,y of `0,0` anyway.)
+**#3** - 将 `mapSprite` 的位置设为 `0,0`。（这并非严格必要，因为 Sprite 的默认 x、y 本来就是 `0,0`。）
 
-**#4** - We set the size of `mapSprite`, with width of `WORLD_WIDTH` and height of `WORLD_HEIGHT`. So our sprite now has dimensions of 100x100, or the size of our world.
+**#4** - 将 `mapSprite` 的宽度设为 `WORLD_WIDTH`、高度设为 `WORLD_HEIGHT`。因此 Sprite 的尺寸为 100x100，也就是世界的大小。
 
-**#5** - We create a local variable that has the value of the current `width` of our application display. (This is in pixels)
+**#5** - 创建一个局部变量，保存应用显示区域当前的 `width`（单位为像素）。
 
-**#6** - We create a local variable that has the value of the current `height` of our application display. (This is in pixels)
+**#6** - 创建一个局部变量，保存应用显示区域当前的 `height`（单位为像素）。
 
-**#7** - We Create the `OrthographicCamera`. The 2 parameters specify the width and height of the viewport that will be created. These values determine how much of our world we can see in each axis.
+**#7** - 创建 `OrthographicCamera`。两个参数指定要创建的视口宽度和高度，决定各个轴上可见的世界范围。
 
-In our example, we use `30` for our viewport width, and `30 * (h / w)` for our viewport height. The width is trivial, we can see 30 units in the X axis. For the viewport height we use `30` multiplied by the `aspect ratio` of our display. This is so we see objects we draw in correct proportions. Imagine if we ignored the aspect ratio, and just went with viewport width and height of 30,  unless we have a square display, which we most likely don't, when we render an object that has dimensions of 30x30 for example, it would show as a squished rectangle with the same shape as our display. How can an object that is 30x30 not be a square?  This is because we assumed 30 viewport width and 30 viewport height, which doesn't match the aspect ratio of our device.
+本例中，视口宽度使用 `30`，高度使用 `30 * (h / w)`。宽度很直观，表示 X 轴上可见 30 个单位；高度则使用 `30` 乘以显示器的 `aspect ratio`，从而保证绘制对象的比例正确。如果忽略宽高比，直接将宽度和高度都设为 30，那么除非设备屏幕是正方形（通常不是），一个 30x30 的对象就会显示为被压扁的矩形。30x30 的对象为什么不是正方形？因为我们假定的 30x30 视口与设备的宽高比不匹配。
 
 
 ```
-Some examples -
+下面是一些例子：
 
-If we created our camera with viewport width of 100 and viewport height of 100 ('new OrthographicCamera(100, 100)') and centered it correctly, we would be able to see the 'whole' map, our 'whole' world at once.
+如果将摄像机视口宽高都设为 100（`new OrthographicCamera(100, 100)`）并正确居中，就能一次看到“完整”的地图，也就是“完整”的世界。
 
-If we created our camera with viewport width of 100 and viewport height of 50 ('new OrthographicCamera(100, 50)') we would be able to see 'half' of the map at any given time
+如果将视口宽度设为 100、高度设为 50（`new OrthographicCamera(100, 50)`），任意时刻都能看到地图的“一半”。
 
-If we created our camera with viewport width of 50 and viewport height of 50 ('new OrthographicCamera(50, 50)') we would be able to see a 'quarter' of the map at any given time
+如果将视口宽高都设为 50（`new OrthographicCamera(50, 50)`），任意时刻都能看到地图的“四分之一”。
 ```
 
 
-**#8** - Setting the camera's initial position to the bottom left of the map. But... the camera's position is in the center of the camera.
+**#8** - 将摄像机初始位置设为地图左下角。不过，摄像机的位置表示摄像机中心。
 
-So we need to offset the camera's position by +half viewport width and +half viewport height so that the bottom left of our camera is actually at 0,0.
+因此需要将摄像机位置分别偏移半个视口宽度和半个视口高度，使摄像机左下角实际位于 0,0。
 
 
-**#9** - Update our camera! This step is vital to call whenever we have manipulated our camera as it updates all the matrices under the hood.
+**#9** - 更新摄像机！操作摄像机后必须调用此步骤，因为它会更新底层的所有矩阵。
 
-**#10** - Create our `SpriteBatch` instance.
+**#10** - 创建 `SpriteBatch` 实例。
 
-And we are setup! So let’s get rendering and manipulating the camera.
+至此设置完成！现在开始渲染并操作摄像机。
 
 
 ***
@@ -272,25 +272,25 @@ public void render() {
 
 
 
-**#1** - Controls the camera by updating its position, zooming, rotation based on different keys being pressed.
+**#1** - 根据按下的不同按键更新摄像机的位置、缩放和旋转，从而控制摄像机。
 
-**#2** - Updates our `OrthographicCamera`, we have just manipulated it with `handleInput()` method, so we must remember to call the `update()` method.
+**#2** - 更新 `OrthographicCamera`。我们刚刚通过 `handleInput()` 方法操作了它，因此必须记得调用 `update()` 方法。
 
-**#3** - Updates our `SpriteBatch` instance with our Camera's view and projection matrices.
+**#3** - 使用摄像机的视图矩阵和投影矩阵更新 `SpriteBatch` 实例。
 
-**#4** - Clears the screen (actually the colour buffer).
+**#4** - 清除屏幕（实际是清除颜色缓冲区）。
 
-**#5** - Begin our `SpriteBatch`
+**#5** - 开始使用 `SpriteBatch`。
 
-**#6** - Draw our mapSprite!
+**#6** - 绘制 `mapSprite`！
 
-**#7** - End our `SpriteBatch`
+**#7** - 结束使用 `SpriteBatch`。
 
 
 ***
 
 
-Let’s take a deeper look at controlling our camera, which is all handled in our `handleInput()` method.
+下面深入了解摄像机的控制方式，这些操作都在 `handleInput()` 方法中完成。
 
 ```java
 	private void handleInput() {
@@ -337,21 +337,21 @@ Let’s take a deeper look at controlling our camera, which is all handled in ou
 	}
 ```
 
-So we can see that this method polls Keys, if a certain key is pressed, we do something to the camera.
+由此可见，该方法会轮询按键；如果按下了某个按键，就对摄像机执行相应操作。
 
-The last 5 lines are responsible for keeping the camera within the bounds of our world.
+最后 5 行负责将摄像机限制在世界边界内。
 
-We need to make sure the camera's zoom does not grow or shrink to values that would invert our world, or show too much of our world. To do this, we can calculate the `effectiveViewportWidth` and `effectiveViewportHeight`, which are just the viewportWidth/height * zoom (this gives us what we can see in the world given the current zoom). We can then `clamp` the value of the camera's zoom to values we require. `0.1f` to prevent being too zoomed in. `100/cam.viewportWidth` to prevent us being able to see more than the world's entire width.
+需要确保摄像机的缩放不会增大或减小到导致世界倒置，或显示超出世界范围的值。为此，可以计算 `effectiveViewportWidth` 和 `effectiveViewportHeight`，它们就是 viewport 的宽度/高度乘以 zoom（表示当前缩放下可看到的世界范围）。然后使用 `clamp` 将摄像机缩放限制在需要的范围内：使用 `0.1f` 防止缩放过近，使用 `100/cam.viewportWidth` 防止看到超过整个世界宽度的区域。
 
-The last two lines are responsible for making sure we can’t translate out of the world boundaries. < 0, or more than 100 in either Axis.
+最后两行负责确保摄像机不会移动到世界边界之外，也就是任一轴小于 0 或大于 100。
 
 
 ***
 
 
-What to do when the application changes size?  This is when you implement different strategies for handling devices with different resolutions/aspect ratios. I will include a few basic strategies to give you the basic idea.
+应用尺寸发生变化时该怎么办？这时需要针对不同分辨率或宽高比的设备实现不同策略。下面列出几种基本策略，帮助你理解整体思路。
 
-If you want a slightly higher level method of handling this, you should use viewports -> [Wiki Article on Viewports](/wiki/graphics/viewports)
+如果想使用更高层次的处理方式，应使用视口，请参阅[视口 Wiki 文章](/wiki/graphics/viewports)。
 
 
 *The following resize strategy will ensure that you will always see 30 units in the x axis no matter what pixel-width your device has.*
@@ -381,7 +381,7 @@ If you want a slightly higher level method of handling this, you should use view
 ***
 
 
-The main application to bootstrap the listener is a simple LWJGL application.
+用于启动监听器的主应用是一个简单的 LWJGL 应用。
 ```java
 	public static void main(String[] args) {
 		new LwjglApplication(new OrthographicCameraExample());
@@ -391,13 +391,13 @@ The main application to bootstrap the listener is a simple LWJGL application.
 
 ***
 
-The result is the following application:
+结果如下：
 
 ![images/orthographic-camera.png](/assets/wiki/images/orthographic-camera.png)
 
-Most of the time, one should not need to access the internals of a camera as the most common use-cases are covered by the following methods:
+大多数情况下无需访问摄像机的内部实现，因为以下方法已经涵盖了最常见的使用场景：
 
-| *Method* | *Description* |
+| *方法* | *描述* |
 |:--------:|:--------------|
 | `lookAt(float x, float y, float z)` |Recalculates the direction of the camera to look at the point defined by the coordinates on all axes. - The z axis is ignored for 2D |
 | `translate(float x, float y, float z)` | Moves the camera by the given amount on each axis. - Note that z is ignored for the OrthographicCamera |

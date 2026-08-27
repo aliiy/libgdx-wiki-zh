@@ -1,27 +1,27 @@
 ---
-title: Virtual Reality (VR)
+title: 虚拟现实（VR）
 ---
-libGDX can be used to render to virtual reality headsets using LWJGL's OpenVR (HTC Vive) and OVR (Oculus) modules.
+libGDX 可以使用 LWJGL 的 OpenVR（HTC Vive）和 OVR（Oculus）模块，将内容渲染到虚拟现实头显。
 
-### Required Dependencies
+### 所需依赖
 
-The Maven coordinates can be found using the [LWJGL customize](https://www.lwjgl.org/customize) page.
+可以通过 [LWJGL customize](https://www.lwjgl.org/customize) 页面查找 Maven 坐标。
 
-### Example code
+### 示例代码
 
-Example code can be found at [https://github.com/badlogic/gdx-vr](https://github.com/badlogic/gdx-vr).
+示例代码见 [https://github.com/badlogic/gdx-vr](https://github.com/badlogic/gdx-vr)。
 
-Additionally, the following demos from LWJGL may be useful for debugging:
+此外，LWJGL 的以下演示程序可能有助于调试：
 * [HelloOpenVR.java](https://github.com/LWJGL/lwjgl3/blob/master/modules/samples/src/test/java/org/lwjgl/demo/openvr/HelloOpenVR.java)
 * [HelloLibOVR.java](https://github.com/LWJGL/lwjgl3/blob/master/modules/samples/src/test/java/org/lwjgl/demo/ovr/HelloLibOVR.java)
 
-Also, see [https://github.com/Zomby2D/gdx-vr-extension](https://github.com/Zomby2D/gdx-vr-extension)
+另请参阅 [https://github.com/Zomby2D/gdx-vr-extension](https://github.com/Zomby2D/gdx-vr-extension)。
 
-### OpenVR with offscreen GLFW window
+### 使用离屏 GLFW 窗口的 OpenVR
 
-Using an offscreen GLFW window allows to render to VR without rendering or maintaining a window on the monitor's screen. This will allow achieving the fastest performance with OpenVR.
+使用离屏 GLFW 窗口可以将内容渲染到 VR，而无需在显示器屏幕上渲染或维护窗口。这样可以让 OpenVR 获得最佳性能。
 
-This isn't supported yet by libGDX, because some hacking is required, but the general flow is the following.
+libGDX 目前尚不支持此功能，因为还需要进行一些底层修改，但总体流程如下。
 
 ```java
 Lwjgl3NativesLoader.load();
@@ -57,6 +57,6 @@ errorCallback = null;
 GLFW.glfwTerminate();
 ```
 
-### Roadmap
+### 路线图
 
-VR support might become easier relatively soon via the use of [OpenXR](https://www.khronos.org/openxr/). The LWJGL project [plans to support this in the future](https://github.com/LWJGL/lwjgl3/issues/569#issuecomment-643830566). This would remove the need to support both OVR and OpenVR and instead just using OpenXR to support all hardware.
+通过使用 [OpenXR](https://www.khronos.org/openxr/)，VR 支持可能很快会变得更加简单。LWJGL 项目[计划在未来支持它](https://github.com/LWJGL/lwjgl3/issues/569#issuecomment-643830566)。这样就无需同时支持 OVR 和 OpenVR，而只需使用 OpenXR 即可支持所有硬件。

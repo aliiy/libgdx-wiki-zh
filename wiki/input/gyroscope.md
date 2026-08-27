@@ -1,11 +1,11 @@
 ---
-title: Gyroscope
+title: 陀螺仪
 ---
-Some Android devices have a gyroscope sensor that provides information about the rate of rotation in rad/s around a device's x, y, and z axis.
+部分 Android 设备配备陀螺仪传感器，可提供设备绕 x、y、z 轴的旋转速率（rad/s）。
 
-NOTE: The gyroscope is currently not available on iOS devices since there is no implementation in the RoboVM - backend yet.
+注意：陀螺仪目前在 iOS 设备上不可用，因为 RoboVM 后端尚未实现。
 
-You must first enable the gyroscope in your android config. (Typically in your AndroidLauncher.java file)
+首先必须在 Android 配置中启用陀螺仪。（通常位于 AndroidLauncher.java 文件中）
 
 ```java 
 config = new AndroidApplicationConfiguration();
@@ -15,13 +15,13 @@ config.useGyroscope = true;  //default is false
 config.useAccelerometer = false;
 config.useCompass = false;
 ```
-Querying whether the gyroscope is available works as follows:
+可以按如下方式查询陀螺仪是否可用：
 
 ```java
 boolean gyroscopeAvail = Gdx.input.isPeripheralAvailable(Peripheral.Gyroscope);
 ```
 
-Once you determined that the gyroscope is indeed available, you can poll its state:
+确定陀螺仪可用后，可以轮询其状态：
 
 ```java
 

@@ -1,63 +1,42 @@
 ---
-title: Ninepatches
+title: 九宫格
 ---
-This article introduces NinePatch images, how they can be created and how they
-are used in a libGDX context.
+本文介绍 NinePatch 图像、创建方式以及它们在 libGDX 中的使用方式。
 
-## Before you start
+## 开始之前
 
-This guide was intended for the old scene2d and the skinpacker (the versions before 0.9.6). If you are running of the nightlies, this guide can give some hints, but won't work as a step-by-step guide. The main differences are that skinpacker and texturepacker has been unified in the texturepacker2 and that skins gets loaded in a different way.
+本指南针对旧版 scene2d 和 skinpacker（0.9.6 之前的版本）。如果你使用的是 nightly 版本，本指南仍可提供一些提示，但不能作为逐步操作指南。主要区别在于 skinpacker 和 texturepacker 已统一为 texturepacker2，且 skin 的加载方式也有所不同。
 
-## Introduction
+## 简介
 
-A NinePatch image is an image with defined "stretchable" areas. With this
-property one can create images that repeats either to very small
-regions, or scale to very big regions. Since the areas are pre-defined,
-the image won't look stretched (given that it has been created with
-scaling in mind). The corresponding NinePatch class in libGDX is located [here](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g2d/NinePatch.html)
+NinePatch 图像是一种定义了“可拉伸”区域的图像。利用此属性，可以将图像重复到很小的区域，或缩放到很大的区域。由于区域是预先定义的，图像不会显得被拉伸（前提是创建图像时已考虑缩放）。libGDX 中对应的 NinePatch 类位于[这里](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g2d/NinePatch.html)
 [(code)](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/graphics/g2d/NinePatch.java).
 
-A NinePatch is used in various of the Scene2d components of Libgdx,
-including:
-  * Buttons
-  * ScrollPanes
-  * Textfields
+NinePatch 用于 LibGDX 的多种 Scene2d 组件，包括按钮、滚动窗格和文本框。
 
-In libGDX there are several ways to load resources, which also counts for NinePatches. When manually creating and instantiating a ninepatch, we are specifying the patch regions in code. When loading a NinePatch using Skins (and the SkinPacker to create them) the process is a bit different. This will also be covered on this page.
+libGDX 提供多种资源加载方式，NinePatch 也不例外。手动创建和实例化 NinePatch 时，需要在代码中指定补丁区域；使用 Skin（并通过 SkinPacker 创建它们）加载 NinePatch 时，流程略有不同。本页也会介绍这种方式。
 
-## Creating and instantiating a NinePatch manually 
+## 手动创建和实例化 NinePatch
 
-This is a short introduction to instantiate a NinePatch image manually in code. It's basically to create an image, figure out what regions to stretch and note down the pixels of those regions.
+下面简要介绍如何在代码中手动实例化 NinePatch 图像。基本步骤是创建图像、确定要拉伸的区域，并记录这些区域的像素范围。
 
-### Create your scalable image
+### 创建可缩放图像
 
-Keep in mind that some area of your image needs to hold the content
-(text, other images etc), and can therefore not contain any "special
-features" (since this area will be scaled). In this case I'll create a
-"button". My art skills are non existent, so please bear with me on this
-example.
+请记住，图像的某些区域需要容纳内容（文本、其他图像等），因此不能包含任何“特殊效果”（因为该区域会被缩放）。这里将创建一个“按钮”。我的美术能力有限，请包容这个示例。
 
 ![images/ninepatches1.png](/assets/wiki/images/ninepatches1.png)
 
-As one may notice, this "button" is fairly round. One of the wonders
-with NinePatch is that it will wrap around the content we give it, thus
-expand in the horizontal direction when we feed it some text. The
-corners of this button are plain translucent pixels. Notice that we do
-not define the stretchable areas on the image, since we will do this in
-code instead.
+可以看出，这个“按钮”相当圆。NinePatch 的妙处之一是它会围绕我们提供的内容进行扩展，因此加入文本后会沿水平方向伸长。按钮的四角是普通的半透明像素。注意，我们没有在图像中定义可拉伸区域，而是在代码中完成这件事。
 
-### Instantiate the NinePatch
+### 实例化 NinePatch
 
-The simplest form of instantiating a new NinePatch:
+实例化新 NinePatch 的最简单方式如下：
 ```java
 NinePatch patch = new NinePatch(new Texture(Gdx.files.internal("knob.png")), 12, 12, 12, 12);
 ```
-The four _integer_ arguments are specifying what regions (in pixels) we will
-allow the image to stretch in.
+四个 _integer_ 参数指定允许图像拉伸的区域（以像素为单位）。
 
-The true power of NinePatch reveals itself when applied to Scene2D
-elements. Below is an example of instantiation a button, with our newly
-created image.
+将 NinePatch 应用于 Scene2D 元素时，才能真正体现它的作用。下面使用刚创建的图像实例化一个按钮。
 ```java
 // Create a new TextButtonStyle
 TextButtonStyle style = new TextButtonStyle(patch, patch, patch, 0, 0, 0, 0, new BitmapFont(), new Color(0.3f, 0.2f, 0.8f, 1f), new Color(0, 0, 0, 1f), new Color(0, 0, 0, 1f));
@@ -65,78 +44,59 @@ TextButtonStyle style = new TextButtonStyle(patch, patch, patch, 0, 0, 0, 0, new
 TextButton button = new TextButton("hello world", style);
 ```
 
-The result of adding this TextButton to a stage is illustrated below:
+将这个 TextButton 添加到舞台后的结果如下：
 
 ![images/ninepatches2.png](/assets/wiki/images/ninepatches2.png)
 
-Our round image has now scaled with the content length (the text). The button use the standard BitmapFont and some awful colours.
+现在，圆形图像会随内容长度（文本）缩放。按钮使用标准 BitmapFont 和一些不太美观的颜色。
 
-### Limitations when instantiating in code
+### 在代码中实例化的限制
 
-Limitations with instantiating a NinePatch directly (using Libgdx) is that your fixed regions all will be the same square. Below I have attached an image illustrating what the four integer arguments actually define in the NinePatch. The gray area not overlapped by cyan is the scaleable area.
+直接实例化 NinePatch（使用 libGDX）的限制是所有固定区域都必须是相同的正方形。下面的图像说明了 NinePatch 中四个整数参数实际定义的区域。未被青色覆盖的灰色区域就是可缩放区域。
 
 ![images/ninepatches3.png](/assets/wiki/images/ninepatches3.png)
 
-## Creating and instantiating a NinePatch using SkinPacker
+## 使用 SkinPacker 创建和实例化 NinePatch
 
-*Note:* _For the SkinPacker to properly recognize/parse NinePatch images
-the image needs to be postfixed with .9.png_ (if .png is your file
-ending).
+*注意：* _为了让 SkinPacker 正确识别/解析 NinePatch 图像，文件名必须以 .9.png 结尾_（如果文件扩展名为 .png）。
 
-The NinePatch image needs to have some special properties within the
-image itself, to be able to act as a NinePatch. These properties are
-added by padding the image with a 1 pixel border. The steps to create a
-NinePatch are described below.
+NinePatch 图像本身需要包含一些特殊属性，才能作为 NinePatch 使用。这些属性通过在图像周围添加 1 像素边框来定义。下面介绍创建 NinePatch 的步骤。
 
-### Define stretchable areas
+### 定义可拉伸区域
 
-Now we need to alter the image, and add black borders where we want to
-allow the image to stretch. This can be done in any image editor. But
-there are editors to ease the process.
+现在需要修改图像，在允许图像拉伸的位置添加黑色边框。这可以在任意图像编辑器中完成，也有一些专用编辑器可以简化流程。
 
-#### GitHub AndroidAssetStudio generator
-This is my personal favorite. No need for anything, just go to the site, specify your image, it automatically guestimates it (and gets it right in my experience) and hit the download button, it'll even put it in a nice zip for you for android (if you're not on android you can ignore it and go for the smallest one, since it is a ninepatch and scaleable as high as you want)
+#### GitHub AndroidAssetStudio 生成器
+这是我个人最喜欢的工具。不需要额外准备工作，只需打开网站并指定图像，它就会自动估算区域（以我的经验通常很准确），然后点击下载按钮。它甚至会为 Android 打包成方便的 zip 文件（如果你不使用 Android，可以忽略这一点并选择最小的文件，因为 NinePatch 可以按需缩放到任意大小）。
 https://romannurik.github.io/AndroidAssetStudio/nine-patches.html
 
 #### WebLaF ninepatch-editor
-A more up-to-date and functional tool than the below Android SDK one, it was actually created because of the shortcomings of the draw9patch tool, can be found in the [weblaf project](https://github.com/mgarin/weblaf). Scroll down and find the ninepatch-editor tool standalone jar release available for download.
+这是一个比下面 Android SDK 工具更新、功能更完善的工具。它正是由于 draw9patch 的不足而创建的，可以在 [weblaf 项目](https://github.com/mgarin/weblaf)中找到。向下滚动即可找到可下载的 ninepatch-editor 独立 jar 发布包。
 
 #### Android SDK draw9patch
-The Android SDK contains an excellent tool for exactly this purpose,
-and is located in `_android-sdk/tools/draw9patch_`. This tool provides a
-pre-view of the scaled image. Below is just the image loaded into the
-*draw9patch* tool. Notice the "pre-view" to the left, and how the image
-does not scale well at all.
+Android SDK 包含一个专门用于此目的的优秀工具，位于 `_android-sdk/tools/draw9patch_`。该工具可以预览缩放后的图像。下面是将图像加载到 *draw9patch* 工具中的效果。注意左侧的“预览”以及图像糟糕的缩放效果。
 
 ![images/ninepatches4.png](/assets/wiki/images/ninepatches4.png)
 
-In the following picture, I have defined what area the content will be
-placed in (in other words, what will be scaled), and what areas I don't
-want to scale. Again, this is achieved by padding with a 1 pixel border
-in the image. You see that the tool previews the content (pink area),
-and that the previews scales much better (in the right side of the
-screenshot).
+在下图中，我定义了内容放置的区域（也就是会被缩放的区域）以及不希望缩放的区域。同样，这是通过在图像周围添加 1 像素边框实现的。可以看到，工具会预览内容（粉色区域），而且预览效果明显更好（截图右侧）。
 
 ![images/ninepatches5.png](/assets/wiki/images/ninepatches5.png)
 
-Now save the image as _image.9.png_. This can't be underlined enough,
-since libGDX won't recognize the file as a NinePatch otherwise. Below is
-the finished image in all its NinePatch glamour, and ready to be used in
-code.
+现在将图像保存为 _image.9.png_。这一点非常重要，否则 libGDX 不会将文件识别为 NinePatch。下面就是完成后的 NinePatch 图像，可以直接在代码中使用。
 
 ![images/ninepatches6.png](/assets/wiki/images/ninepatches6.png)
 
-## Defining a NinePatch programmatically
+## 以编程方式定义 NinePatch
 
-See [this](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g2d/NinePatch.html#NinePatch%28com.badlogic.gdx.graphics.Texture,%20int,%20int,%20int,%20int%29) NinePatch constructor.
+请参阅 NinePatch 的[此构造函数](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g2d/NinePatch.html#NinePatch%28com.badlogic.gdx.graphics.Texture,%20int,%20int,%20int,%20int%29)。
 
 ![images/ninepatches7.png](/assets/wiki/images/ninepatches7.png)
 
-### Pack the image using SkinPacker
+### 使用 SkinPacker 打包图像
 
-This step should be covered in other areas of this Wiki (preferable a node about the SkinPacker). Since the image is postfixed with _.9.png_ its areas will be analyzed by looking at the 1 pixel padded outer region (as we defined in the previous step).
+这一步本应在本 Wiki 的其他部分（最好是 SkinPacker 专题）中介绍。由于图像文件名以 _.9.png_ 结尾，SkinPacker 会分析我们上一步定义的 1 像素外边框区域。
 
-When this is the only picture from the _export_-folder run in the SkinPacker the result will be:
+当这是 _export_ 文件夹中唯一的图像并运行 SkinPacker 后，结果如下：
 
 ```json
 "resources": {
@@ -156,4 +116,4 @@ When this is the only picture from the _export_-folder run in the SkinPacker the
 }
 ```
 
-We see that the packer actually defined nine patches (somebody should be mind blown by now!). One huge advantage with this is that we are no longer constrained to the 1 square for each region (as opposed to instantiate Ninepatches manually). We can now define more fine-grained nine patches. In addition to this, its much easier to just alter an image and run it through the packer, and it will define regions.
+可以看到，打包器实际上定义了九个补丁（现在应该已经让人印象深刻了！）。这样做的一个巨大优势是，不再受手动实例化 NinePatch 时每个区域必须为 1 个正方形的限制，可以定义更细致的九宫格区域。此外，直接修改图像并重新运行打包器也更加方便，区域会自动被定义。

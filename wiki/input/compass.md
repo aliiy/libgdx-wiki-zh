@@ -1,17 +1,17 @@
 ---
-title: Compass
+title: 指南针
 ---
-Some Android devices and iOS devices have an integrated magnetic field sensor that provides information on how the device is oriented with respect to the magnetic north pole.
+部分 Android 和 iOS 设备配备集成磁场传感器，可提供设备相对于磁北极的方向信息。
 
-NOTE: The compass is currently not available on iOS devices since there is no implementation in the RoboVM - backend yet. The compass appears to be present with the Intel MOE backend on iOS.
+注意：指南针目前在 iOS 设备上不可用，因为 RoboVM 后端尚未实现。iOS 上的 Intel MOE 后端似乎提供了指南针功能。
 
-Querying whether the compass is available works as follows:
+可以按如下方式查询指南针是否可用：
 
 ```java
 boolean compassAvail = Gdx.input.isPeripheralAvailable(Peripheral.Compass);
 ```
 
-Once you determined that the compass is indeed available, you can poll its state:
+确定指南针可用后，可以轮询其状态：
 
 ```java
 float azimuth = Gdx.input.getAzimuth();
@@ -19,12 +19,12 @@ float pitch = Gdx.input.getPitch();
 float roll = Gdx.input.getRoll();
 ```
 
-The angles are given in degrees. Here's the interpretation of these values:
+角度以度为单位。这些值的含义如下：
 
-  * The **azimuth** is the angle of the device's orientation around the z-axis. The positive z-axis points towards the earths center.
-  * The **pitch** is the angle of the device's orientation around the x-axis. The positive x-axis roughly points to the west and is orthogonal to the z- and y-axis.
-  * The **roll** is the angle of the device's orientation around the y-axis. The positive y-axis points toward the magnetic north pole of the earth while remaining orthogonal to the other two axes.
+  * **azimuth** 是设备绕 z 轴的方向角。z 轴正方向指向地心。
+  * **pitch** 是设备绕 x 轴的方向角。x 轴正方向大致指向西方，并与 z 轴和 y 轴正交。
+  * **roll** 是设备绕 y 轴的方向角。y 轴正方向指向地磁北极，同时与另外两个轴正交。
 
-Here's an illustration of the axis relative to the earth.
+下图展示了轴相对于地球的方向。
 
 ![images/compass.png](/assets/wiki/images/compass.png)

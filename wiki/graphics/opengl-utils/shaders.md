@@ -1,21 +1,21 @@
 ---
-title: Shaders
+title: 着色器
 ---
-If you want to work with OpenGL ES 2.0, you should know some shader basics. libGDX comes with a standard shader that will take care of rendering things via `SpriteBatch`. However, if you'd like to render a `Mesh` in OpenGL ES 2.0 you will have to supply a valid shader yourself. Basically, in OpenGL ES 2.0, everything is rendered with shaders. That's why it's called a programmable pipeline.
+如果要使用 OpenGL ES 2.0，就应该了解一些着色器基础。libGDX 自带标准着色器，可负责通过 `SpriteBatch` 渲染内容。不过，如果想在 OpenGL ES 2.0 中渲染 `Mesh`，就必须自行提供有效的着色器。基本上，OpenGL ES 2.0 中的一切都通过着色器渲染，因此称为可编程管线。
 
-The thought of dabbling around in shaders might scare some people away from using ES 2.0, but it's well worth reading up on it as shaders allow you to do some pretty incredible things. And understanding the basics is actually quite straightforward.
+接触着色器的想法可能会让一些人不愿使用 ES 2.0，但学习它非常值得，因为着色器可以实现相当惊人的效果。而且理解基础知识其实并不困难。
 
-## What are shaders?
+## 什么是着色器？
 
-Shaders in OpenGL are little programs written in a C-like language called **GLSL** (OpenGL Shading Language) that run on the GPU and process the data necessary to render things. A shader can simply be viewed as a processing stage on the GPU. It receives a set of inputs, on which you can do a set of operations, and then finally send them back out. Think of this like function parameters and return values.
+OpenGL 中的着色器是使用类似 C 的 **GLSL**（OpenGL Shading Language）编写的小程序，在 GPU 上运行并处理渲染所需的数据。可以将着色器简单理解为 GPU 上的一个处理阶段。它接收一组输入，对其执行一系列操作，最后输出结果，可以类比为函数参数和返回值。
 
-Typically, when rendering something in OpenGL ES 2.0 the data will be sent through the **vertex** shader first and then through the **fragment** shader.
+通常，在 OpenGL ES 2.0 中渲染内容时，数据会先经过**顶点**着色器，再经过**片段**着色器。
 
-## Vertex shaders
+## 顶点着色器
 
-As the name implies, vertex shaders are responsible for performing operations on vertices. More specifically, each execution of the program operates on exactly _one_ vertex. This is an important concept to understand. Everything you do in the vertex shader happens only on exactly _one_ vertex.
+顾名思义，顶点着色器负责对顶点执行操作。更具体地说，程序的每次执行只处理恰好 _一个_ 顶点。这是一个重要概念：在顶点着色器中执行的所有操作都只发生在 _一个_ 顶点上。
 
-Here's a simple vertex shader:
+下面是一个简单的顶点着色器：
 
 ```cpp
 attribute vec4 a_position;
@@ -28,18 +28,18 @@ void main()
 } 
 ```
 
-That doesn't look too bad, now does it? First, you have a vertex attribute called `a_position`. This attribute is a `vec4` which means it's a vector with 4 dimensions. In this sample, it holds the position information of the vertex.
+这并不复杂。首先，有一个名为 `a_position` 的顶点属性。该属性是 `vec4`，即四维向量。在此示例中，它保存顶点的位置信息。
 
-Next, you have the `u_projectionViewMatrix`. This is a 4x4 matrix that holds the view and projection transform data. If those terms sound fuzzy to you I'd recommend [reading up on those topics here](https://web.archive.org/web/20210330141121/http://blog.db-in.com/cameras-on-opengl-es-2-x/). It's incredibly useful to understand it.
+接下来是 `u_projectionViewMatrix`。这是一个保存视图和投影变换数据的 4x4 矩阵。如果对这些术语不熟悉，建议[在这里阅读相关主题](https://web.archive.org/web/20210330141121/http://blog.db-in.com/cameras-on-opengl-es-2-x/)，理解它们非常有帮助。
 
-Inside the main method, we execute the operations on the vertex. In this case, all the shader does is multiply the vertex position with the matrix and assigns it to `gl_Position`. `gl_Position` is a predefined keyword by OpenGL and can't be used for anything else but passing through the processed vertex.
+在 main 方法中，对顶点执行操作。本例中，着色器只将顶点位置与矩阵相乘，并将结果赋给 `gl_Position`。`gl_Position` 是 OpenGL 预定义的关键字，只能用于传递处理后的顶点。
 
-## Fragment shaders
-A fragment shader functions in a very similar way to a vertex shader. But instead of processing it on a vertex it processes it once for each fragment. For simplicity's sake think of a fragment as one pixel. Now, you might notice that this is a very significant difference.
+## 片段着色器
+片段着色器的工作方式与顶点着色器非常相似，但它不是处理顶点，而是为每个片段执行一次。简单起见，可以将片段理解为一个像素。这是一个非常重要的区别。
 
-Let's say a triangle covers an area of 300 pixels. The vertex shader for this triangle would be executed 3 times. The fragment shader though would be executed 300 times. So when writing shaders, keep this in mind. Everything done in the fragment shader will be exponentially more expensive!
+假设一个三角形覆盖 300 个像素。该三角形的顶点着色器执行 3 次，而片段着色器会执行 300 次。因此编写着色器时要牢记这一点：片段着色器中的所有操作都要昂贵得多！
 
-Here's a very basic fragment shader:
+下面是一个非常基础的片段着色器：
 
 ```cpp
 void main()
@@ -48,13 +48,13 @@ void main()
 }
 ```
 
-This fragment shader will simply render every fragment with solid red. gl_FragColor is another pre-defined keyword. It's used to output the final color for the fragment. Notice how we use `vec4(x, y, z, w)` to define a vector inside the shader. In this case, the vector is used to define the color of the fragment.
+该片段着色器会将每个片段渲染为纯红色。gl_FragColor 是另一个预定义关键字，用于输出片段的最终颜色。注意我们如何使用 `vec4(x, y, z, w)` 在着色器中定义向量；本例中该向量用于定义片段颜色。
 
-## A simple ShaderProgram
+## 简单的 ShaderProgram
 
-Now that we have a basic understanding of what shaders do and how they work, let's create one in libGDX. This is done with the `ShaderProgram` class. A `ShaderProgram` is made up of a vertex shader and a fragment shader. You can either load from a file or just pass in a string and keep the shader code inside your Java files.
+现在我们已经了解了着色器的作用和工作方式，接下来在 libGDX 中创建一个着色器。这通过 `ShaderProgram` 类完成。一个 `ShaderProgram` 由顶点着色器和片段着色器组成。可以从文件加载，也可以直接传入字符串，将着色器代码保存在 Java 文件中。
 
-This is the shader setup we'll be working with:
+下面是本文使用的着色器配置：
 
 ```java
 String vertexShader = "attribute vec4 a_position;\n" +
@@ -79,27 +79,27 @@ String fragmentShader = "#ifdef GL_ES\n" +
                         "}";
 ```
 
-This is fairly standard setup for a shader that uses a position attribute, a color attribute and a texture coordinate attribute. Notice the 2 `varying`. They are outputs that we pass through to the fragment shader.
+这是使用位置属性、颜色属性和纹理坐标属性的着色器的常见配置。注意其中的两个 `varying`，它们是要传递给片段着色器的输出。
 
-In the fragment shader, we have a `sampler2D`; this is a special uniform used for textures. As you can see in the main function, we multiply the vertex color with the color from the texture lookup to produce the final output color.
+片段着色器中有一个 `sampler2D`，这是用于纹理的特殊 uniform。正如 main 函数所示，我们将顶点颜色与纹理采样得到的颜色相乘，以生成最终输出颜色。
 
-Here is a list of attributes that are in libGDX's own library for those who wish to easily attach shaders to `SpriteBatch`es and other parts of libGDX:
+下面列出 libGDX 自带的属性，便于将着色器附加到 `SpriteBatch` 和 libGDX 的其他部分：
 * `a_position`
 * `a_normal`
 * `a_color`
-* `a_texCoord`, requires a number at the end, i.e. `a_texCoord0`, `a_texCoord1`, etc.
+* `a_texCoord`，末尾需要一个数字，例如 `a_texCoord0`、`a_texCoord1` 等。
 * `a_tangent`
 * `a_binormal`
 
-To create the `ShaderProgram` we do the following:
+创建 `ShaderProgram` 的代码如下：
 
 ```java
 ShaderProgram shader = new ShaderProgram(vertexShader, fragmentShader);
 ```
 
-You can ensure that the shader compiled properly via `shader.isCompiled()`. A compile log can be spit out using `shader.getLog()`.
+可以通过 `shader.isCompiled()` 确认着色器是否编译成功，也可以使用 `shader.getLog()` 输出编译日志。
 
-We also create a matching mesh and load the texture:
+接下来创建匹配的网格并加载纹理：
 
 ```java
 mesh = new Mesh(true, 4, 6, VertexAttribute.Position(), VertexAttribute.ColorUnpacked(), VertexAttribute.TexCoords(0));
@@ -113,7 +113,7 @@ mesh.setIndices(new short[] {0, 1, 2, 2, 3, 0});
 texture = new Texture(Gdx.files.internal("bobrgb888-32x32.png"));
 ```
 
-In the render method we then simply call `shader.bind()` and pass the uniforms in and then render the mesh with the shader:
+在 render 方法中，只需调用 `shader.bind()`，传入 uniform，然后使用该着色器渲染网格：
 
 ```java
 texture.bind();
@@ -123,8 +123,8 @@ shader.setUniformi("u_texture", 0);
 mesh.render(shader, GL20.GL_TRIANGLES);
 ```
 
-And that's it!
+就这么简单！
 
-The good thing about shaders in OpenGL ES 2.0 is that you have a huge library of shaders available to you. Pretty much anything that's done in WebGL can be easily ported over to run on mobiles. Go and experiment!
+OpenGL ES 2.0 中使用着色器的好处是，你可以利用数量庞大的着色器资源。WebGL 中几乎所有效果都可以轻松移植到移动设备上运行。去尝试吧！
 
-A simple demo of a shockwave effect shader with libGDX is available on [https://libgdxinfo.wordpress.com/shaders/](https://libgdxinfo.wordpress.com/shaders/)
+在[这里](https://libgdxinfo.wordpress.com/shaders/)可以找到一个使用 libGDX 实现冲击波效果着色器的简单示例。

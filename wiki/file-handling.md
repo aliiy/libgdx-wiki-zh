@@ -1,48 +1,48 @@
 ---
-title: File handling
+title: 文件处理
 ---
-* [Introduction](#introduction)
-* [Platform Filesystems](#platform-filesystems)
-* [File (Storage) Types](#file-storage-types)
-* [Checking Storage availability and paths](#checking-storage-availability-and-paths)
-* [Obtaining FileHandles](#obtaining-filehandles)
-* [Listing and Checking Properties of Files](#listing-and-checking-properties-of-files)
-* [Error Handling](#error-handling)
-* [Reading from a File](#reading-from-a-file)
-* [Writing to a File](#writing-to-a-file)
-* [Deleting, Copying, Renaming and Moving Files/Directories](#deleting-copying-renaming-and-moving-filesdirectories)
+* [简介](#introduction)
+* [平台文件系统](#platform-filesystems)
+* [文件（存储）类型](#file-storage-types)
+* [检查存储可用性和路径](#checking-storage-availability-and-paths)
+* [获取 FileHandle](#obtaining-filehandles)
+* [列出文件并检查文件属性](#listing-and-checking-properties-of-files)
+* [错误处理](#error-handling)
+* [从文件读取](#reading-from-a-file)
+* [向文件写入](#writing-to-a-file)
+* [删除、复制、重命名和移动文件/目录](#deleting-copying-renaming-and-moving-filesdirectories)
 
 
-## Introduction
-libGDX applications run on four different platforms: desktop systems (Windows, Linux, macOS, headless), Android, iOS, and JavaScript/WebGL capable browsers. Each of these platforms handles file I/O a little differently. libGDX's [Files](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/Files.html) [(code)](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/Files.java) module provides a common interface for all these platforms with the ability to:
+## 简介
+libGDX 应用运行在四类平台上：桌面系统（Windows、Linux、macOS、headless）、Android、iOS，以及支持 JavaScript/WebGL 的浏览器。每个平台处理文件 I/O 的方式略有不同。libGDX 的 [Files](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/Files.html) [(代码)](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/Files.java) 模块为所有这些平台提供统一接口，能够：
 
-  * Read from a file
-  * Write to a file
-  * Copy a file
-  * Move a file
-  * Delete a file
-  * List files and directories
-  * Check whether a file/directory exists
+   * 从文件读取
+   * 向文件写入
+   * 复制文件
+   * 移动文件
+   * 删除文件
+   * 列出文件和目录
+   * 检查文件/目录是否存在
 
-Before diving into the specifics of libGDX's file handling, users should be aware of certain differences between the filesystems for all supported platforms:
+在深入了解 libGDX 文件处理的细节之前，应先了解所有支持平台的文件系统之间存在的一些差异：
 
-## Platform Filesystems
-### Desktop (Windows, Linux, Mac OS X, Headless)
-On a desktop OS, the filesystem is one big chunk of memory. Files can be referenced with paths relative to the current working directory (the directory the application was executed in) or absolute paths. Ignoring file permissions, files and directories are usually readable and writable by all applications.
+## 平台文件系统
+### 桌面端（Windows、Linux、Mac OS X、Headless）
+在桌面操作系统上，文件系统是一整块存储空间。文件可以使用相对于当前工作目录（应用执行时所在目录）的路径或绝对路径引用。忽略文件权限时，所有应用通常都可以读写文件和目录。
 
 ### Android
-On Android the situation is a little bit more complex. Files can be stored inside the application's [APK](https://en.wikipedia.org/wiki/APK_(file_format)) either as resources or as assets. These files are read-only. libGDX only uses the [assets mechanism](https://developer.android.com/reference/android/content/res/AssetManager), as it provides raw access to the byte streams and more closely resembles a traditional filesystem. [Resources](https://developer.android.com/guide/topics/resources/providing-resources) better lend themselves to normal Android applications but introduce problems when used in games. Android manipulates them at load time, e.g. it automatically resizes images.
+Android 上的情况稍微复杂一些。文件可以作为资源或 assets 存储在应用的 [APK](https://en.wikipedia.org/wiki/APK_(file_format)) 中。这些文件是只读的。libGDX 只使用 [assets 机制](https://developer.android.com/reference/android/content/res/AssetManager)，因为它可以直接访问字节流，也更接近传统文件系统。[资源](https://developer.android.com/guide/topics/resources/providing-resources)更适合普通 Android 应用，但用于游戏时会带来问题，例如 Android 会在加载时自动调整图片大小。
 
-Assets are stored in your project's `assets` directory and will be packaged with your APK automatically when you deploy your application. They are accessible via `Gdx.files.internal`, a read-only directory not to be confused with what the Android documentation refers to as "internal". No other application on the Android system can access these files.
+Assets 存储在项目的 `assets` 目录中，部署应用时会自动打包进 APK。它们可通过 `Gdx.files.internal` 访问，这是一个只读目录，不要将它与 Android 文档所称的“internal”混淆。Android 系统中的其他应用无法访问这些文件。
 
-Files can also be stored on what the Android documentation refers to as [internal storage](https://developer.android.com/training/data-storage) (accessible via `Gdx.files.local` in LibGDX), where they are readable and writable. Each installed application has a dedicated internal storage directory. This directory is again only accessible by that application. One can think of this storage as a private working area for the application.
+文件也可以存储在 Android 文档所称的[内部存储](https://developer.android.com/training/data-storage)中（在 LibGDX 中通过 `Gdx.files.local` 访问），这里的文件可读写。每个已安装应用都有专用的内部存储目录，该目录只有应用自身可以访问。可以把这种存储理解为应用的私有工作区。
 
-Finally, files can be stored on the external storage, accessible via `Gdx.files.external` in LibGDX. The behaviour regarding external files was changed in Android over the times, hence in LibGDX:
+最后，文件还可以存储在外部存储中，在 LibGDX 中通过 `Gdx.files.external` 访问。Android 对外部文件的行为随着版本发生过变化，因此在 LibGDX 中：
 
-* libGDX up to 1.9.11 uses the Android external storage directory. That is up to Android 4.3 the sd card directory, which might not always be available, and a virtual emulated sd card directory on later versions. For accessing these files, you need to add a permission to your AndroidManifest.xml file, see [Permissions](/wiki/app/starter-classes-and-configuration#permissions). From Android 6 on, even a runtime permission is needed to use the directory and starting from Android 11, access is forbidden completely for normal apps (if you want to publish on the Play Store).
-* libGDX 1.9.12 or later uses the App external storage directory. This directory (located at Android/data/your_package_id/) is readable and writable from your app without any further permission and changes. Other apps (like file managers) can access the files up to Android 10, from Android 11 on the directory is only accessible via USB access. Note: If the user uninstalls the app, the data saved here will be deleted if not copied to another location before by the user.
+* libGDX 1.9.11 及更早版本使用 Android 外部存储目录。在 Android 4.3 及更早版本中，这是可能并不总是可用的 SD 卡目录；在更高版本中，则是虚拟的模拟 SD 卡目录。要访问这些文件，需要在 AndroidManifest.xml 中添加权限，参见[权限](/wiki/app/starter-classes-and-configuration#permissions)。从 Android 6 起，使用该目录还需要运行时权限；从 Android 11 起，普通应用将完全禁止访问（如果要发布到 Play Store）。
+* libGDX 1.9.12 及更高版本使用应用专属的外部存储目录。该目录位于 Android/data/your_package_id/，应用无需任何额外权限或变更即可读写。其他应用（例如文件管理器）在 Android 10 及更早版本中可以访问这些文件；从 Android 11 起，该目录只能通过 USB 访问。注意：如果用户卸载应用，除非事先将数据复制到其他位置，否则此处保存的数据会被删除。
 
-The App external storage is initialized at game start for you to use, therefore Android creates an empty directory. If you don't use external files and want to suppress this behaviour, you can do so by overriding the instantiation of `AndroidFiles` in `AndroidApplication#createFiles` (1.9.14 and up):
+应用专属外部存储会在游戏启动时初始化供你使用，因此 Android 会创建一个空目录。如果不使用外部文件并希望抑制此行为，可以在 `AndroidApplication#createFiles` 中重写 `AndroidFiles` 的实例化（1.9.14 及更高版本）：
 
 ```java
 	protected AndroidFiles createFiles() {
@@ -52,87 +52,87 @@ The App external storage is initialized at game start for you to use, therefore 
 ```
 
 ### iOS
-On iOS all file types are available.
+iOS 上所有文件类型都可用。
 
 ### Javascript/WebGL
-A raw Javascript/WebGL application doesn't have a traditional filesystem concept. Instead, assets like images are referenced by URLs pointing to files on one or more servers. Modern browsers also support [Local Storage](https://web.archive.org/web/20240621005117/http://diveintohtml5.info/storage.html) which comes close to a traditional read/write filesystem. The problem with local storage is that the storage amount available by default is fairly small, not standardized, and there no (good) way to accurately query the quota. For this reason, the preferences API is currently the only way to write local data persistently on the JS platform.
+原生 Javascript/WebGL 应用没有传统文件系统的概念。相反，图片等资源通过 URL 引用一个或多个服务器上的文件。现代浏览器还支持接近传统读写文件系统的 [Local Storage](https://web.archive.org/web/20240621005117/http://diveintohtml5.info/storage.html)。但 Local Storage 默认可用空间较小，标准也不统一，并且没有（好的）方式准确查询配额。因此，Preferences API 目前是 JS 平台持久写入本地数据的唯一方式。
 
-libGDX does some magic under the hood to provide you with a read-only filesystem abstraction.
+libGDX 会在底层进行一些处理，为你提供只读文件系统抽象。
 
-## File (Storage) Types
-A file in libGDX is represented by an instance of the [FileHandle](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/files/FileHandle.java) class. A FileHandle has a type which defines where the file is located. The following table illustrates the availability and location of each file type for each platform.
+## 文件（存储）类型
+在 libGDX 中，文件由 [FileHandle](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/files/FileHandle.java) 类的实例表示。FileHandle 有一个类型，用于定义文件的位置。下表说明各平台上每种文件类型的可用性和位置。
 
-| *Type* | *Description, file path and features* | *Desktop* | *Android* | *HTML5* | *iOS* |
+| *类型* | *描述、文件路径和特性* | *桌面端* | *Android* | *HTML5* | *iOS* |
 |:------:|:--------------------------------------|:---------:|:---------:|:-------:|:-----:|
-| Classpath | Classpath files are directly stored in your source folders. These get packaged with your jars and are always *read-only*. They have their purpose, but should be avoided if possible. | Yes | Yes | No | Yes |
-| Internal | Internal files are relative to the application’s *root* or *working* directory on desktops, relative to the *assets* directory on Android, and relative to the `core/assets/` directory of your GWT project. These files are *read-only*. If a file can't be found on the internal storage, the file module falls back to searching the file on the classpath. This is necessary if one uses the asset folder linking mechanism of Eclipse, see [Project Setup](/wiki/start/project-generation). Relative paths (`./` or `../`) are not always supported and thus shouldn't be used. | Yes | Yes | Yes | Yes |
-| Local | Local files are stored relative to the application's *root* or *working* directory on desktops and relative to the internal (private) storage of the application on Android. Note that Local and internal are mostly the same on the desktop. | Yes | Yes | No | Yes |
-| External| External files paths are relative to the [home directory](https://www.roseindia.net/java/beginners/UserHomeExample.shtml) of the current user on desktop systems. On Android, the app-specific external storage is used. | Yes | Yes | No | Yes |
-| Absolute | Absolute files need to have their fully qualified paths specified. <br/>*Note*: For the sake of portability, this option must be used only when absolutely necessary | Yes | Yes | No | Yes |
+| Classpath | Classpath 文件直接存储在源代码文件夹中，会随 jar 一起打包，并且始终为*只读*。它们有其用途，但应尽可能避免使用。 | 是 | 是 | 否 | 是 |
+| Internal | 桌面端的 Internal 文件相对于应用程序的*根目录*或*工作目录*，Android 上相对于 *assets* 目录，GWT 项目中相对于 `core/assets/` 目录。这些文件为*只读*。如果在内部存储中找不到文件，文件模块会回退到 classpath 中搜索。这是使用 Eclipse 资源文件夹链接机制时所必需的，参见[项目设置](/wiki/start/project-generation)。相对路径（`./` 或 `../`）并不总是受支持，因此不应使用。 | 是 | 是 | 是 | 是 |
+| Local | 桌面端的 Local 文件相对于应用程序的*根目录*或*工作目录*，Android 上相对于应用程序的内部（私有）存储。注意，在桌面端 Local 与 Internal 基本相同。 | 是 | 是 | 否 | 是 |
+| External| 桌面系统上的 External 文件路径相对于当前用户的[主目录](https://www.roseindia.net/java/beginners/UserHomeExample.shtml)。Android 上使用应用专属的外部存储。 | 是 | 是 | 否 | 是 |
+| Absolute | Absolute 文件必须指定完整路径。<br/>*注意*：为了保证可移植性，仅应在绝对必要时使用此选项。 | 是 | 是 | 否 | 是 |
 
-Absolute and classpath files are mostly used for tools such as desktop editors, that have more complex file i/o requirements. For games these can be safely ignored. The order in which you should use the types is as follows:
+Absolute 和 Classpath 文件主要用于桌面编辑器等具有更复杂文件 I/O 需求的工具。对于游戏，可以放心忽略它们。应按以下顺序使用这些类型：
 
-  * **Internal Files**: all the assets (images, audio files, etc.) that are packaged with your application are internal files. If you use the Setup UI, just drop them in your Android project's `assets` folder.
-  * **Local Files**: if you need to write small files, e.g. save a game state, use local files. These are in general private to your application. If you want a key/value store instead, you can also look into [Preferences](/wiki/preferences).
-    Note that Android's app-specific cache can be accessed using '../cache'. Files stored there can be cleared by the user via the 'clear cache' button found in the app's settings.
-  * **External Files**: if you need to write big files, e.g. screenshots, or download files from the web, they could go on the external storage. Note that the external storage is volatile, a user can remove it or delete the files you wrote. Because they are not cleaned up and volatile, it is usually simpler to use local file storage.
+  * **Internal Files**：随应用程序打包的所有资源（图像、音频文件等）都是内部文件。如果使用设置界面，只需将它们放入 Android 项目的 `assets` 文件夹。
+  * **Local Files**：如果需要写入小文件（例如保存游戏状态），请使用本地文件。它们通常是应用程序私有的。如果需要键值存储，也可以查看[偏好设置](/wiki/preferences)。
+    注意，Android 的应用专属缓存可以通过 `../cache` 访问。存储在其中的文件可以由用户通过应用设置中的“清除缓存”按钮清除。
+  * **External Files**：如果需要写入大文件（例如截图）或从网络下载文件，可以将它们放到外部存储中。注意，外部存储是不稳定的，用户可能移除存储设备或删除写入的文件。由于外部存储中的文件不会自动清理且不稳定，通常使用本地文件存储更简单。
 
-## Checking Storage availability and paths
-The different storage types might not be available depending on the platform your application runs on. You can query this kind of information via the Files module:
+## 检查存储可用性和路径
+不同存储类型的可用性取决于应用运行的平台。可以通过 Files 模块查询相关信息：
 
 ```java
 boolean isExtAvailable = Gdx.files.isExternalStorageAvailable();
 boolean isLocAvailable = Gdx.files.isLocalStorageAvailable();
 ```
 
-You can also query the root paths for external and local storage:
+也可以查询外部存储和本地存储的根路径：
 
 ```java
 String extRoot = Gdx.files.getExternalStoragePath();
 String locRoot = Gdx.files.getLocalStoragePath();
 ```
 
-## Obtaining FileHandles
-A `FileHandle` is obtained by using one of the aforementioned types directly from the *Files* module.
-The following code obtains a handle for the internal `myfile.txt` file.
+## 获取 FileHandle
+可以直接从 *Files* 模块使用前述类型之一获取 `FileHandle`。
+以下代码获取内部文件 `myfile.txt` 的句柄。
 
 ```java
 FileHandle handle = Gdx.files.internal("myfile.txt");
 ```
 
-If you used the [gdx-liftoff tool](/wiki/start/project-generation), this file will be contained in your project's `assets` folder. Your desktop and html projects link to this folder in Eclipse, and will pick it up automatically when executed from within Eclipse.
+如果使用了 [gdx-liftoff 工具](/wiki/start/project-generation)，该文件将位于项目的 `assets` 文件夹中。桌面端和 html 项目会在 Eclipse 中链接到此文件夹，从 Eclipse 内运行时会自动找到它。
 
 ```java
 FileHandle handle = Gdx.files.classpath("myfile.txt");
 ```
 
-The `myfile.txt` file is located in the directory where the compiled classes reside or the included jar files.
+`myfile.txt` 文件位于编译后类或所包含 jar 文件所在的目录中。
 
 ```java
 FileHandle handle = Gdx.files.external("myfile.txt");
 ```
 
-In this case, `myfile.txt` needs to be in the users’ [home directory](https://en.wikipedia.org/wiki/Home_directory) (`/home/<user>/myfile.txt` on Linux, `/Users/<user>/myfile.txt` on macOS and `C:\Users\<user>\myfile.txt` on Windows) on desktop, and in the root of the SD card on Android.
+在这种情况下，桌面端的 `myfile.txt` 需要位于用户的[主目录](https://en.wikipedia.org/wiki/Home_directory)中（Linux 为 `/home/<user>/myfile.txt`，macOS 为 `/Users/<user>/myfile.txt`，Windows 为 `C:\Users\<user>\myfile.txt`），Android 上则需要位于 SD 卡根目录。
 
 ```java
 FileHandle handle = Gdx.files.absolute("/some_dir/subdir/myfile.txt");
 ```
 
-In the case of absolute file handle, the file has to be exactly where the full path points. In `/some_dir/subdir/` of the current drive on Windows or the exact path on linux, macOS and Android.
+对于绝对文件句柄，文件必须准确位于完整路径所指向的位置：Windows 当前驱动器的 `/some_dir/subdir/` 中，或 Linux、macOS 和 Android 上的对应确切路径中。
 
-FileHandle instances are passed to methods of classes they are responsible for reading and writing data. E.g. a FileHandle needs to be specified when loading an image via the Texture class, or when loading an audio file via the Audio module.
+FileHandle 实例会传给负责读写数据的类的方法。例如，通过 Texture 类加载图像，或通过 Audio 模块加载音频文件时，都需要指定 FileHandle。
 
-## Listing and Checking Properties of Files
-Sometimes it is necessary to check for the existence of a specific file or list the contents of a directory. FileHandle provides methods to do just that in a concise way.
+## 列出文件并检查文件属性
+有时需要检查特定文件是否存在，或列出目录内容。FileHandle 提供了简洁完成这些操作的方法。
 
-Here's an example that checks whether a specific file exists and whether a file is actually a directory or not.
+下面的示例检查特定文件是否存在，以及某个路径是否确实是目录。
 
 ```java
 boolean exists = Gdx.files.external("doitexist.txt").exists();
 boolean isDirectory = Gdx.files.external("test/").isDirectory();
 ```
 
-Listing a directory is equally simple:
+列出目录同样简单：
 
 ```java
 FileHandle[] files = Gdx.files.local("mylocaldir/").list();
@@ -141,64 +141,64 @@ for(FileHandle file: files) {
 }
 ```
 
-**WARNING**: If you don't specify a folder the list will be empty.
+**警告**：如果不指定文件夹，列表将为空。
 
-**Note**: Listing of internal directories is not supported on Desktop. To work around this problem, you can [generate a list of files before deployment](https://web.archive.org/web/20240901085440/https://lyze.dev/2021/04/29/libGDX-Internal-Assets-List/). New projects generated with [gdx-liftoff](https://libgdx.com/wiki/start/project-generation) have this functionality built-in, automatically producing a file listing at `assets/assets.txt`.
+**注意**：桌面端不支持列出内部目录。作为替代方案，可以在部署前[生成文件列表](https://web.archive.org/web/20240901085440/https://lyze.dev/2021/04/29/libGDX-Internal-Assets-List/)。使用 [gdx-liftoff](https://libgdx.com/wiki/start/project-generation) 生成的新项目内置了此功能，会自动在 `assets/assets.txt` 生成文件列表。
 
-We can also ask for the parent directory of a file or create a FileHandle for a file in a directory (aka "child").
+还可以获取文件的父目录，或为目录中的文件创建 FileHandle（即“子项”）。
 
 ```java
 FileHandle parent = Gdx.files.internal("graphics/myimage.png").parent();
 FileHandle child = Gdx.files.internal("sounds/").child("myaudiofile.mp3");
 ```
 
-`parent` would point to `"graphics/"`, child would point to `sounds/myaudiofile.mp3"`.
+`parent` 会指向 `"graphics/"`，`child` 会指向 `sounds/myaudiofile.mp3"`。
 
-There are many more methods in FileHandle that let you check for specific attributes of a file. Please refer to the Javadocs for detail.
+FileHandle 还提供许多用于检查文件具体属性的方法。详情请参阅 Javadocs。
 
-**Note**: These functions are mostly unimplemented in the HTML5 back-end at the moment. Try not to rely on them too much if HTML5 will be a target of your application.
+**注意**：目前 HTML5 后端大多尚未实现这些功能。如果应用程序的目标平台包含 HTML5，请尽量不要过度依赖它们。
 
-## Error Handling
-Some operations on FileHandles can fail. We adopted `RuntimeExceptions` to signal errors instead of checked Exceptions. Our reasoning goes like this: 90% of the time we will access files that we know exist and are readable (e.g. internal files packaged with our application).
+## 错误处理
+FileHandle 的某些操作可能失败。我们采用 `RuntimeExceptions` 报告错误，而不是使用受检异常，因为 90% 的情况下我们访问的都是已知存在且可读的文件（例如随应用打包的内部文件）。
 
-## Reading from a File
-After obtaining a FileHandle, we can either pass it to a class that knows how to load content from the file (e.g. an image), or read it ourselves. The latter is done through any of the input methods in the FileHandle class. The following example illustrates how to load text from an internal file:
+## 从文件读取
+获取 FileHandle 后，可以将其传给知道如何从文件加载内容的类（例如图像类），也可以自行读取。后者通过 FileHandle 类中的输入方法完成。下面示例演示如何从内部文件加载文本：
 
 ```java
 FileHandle file = Gdx.files.internal("myfile.txt");
 String text = file.readString();
 ```
 
-If you have binary data, you can easily load the file into a byte array:
+如果处理的是二进制数据，也可以轻松将文件加载到字节数组中：
 
 ```java
 FileHandle file = Gdx.files.internal("myblob.bin");
 byte[] bytes = file.readBytes();
 ```
 
-The FileHandle class has many more read methods. Check the [Javadocs](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/files/FileHandle.html) for more information.
+FileHandle 类还提供许多其他读取方法。更多信息请查看 [Javadocs](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/files/FileHandle.html)。
 
-## Writing to a File
-Similarly to reading files, FileHandle also provides methods to write to a file. Note that only the local, external and absolute file types support writing to a file. Writing a string to a file works as follows:
+## 向文件写入
+与读取文件类似，FileHandle 也提供写入文件的方法。注意，只有 local、external 和 absolute 文件类型支持写入文件。向文件写入字符串的方式如下：
 
 ```java
 FileHandle file = Gdx.files.local("myfile.txt");
 file.writeString("My god, it's full of stars", false);
 ```
 
-The second parameter of `FileHandle#writeString` specifies if the content should be appended to the file. If set to false, the current content of the file will be overwritten.
+`FileHandle#writeString` 的第二个参数指定是否将内容追加到文件末尾。如果设为 false，文件当前内容将被覆盖。
 
-One can of course also write binary data to a file:
+当然也可以向文件写入二进制数据：
 
 ```java
 FileHandle file = Gdx.files.local("myblob.bin");
 file.writeBytes(new byte[] { 20, 3, -2, 10 }, false);
 ```
 
-There are many more methods in FileHandle that facilitate writing in different ways, e.g. using `OutputStream`. Again, refer to the Javadocs for details.
+FileHandle 还提供许多以不同方式写入数据的方法，例如使用 `OutputStream`。详情仍请参阅 Javadocs。
 
-## Deleting, Copying, Renaming and Moving Files/Directories
-These operations are again only possible for writable file types (local, external, absolute). Note however, that the source for a copying operation can also be a read only FileHandle. A few examples:
+## 删除、复制、重命名和移动文件/目录
+这些操作同样只适用于可写文件类型（local、external、absolute）。但请注意，复制操作的源也可以是只读 FileHandle。示例如下：
 
 ```java
 FileHandle from = Gdx.files.internal("myresource.txt");
@@ -210,6 +210,6 @@ Gdx.files.external("mycopy.txt").moveTo(Gdx.files.local("mylocalcopy.txt"));
 Gdx.files.local("mylocalcopy.txt").delete();
 ```
 
-Note that source and target can be files or directories.
+注意，源和目标都可以是文件或目录。
 
-For more information on available methods, check the [FileHandle Javadocs](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/files/FileHandle.html).
+有关可用方法的更多信息，请查看 [FileHandle Javadocs](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/files/FileHandle.html)。

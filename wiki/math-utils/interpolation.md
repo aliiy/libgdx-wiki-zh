@@ -1,13 +1,13 @@
 ---
-title: Interpolation
+title: 插值
 ---
-# Interpolation
+# 插值
 
-Commonly known as _tweening_, [interpolation](https://en.wikipedia.org/wiki/Interpolation) is useful for generating values between two discrete end points using various curve functions. Often used with key-framed animation, interpolation allows an animator to specify a sparse collection of explicit frames for an animation and then generate a smooth transition between these frames computationally. The simplest form of interpolation is linear interpolation such as that available directly in the [Vector2](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/math/Vector2.html) [(code)](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/math/Vector2.java) and [Vector3](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/math/Vector3.html) [(code)](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/math/Vector3.java) classes. The [Interpolation](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/math/Interpolation.html) [(code)](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/math/Interpolation.java) class provides more interesting results by using non-linear curve functions to interpolate values.
+通常称为 _tweening_ 的[插值](https://en.wikipedia.org/wiki/Interpolation)，可以使用各种曲线函数生成两个离散端点之间的值。插值常用于关键帧动画：动画师只需指定少量明确的动画帧，程序就能计算生成这些帧之间的平滑过渡。最简单的插值形式是线性插值，[Vector2](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/math/Vector2.html) [(代码)](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/math/Vector2.java) 和 [Vector3](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/math/Vector3.html) [(代码)](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/math/Vector3.java) 类直接提供了这种插值。[Interpolation](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/math/Interpolation.html) [(代码)](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/math/Interpolation.java) 类使用非线性曲线函数进行插值，可以产生更有趣的效果。
 
-## Types of Interpolation
+## 插值类型
 
-These are the basic built-in types of interpolation:
+以下是内置的基本插值类型：
 
   * Bounce
   * Circle
@@ -18,7 +18,7 @@ These are the basic built-in types of interpolation:
   * Sine
   * Swing
 
-## Code Example
+## 代码示例
 
 ```kotlin
 // Written in Kotlin
@@ -38,12 +38,12 @@ fun update(delta:Float)
 ```
 
 
-Most types offer three varieties which bias towards one or the other or both ends of the curve creating an easing in or out of the animation.
+大多数类型提供三种变体，分别偏向曲线的一端、另一端或两端，从而产生动画缓入或缓出的效果。
 
-See [InterpolationTest](https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests/src/com/badlogic/gdx/tests/InterpolationTest.java) for a visual display of each interpolation.
+各插值的可视化效果请参阅 [InterpolationTest](https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests/src/com/badlogic/gdx/tests/InterpolationTest.java)。
 
 
-## Visual display of interpolations
+## 插值的可视化效果
 
 | bounce | bounceIn | bounceOut | circle |
 | ------ | -------- | --------- | ------ |

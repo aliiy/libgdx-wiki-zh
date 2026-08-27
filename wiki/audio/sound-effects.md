@@ -1,30 +1,30 @@
 ---
-title: Sound effects
+title: 音效
 ---
-Sound effects are small audio samples, usually no longer than a few seconds, that are played back on specific game events such as a character jumping or shooting a gun.
+音效是较短的音频采样，通常不超过几秒，在角色跳跃或开枪等特定游戏事件中播放。
 
-Sound effects can be stored in various formats, including MP3, OGG and WAV. Which format you should use, depends on your specific needs, as each format has its own advantages and disadvantages. For example, WAV files are quite large compared to other formats, OGG files don’t work on RoboVM (iOS) nor with Safari (GWT), and MP3 files have issues with seemless looping.
+音效可以使用多种格式存储，包括 MP3、OGG 和 WAV。应使用哪种格式取决于具体需求，因为每种格式都有自己的优缺点。例如，WAV 文件相比其他格式很大，OGG 文件不能在 RoboVM（iOS）或 Safari（GWT）上工作，而 MP3 文件存在无缝循环问题。
 
-**Note:** On Android, a Sound instance can not be over 1mb in size (uncompressed raw PCM size, not the file size). If you have a bigger file, use [Music](/wiki/audio/streaming-music) instead.
+**注意：**在 Android 上，Sound 实例不能超过 1MB（指未压缩的原始 PCM 大小，而不是文件大小）。如果文件更大，请改用 [Music](/wiki/audio/streaming-music)。
 {: .notice--primary}
 
-Sound effects are represented by the [Sound](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/audio/Sound.html) interface. Loading a sound effect works as follows:
+音效由 [Sound](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/audio/Sound.html) 接口表示。加载音效的方式如下：
 
 ```java
 Sound sound = Gdx.audio.newSound(Gdx.files.internal("sounds/mysound.mp3"));
 ```
 
-This loads an audio file called `"mysound.mp3"` from the internal directory `sounds`.
+这会从内部目录 `sounds` 加载名为 `"mysound.mp3"` 的音频文件。
 
-Once we have the sound loaded we can play it back:
+加载声音后即可播放：
 
 ```java
 sound.play(1.0f);
 ```
 
-This will playback the sound effect once, at full volume. The play method on a single `Sound` instance can be called many times in a row, e.g. for a sequence of shots in a game, and will be overlaid accordingly.
+这会以最大音量播放一次音效。单个 `Sound` 实例的 play 方法可以连续调用多次，例如播放游戏中的连续射击声，多个播放会相互叠加。
 
-More fine-grained control is available. Every call to `Sound.play()` returns a long which identifies that sound instance. Using this handle we can modify that specific playback instance:
+还可以进行更细粒度的控制。每次调用 `Sound.play()` 都会返回一个用于标识该声音实例的 long 值。使用这个句柄可以修改指定的播放实例：
 
 ```java
 long id = sound.play(1.0f); // play new sound and keep handle for further manipulation
@@ -37,19 +37,19 @@ sound.setLooping(id, true); // keeps the sound looping
 sound.stop(id);             // stops the looping sound 
 ```
 
-***note:*** These modifier methods have limited functionality in the JavaScript/WebGL back-end for now. As of 1.9.6 `setPan()` is only working when flash is supported and enabled `GwtApplicationConfiguration.preferFlash = true`
+***注意：***目前这些修改方法在 JavaScript/WebGL 后端中的功能有限。自 1.9.6 起，只有在支持 Flash 且启用 `GwtApplicationConfiguration.preferFlash = true` 时，`setPan()` 才能工作。
 
-***note:*** `setPan()` method does not work with stereo sounds
+***注意：***`setPan()` 方法不能用于立体声。
 
-Once you no longer need a Sound, make sure you dispose of it:
+不再需要 Sound 时，请务必将其释放：
 
 ```java
 sound.dispose();
 ```
 
-Accessing the sound after you disposed of it will result in undefined errors.
+释放后继续访问该声音会导致未定义错误。
 
-### Multiple sounds cause freezes on Android
-As stated on an [Audio](/wiki/audio/audio) topic the Android has many issues with audio in general. One of them, is that waiting for sound ID might take quite a lot time. The sounds in Libgdx are playing synchronously by default. It causes main loop to be frozen for significant time if you play a lot of sounds at once. Especially this issue noticeable on Android 10.
+### 多个声音导致 Android 卡顿
+如 [Audio](/wiki/audio/audio) 主题所述，Android 的音频整体存在许多问题。其中之一是等待声音 ID 可能需要很长时间。LibGDX 默认同步播放声音，因此一次播放大量声音时，主循环可能会冻结较长时间。这个问题在 Android 10 上尤其明显。
 
-The solution is to make them playing asynchronously. However it will cause inability to use sounds methods where ID is required. More info provided here - [Audio#audio-on-android](/wiki/audio/audio#audio-on-android)
+解决方法是改为异步播放。但这样将无法使用需要 ID 的声音方法。更多信息请参阅 [Audio#audio-on-android](/wiki/audio/audio#audio-on-android)。

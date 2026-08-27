@@ -1,28 +1,28 @@
 ---
-title: Smaato in libGDX
+title: 在 libGDX 中使用 Smaato
 ---
-# Summary
+# 摘要
 
- * [Introduction](#introduction)
- * [Configuration](#configuration)
- * [Recap](#recap)
+  * [简介](#introduction)
+  * [配置](#configuration)
+  * [回顾](#recap)
  * [Banner](#banner)
  * [Interstitial](#interstitial)
  * [Rewarded](#rewarded)
  * [Test Ads](#test-ads)
 
-# Introduction
+# 简介
 
-This article will show you how to add Smaato ads to your libGDX Android projects. You will be able to monetize your games with Banner, Interstitial and Rewarded Ads. This tutorial implies that you are already familiar with libGDX basics and how Android Views are handled. But there will be a short recap.
+本文介绍如何将 Smaato 广告添加到 libGDX Android 项目。你将能够通过横幅、插屏和激励广告实现游戏变现。本教程假设你已经熟悉 libGDX 基础知识和 Android View 的处理方式，但仍会简要回顾相关内容。
 
-Just for a reference, the latest documentation is available on Smaato official [website](https://developers.smaato.com/publishers/nextgen-sdk-android-integration).
+仅供参考，最新文档可在 Smaato 官方[网站](https://developers.smaato.com/publishers/nextgen-sdk-android-integration)查看。
 
-You will need:
-1. A libGDX Android Game Project
-2. Your [Smaato](https://spx.smaato.com) account
+你需要：
+1. 一个 libGDX Android 游戏项目
+2. 你的 [Smaato](https://spx.smaato.com) 账户
 
-# Configuration
-Add the following repository setup to your project’s main `build.gradle` file:
+# 配置
+将以下仓库配置添加到项目的主 `build.gradle` 文件中：
 ```java
 
 buildscript {
@@ -44,7 +44,7 @@ allprojects {
     }
 }
 ```
-Set the compile options to Java 8 and minSdkVersion to at least version 16, in android module `build.gradle` file:
+在 android 模块的 `build.gradle` 文件中，将编译选项设为 Java 8，并将 minSdkVersion 设为至少 16：
 ```java
 android {
     defaultConfig {
@@ -58,31 +58,31 @@ android {
 }
 ```
 
-Add required dependencies to your application module `build.gradle` file under project(":android") --> dependencies.
+在 project(":android") 的 dependencies 下，将所需依赖添加到应用模块的 `build.gradle` 文件中。
 
 `implementation 'com.smaato.android.sdk:smaato-sdk:21.5.3`
 
-If you’re using Proguard in your project, please add the following lines to your Proguard config file:
+如果项目使用 Proguard，请将以下行添加到 Proguard 配置文件中：
 ```java
 -keep public class com.smaato.sdk.** { *; }
 -keep public interface com.smaato.sdk.** { *; }
 ```
 
-Add the following permissions to application AndroidManifest.xml file:
+将以下权限添加到应用的 AndroidManifest.xml 文件中：
 ```xml
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 ```
 
-If your application targets Android 5.0 (API level 21) or higher, then you need to add the following line to your application AndroidManifest.xml file:
+如果应用目标为 Android 5.0（API level 21）或更高版本，则需要将以下行添加到应用的 AndroidManifest.xml 文件中：
 ```xml
 <uses-feature android:name="android.hardware.location.network" />
 ```
 
-The latest version of Smaato NextGenSDK has been validated against `com.android.tools.build:gradle:3.5.4` and gradle-wrapper `gradle-5.6.3-bin`
+最新版 Smaato NextGenSDK 已针对 `com.android.tools.build:gradle:3.5.4` 和 gradle-wrapper `gradle-5.6.3-bin` 完成验证。
 
-Main build.gradle:
+主 build.gradle：
 ```java
 buildscript {
     ...
@@ -92,7 +92,7 @@ buildscript {
 }
 ```
 
-The gradle-wrapper.properties:
+gradle-wrapper.properties：
 ```xml
 distributionUrl=https\://services.gradle.org/distributions/gradle-5.6.3-bin.zip
 distributionBase=GRADLE_USER_HOME
@@ -101,9 +101,9 @@ zipStorePath=wrapper/dists
 zipStoreBase=GRADLE_USER_HOME
 ```
 
-# Recap
-LibGDX Android game is created as a [View](https://developer.android.com/reference/android/view/View). In order to add ads that are constantly displayed (like Banners) another view holding that should be used. In other words, a Relative Layout having both views should be created.
-You can see that in the following code snippet:
+# 回顾
+libGDX Android 游戏会创建为一个 [View](https://developer.android.com/reference/android/view/View)。要添加持续显示的广告（例如横幅），应使用另一个 View 承载它。换句话说，需要创建一个同时包含这两个 View 的 Relative Layout。
+以下代码片段展示了这种做法：
 
 ```java
 public class AndroidLauncher extends AndroidApplication {
@@ -129,10 +129,10 @@ public class AndroidLauncher extends AndroidApplication {
     }
 }
 ```
-The only missing piece here is the `createAdView` method that will be created in the next section.
+这里唯一缺少的是将在下一节创建的 `createAdView` 方法。
 
-# Banner
-In order to add Banner ads we will use `com.smaato.sdk.banner.widget.BannerView`. As mentioned previously, the Banner view will reside in the same Relative Layout as the Game view.
+# 横幅广告
+为了添加横幅广告，我们将使用 `com.smaato.sdk.banner.widget.BannerView`。如前所述，横幅 View 将与游戏 View 位于同一个 Relative Layout 中。
 ```java
 public class AndroidLauncher extends AndroidApplication {
     private static final String PUBLISHER_ID = "1100042525";
@@ -190,15 +190,15 @@ public class AndroidLauncher extends AndroidApplication {
     }
 }
 ```
-Let me walk you through this code snippet:
-* `BannerView smaatoBanner` is kept as an instance variable, so an ad can be shown and hidden depending on the game lifecycle
-* `BannerView` should be always destroyed in order to release resources properly
-*  The banner will be placed according to `RelativeLayout.LayoutParams` rules
-* `showBannerAds`/`hideBannerAds` are supposed to be called as per the game lifecycle
-* `PUBLISHER_ID` and `BANNER_AD_SPACE_ID` can be used during testing. Please, refer to [Test Ads](#test-ads) section for all available test ads configurations.
+下面逐项说明这段代码：
+* `BannerView smaatoBanner` 保存在实例变量中，因此可以根据游戏生命周期显示和隐藏广告。
+* 应始终销毁 `BannerView`，以便正确释放资源。
+* 横幅将根据 `RelativeLayout.LayoutParams` 规则放置。
+* 应根据游戏生命周期调用 `showBannerAds`/`hideBannerAds`。
+* `PUBLISHER_ID` 和 `BANNER_AD_SPACE_ID` 可用于测试。所有可用测试广告配置请参阅[测试广告](#test-ads)章节。
 
-# Interstitial
-Unlike Banners, Interstitial ads are not constantly displayed on the screen. Such ads should be only shown at natural transition points in the flow of an app, like finishing/failing of a level or switching between the screens. Hence there is no need to have an additional view for Interstitial ads as they will typically occupy the whole screen and will be destroyed upon closing.
+# 插屏广告
+与横幅广告不同，插屏广告不会持续显示在屏幕上。这类广告应只在应用流程的自然过渡点显示，例如关卡完成/失败或切换屏幕时。因此不需要为插屏广告创建额外 View，因为它通常会占据整个屏幕，并在关闭时销毁。
 
 ```java
 public class AndroidLauncher extends AndroidApplication {
@@ -273,15 +273,15 @@ public class AndroidLauncher extends AndroidApplication {
     }
 }
 ```
-Let me walk you through this code snippet:
-* `InterstitialAd smaatoInterstitial` is kept as an instance variable, so an ad can be shown depending on the game lifecycle
-* It is recommended to call `requestSmaatoInterstitialAd` on a game load, in order to have an ad preloaded from the start
-* There are multiple useful callbacks of `Interstitial.loadAd` that can be used depending on your use case
-* `showInterstitial` is supposed to be called as per the game lifecycle
+下面逐项说明这段代码：
+* `InterstitialAd smaatoInterstitial` 保存在实例变量中，因此可以根据游戏生命周期显示广告。
+* 建议在游戏加载时调用 `requestSmaatoInterstitialAd`，以便从一开始就预加载广告。
+* `Interstitial.loadAd` 提供多个有用的回调，可根据使用场景选择。
+* 应根据游戏生命周期调用 `showInterstitial`。
 
-# Rewarded
-Rewarded ads are visually similar to Interstitial ads as they typically occupy the whole screen.
-But workflow-wise they are completely different - such ads encourage users to interact with the ad content in exchange for in-app rewards, like extra lives, free coins or energy.
+# 激励广告
+激励广告在视觉上类似插屏广告，通常会占据整个屏幕。
+但在流程上完全不同：这类广告鼓励用户与广告内容互动，以换取应用内奖励，例如额外生命、免费金币或能量。
 
 ```java
 public class AndroidLauncher extends AndroidApplication {
@@ -355,13 +355,13 @@ public class AndroidLauncher extends AndroidApplication {
     }
 }
 ```
-One more time, let me walk you through this code snippet:
-* `RewardedInterstitialAd smaatoRewardedInterstitial` is kept as an instance variable, so an ad can be shown whenever a user initiates a rewarded ad flow in your game
-* It is recommended to call `requestSmaatoRewardedInterstitialAd` on a game load, in order to have an ad preloaded from the start
-* There are multiple useful callbacks of `RewardedInterstitial.loadAd` that you can be used depending on your use case
-* `showRewarded` is supposed to be called whenever a user initiates a rewarded ad flow in your game
+再次逐项说明这段代码：
+* `RewardedInterstitialAd smaatoRewardedInterstitial` 保存在实例变量中，因此用户在游戏中发起激励广告流程时可以显示广告。
+* 建议在游戏加载时调用 `requestSmaatoRewardedInterstitialAd`，以便从一开始就预加载广告。
+* `RewardedInterstitial.loadAd` 提供多个有用的回调，可根据使用场景选择。
+* 用户在游戏中发起激励广告流程时应调用 `showRewarded`。
 
-# Test Ads
+# 测试广告
 
 | Adspace ID    | Type               |
 | ------------- | ------------------ |
@@ -372,6 +372,6 @@ One more time, let me walk you through this code snippet:
 | 130626427     | Video              |
 | 130626428     | Rewarded           |
 
-Please, use Publisher Id 1100042525 with each of those adspaces.
+请将 Publisher Id 1100042525 与上述每个广告位配合使用。
 
-Don't forget to change the values to the production ones before the release!
+发布前别忘了将这些值改为生产环境的值！

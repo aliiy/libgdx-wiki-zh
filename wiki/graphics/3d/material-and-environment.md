@@ -1,72 +1,72 @@
 ---
-title: Material and environment
+title: 材质与环境
 ---
-In practice, when rendering, you are specifying what (the shape) to render and how (the material) to render. The shape is specified using the Mesh (or more commonly the MeshPart), which defines the vertices attributes for the shader. The material is most commonly used to specify the uniform values for the shader.
+实际渲染时，需要指定渲染什么（形状）以及如何渲染（材质）。形状通过 Mesh（更常见的是 MeshPart）指定，它定义着色器所需的顶点属性。材质通常用于指定着色器的 uniform 值。
 
-Uniforms can be grouped into model specific (e.g. the texture applied or whether or not to use blending) and environmental uniforms (e.g. the lights being applied or an environment cubemap). Likewise the 3D api allows you to specify a material and environment.
+Uniform 可以分为模型相关 uniform（例如应用的纹理或是否使用混合）和环境 uniform（例如使用的光源或环境立方体贴图）。同样，3D API 允许指定材质和环境。
 
-## Materials
+## 材质
 
-Materials are model (or modelinstance) specific. You can access them by index `model.materials.get(0)`, by name `model.getMaterial("material3")` or by nodepart `model.nodes.get(0).parts(0).material`. Materials are copied when creating a ModelInstance, meaning that changing the material of a ModelInstance will not affect the original Model or other ModelInstances.
+材质属于特定模型（或模型实例）。可以通过索引 `model.materials.get(0)`、名称 `model.getMaterial("material3")` 或节点部件 `model.nodes.get(0).parts(0).material` 访问它们。创建 ModelInstance 时会复制材质，因此修改某个 ModelInstance 的材质不会影响原始 Model 或其他 ModelInstance。
 
-The Material class extends the Attributes class, see below for more information about Attributes.
+Material 类继承 Attributes 类，关于 Attributes 的更多信息见下文。
 
-## Environment
+## 环境
 
-An Environment contains the uniform values specific for a location. For example, the lights are part of the Environment. Simple applications might use only one Environment, while more complex applications might use multiple environments depending on the location of a ModelInstance. A ModelInstance (or Renderable) can only contain one Environment though.
+Environment 包含某个位置专用的 uniform 值，例如光源就属于 Environment。简单应用可能只使用一个 Environment，而复杂应用可以根据 ModelInstance 所在位置使用多个 Environment。不过，一个 ModelInstance（或 Renderable）只能包含一个 Environment。
 
-The Environment class extends the Attributes class, see below for more information about Attributes.
+Environment 类继承 Attributes 类，关于 Attributes 的更多信息见下文。
 
-### Lights
+### 光源
 
-Lights use attributes as well, which means that you can attach a light to either an environment or a material. Adding a light to an environment can be done using the [`environment.add(light)`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/Environment.html#add-com.badlogic.gdx.graphics.g3d.environment.BaseLight-) method. However, you can also use the `DirectionalLightsAttribute`, `PointLightsAttribute` and `SpotLightsAttribute` attributes (see below). Each of these attributes has an array which you can use to attach one or more lights to it. Note however that you typically can only use one of both. If you add a light to the `PointLightsAttribute` of the environment and then add another light to the `PointLightsAttribute` of the material, then the `DefaultShader` will ignore the point light(s) added to the environment. Lights are always used by reference.
+光源同样使用属性，因此可以将光源附加到环境或材质。可以使用 [`environment.add(light)`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/Environment.html#add-com.badlogic.gdx.graphics.g3d.environment.BaseLight-) 方法向环境添加光源。也可以使用下文的 `DirectionalLightsAttribute`、`PointLightsAttribute` 和 `SpotLightsAttribute` 属性。这些属性各自包含一个数组，可用于附加一个或多个光源。但通常只能二选一：如果向环境的 `PointLightsAttribute` 添加光源，再向材质的 `PointLightsAttribute` 添加另一个光源，`DefaultShader` 就会忽略环境中的点光源。光源始终按引用使用。
 
-Lights should be sorted by importance. Usually this means that lights should be sorted on distance. The `DefaultShader` for example by default [(configurable)](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/shaders/DefaultShader.Config.html#numPointLights) only uses the first five point lights for shader lighting. Any remaining lights will be ignored.
+光源应按重要性排序，通常意味着按距离排序。例如，`DefaultShader` 默认只使用前五个点光源进行着色器光照（可[配置](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/shaders/DefaultShader.Config.html#numPointLights)），其余光源会被忽略。
 
-## Attributes
+## 属性
 
-Both the Environment and Material classes extend the Attributes the class. Most commonly, the Attributes class is used to specify uniform values. For example a TextureAttribute can be used to specify an uniform to bound for a shader. However, attributes don't have to be uniforms, for example DepthTestAttribute is used to alter the opengl state and doesn't set an uniform.
+Environment 和 Material 类都继承 Attributes 类。Attributes 最常用于指定 uniform 值，例如 TextureAttribute 可用于指定要绑定到着色器的纹理。不过，属性不一定是 uniform；例如 DepthTestAttribute 用于修改 OpenGL 状态，而不会设置 uniform。
 
-The Attributes class is most comparable with a Set. It can contain at most one value for each attribute, just like an uniform can only be set to one value. Theoretically both the Material and Environment can contain the same attribute, the actual behavior in this scenario depends on the shader used, but in most cases the Materials attribute will be used instead of the Environment attribute.
+Attributes 类最类似于 Set。每个属性最多只能包含一个值，就像一个 uniform 只能设置为一个值。理论上 Material 和 Environment 可以包含同一属性；这种情况下的实际行为取决于所使用的着色器，但大多数情况下会使用 Material 的属性，而不是 Environment 的属性。
 
-### Attribute type
+### 属性类型
 
-Every attribute has a `type` long value, which is a bitmask used to identify the attribute. Therefor a complete material or environment can be represented with a single long, where each bit represents an attribute. Some attribute classes are dedicated to a single type value (bit). Others can be used for multiple type values (bits), in which case you must specify the type on construction. For example:
+每个属性都有一个 `type` long 值，它是用于识别属性的位掩码。因此，完整的材质或环境可以用一个 long 表示，其中每一位代表一个属性。有些属性类专用于单一 type 值（位），其他类可用于多个 type 值（位），此时必须在构造时指定 type。例如：
 
 ```java
 Attribute attribute = new ColorAttribute(ColorAttribute.Diffuse, Color.RED);
 ```
 
-note that the ColorAttribute class contains a convenience method to do the same:
+注意，ColorAttribute 类包含一个完成同样操作的便捷方法：
 
 ```java
 Attribute attribute = ColorAttribute.createDiffuse(Color.RED);
 ```
 
-### Using attributes
+### 使用属性
 
-The most common actions for attributes are `set`, `has`, `remove`, and `get`.
+属性最常用的操作是 `set`、`has`、`remove` 和 `get`。
 
-You can use the `set` method to add or change an attribute. If there is already an attribute of the same type if will be first removed, after which the new attribute is added. For example: `material.set(FloatAttribute.createAlphaTest(0.25f));`
+可以使用 `set` 方法添加或修改属性。如果已存在相同类型的属性，会先移除旧属性，再添加新属性。例如：`material.set(FloatAttribute.createAlphaTest(0.25f));`
 
-Using the `has` method it is possible to check if a specific attribute type is set. For example: `material.has(FloatAttribute.AlphaTest);`. It is also possible to check for multiple attributes, for example: `material.has(FloatAttribute.AlphaTest | ColorAttribute.Diffuse);`. In which case the `has` method will only return `true` if all attributes are set. Note that because the `has` method uses a bitwise check it is quite fast and can be used prior to e.g. a call to `remove` to ensure the attribute is actually set.
+使用 `has` 方法可以检查是否设置了特定类型的属性，例如：`material.has(FloatAttribute.AlphaTest);`。也可以检查多个属性，例如：`material.has(FloatAttribute.AlphaTest | ColorAttribute.Diffuse);`，此时只有所有属性都已设置，`has` 方法才会返回 `true`。由于 `has` 使用位运算检查，因此速度很快，可以在调用 `remove` 等方法前使用它确认属性确实存在。
 
-With the `remove` method you can remove an attribute of a specific type, for example:
-`material.remove(FloatAttribute.AlphaTest);`. You can also remove multiple attributes at once, for example: `material.remove(FloatAttribute.AlphaTest | ColorAttribute.Diffuse);`.
+使用 `remove` 方法可以移除指定类型的属性，例如：
+`material.remove(FloatAttribute.AlphaTest);`。也可以一次移除多个属性，例如：`material.remove(FloatAttribute.AlphaTest | ColorAttribute.Diffuse);`。
 
-The `get` method can be used to fetch an attribute of a specific type. For example: `material.get(FloatAttribute.AlphaTest);`. If the attribute isn't set the `get` method will return `null`. Because the type implies the class, you can safely cast the result without checking: `(FloatAttribute)material.get(FloatAttribute.AlphaTest);`. For convenience there's also a template method: `material.get(FloatAttribute.class, FloatAttribute.AlphaTest);`.
+可以使用 `get` 方法获取指定类型的属性。例如：`material.get(FloatAttribute.AlphaTest);`。如果未设置该属性，`get` 方法会返回 `null`。由于 type 已隐含对应的类，因此可以安全地直接转换结果，无需检查：`(FloatAttribute)material.get(FloatAttribute.AlphaTest);`。此外还提供了便捷的模板方法：`material.get(FloatAttribute.class, FloatAttribute.AlphaTest);`。
 
-Besides that you can also `clear` (to remove all attributes), iterate (it implements `Iterable<Attribute>`) and compare (it implements `Comparator<Attribute>`, however the `same` method provides additional options) attributes. The `getMask()` method provides access to the mask containing all attributes, for example `material.getMask() & FloatAttribute.AlphaTest == FloatAttribute.AlphaTest` is the same as `material.has(FloatAttribute.AlphaTest)`.
+除此之外，还可以使用 `clear`（移除所有属性）、遍历（实现了 `Iterable<Attribute>`）以及比较（实现了 `Comparator<Attribute>`，不过 `same` 方法提供了更多选项）属性。`getMask()` 方法可以访问包含所有属性的掩码。例如，`material.getMask() & FloatAttribute.AlphaTest == FloatAttribute.AlphaTest` 与 `material.has(FloatAttribute.AlphaTest)` 等价。
 
-### Custom attribute types
+### 自定义属性类型
 
-It is possible to use a standard attribute class for a new custom type. For example when you want to use the ColorAttribute class to specify a custom type of color. There are three things you must consider in that case:
+可以将标准属性类用于新的自定义类型，例如使用 ColorAttribute 类指定自定义颜色类型。此时需要考虑三件事：
 
-1. Name your attribute type. Each attribute type must have an _unique_ alias (name). You might want to (but don't have to) use the uniform name for that. The alias will also be used for debugging, e.g. when calling `attribute.toString()`.
-2. Register your attribute type. This is to make sure there is only one attribute type for each bit. This can be done only from within the Attribute class or a subclass.
-3. Make ColorAttribute accept the custom type. The ColorAttribute class and most other attribute classes checks the type on construction, this allows you to cast attributes without having to check anything other then the type. For example `(ColorAttribute)material.get(ColorAttribute.Diffuse)` will always work because ColorAttribute is the only attribute accepting the `ColorAttribute.Diffuse` type.
+1. 命名属性类型。每种属性类型都必须有唯一的别名（名称）。可以使用 uniform 名称作为别名，但不是必须的。别名还会用于调试，例如调用 `attribute.toString()` 时。
+2. 注册属性类型。这是为了确保每一位只有一种属性类型。只能在 Attribute 类或其子类中完成注册。
+3. 让 ColorAttribute 接受自定义类型。ColorAttribute 类和大多数其他属性类会在构造时检查类型，因此只需检查类型即可转换属性。例如，`(ColorAttribute)material.get(ColorAttribute.Diffuse)` 始终有效，因为 ColorAttribute 是唯一接受 `ColorAttribute.Diffuse` 类型的属性。
 
-Because of step 2 and 3, you must extend the Attribute class to add a custom attribute type:
+由于第 2、3 步的要求，必须扩展 Attribute 类才能添加自定义属性类型：
 
 ```java
 public class CustomColorTypes extends ColorAttribute {
@@ -82,14 +82,14 @@ public class CustomColorTypes extends ColorAttribute {
 }
 ```
 
-You can then create the custom attribute type using:
+然后可以使用以下方式创建自定义属性类型：
 
 ```java
 Attribute attribute = new ColorAttribute(CustomColorTypes.AlbedoColor, Color.RED);
 ```
 
-### Custom attributes
-It is possible to create a custom attribute, in which case the process is not much different from above. You must extend the Attribute class, register at least one type and of course add some data to pass on to the shader. For example to add an attribute to pass a double value to the shader:
+### 自定义属性
+也可以创建自定义属性，流程与上面没有太大区别。必须扩展 Attribute 类、至少注册一种类型，并添加要传递给着色器的数据。例如，添加一个向着色器传递 double 值的属性：
 
 ```java
 public class DoubleAttribute extends Attribute {
@@ -141,31 +141,31 @@ public class DoubleAttribute extends Attribute {
     }
 }
 ```
-Of course `MyDouble1Alias`, `MyDouble1`, `"myDouble1"`, `MyDouble2Alias`, `MyDouble2` and `"myDouble2"` should be replaced by a more meaningful description.
+当然，应将 `MyDouble1Alias`、`MyDouble1`、`"myDouble1"`、`MyDouble2Alias`、`MyDouble2` 和 `"myDouble2"` 替换为更有意义的描述。
 
-Note that the `copy()` method is for example called when creating a `ModelInstance` of a `Model`. It should return an identical instance of the attribute which can be modified independently of the attribute being copied. While not required, a *copy constructor* is typically a good method to implement this.
+注意，创建 Model 的 `ModelInstance` 时会调用 `copy()` 方法。它应返回一个与原属性相同、但可以独立修改的属性实例。虽然不是必需的，但实现一个*复制构造函数*通常是不错的做法。
 
-The `hashCode()` method should be implemented because it is used for comparing attributes and materials. For example, two materials are considered to be the same if they contain the same attributes (types) and the `equals()` method returns true for each pair of attribute types. By default, the `equals()` method of the `Attribute` class compares the `hashCode()` of both attributes for this.
+应实现 `hashCode()` 方法，因为它用于比较属性和材质。例如，两个材质包含相同属性（类型），且每对属性类型的 `equals()` 方法都返回 true 时，会被视为相同。默认情况下，Attribute 类的 `equals()` 方法会比较两个属性的 `hashCode()`。
 
-The `compareTo(Attribute)` method must be implemented for sorting render calls based on the material. This implementation should typically always start with the line:
-`if (type != o.type) return type < o.type ? -1 : 1;` to assure that it's comparing attributes of the same type.
+必须实现 `compareTo(Attribute)` 方法，以便根据材质对渲染调用排序。该实现通常应始终以以下代码行开头：
+`if (type != o.type) return type < o.type ? -1 : 1;`，以确保比较的是相同类型的属性。
 
-> Attribute classes should be kept small and self contained, therefore it is best to always directly extend the `Attribute` class. Try to avoid extending a subclass of the Attribute class to add additional information.
+> 属性类应保持小巧且自包含，因此最好始终直接扩展 `Attribute` 类。尽量不要通过扩展 Attribute 的子类来添加额外信息。
 
-## Available attributes
-Like stated above its possible to create custom attributes. However, there are a few attributes already included, which are listed below.
+## 可用属性
+如上所述，可以创建自定义属性。不过，libGDX 已内置了一些属性，下面将列出它们。
 
 ### BlendingAttribute
 
-By default the 3D api assumes everything is opaque. The `BlendingAttribute` is most commonly used for materials (in case of environment it will change the default behavior) and can be used to specify that the material is or is not blended. The `BlendingAttribute` doesn't require you to specify a type on construction, its type is always `BlendingAttribute.Type`, unless it's extended. It contains four properties which can be specified:
-* `blended` indicates whether or not the material should be treated as blended. This is primarily used for sorting, for example opaque objects are drawn prior to transparent objects.
-* `sourceFunction` OpenGL enum which specifies how the (incoming) red, green, blue, and alpha source blending factors are computed, by default it is set to GL_SRC_ALPHA.
-* `destFunction` OpenGL enum which specifies how the (existing) red, green, blue, and alpha destination blending factors are computed, by default it is set to GL_ONE_MINUS_SRC_ALPHA. For additive blending you might want to set it to GL_ONE.
-* `opacity` The amount of opacity (the source alpha value), ranging from 0 (fully transparent) to 1 (fully opaque).
+默认情况下，3D API 假定所有内容都是不透明的。`BlendingAttribute` 最常用于材质（用于环境时会改变默认行为），可用于指定材质是否混合。构造 `BlendingAttribute` 时无需指定类型，其类型始终为 `BlendingAttribute.Type`，除非对其进行扩展。它包含四个可设置的属性：
+* `blended` 指示材质是否应视为混合材质，主要用于排序，例如先绘制不透明对象，再绘制透明对象。
+* `sourceFunction` OpenGL 枚举，指定如何计算（传入的）红、绿、蓝和 alpha 源混合因子，默认值为 GL_SRC_ALPHA。
+* `destFunction` OpenGL 枚举，指定如何计算（已有的）红、绿、蓝和 alpha 目标混合因子，默认值为 GL_ONE_MINUS_SRC_ALPHA。对于加法混合，可以将其设为 GL_ONE。
+* `opacity` 不透明度（源 alpha 值），范围为 0（完全透明）到 1（完全不透明）。
 
 ### ColorAttribute
 
-The `ColorAttribute` allows you to pass a color to the shader. For that it only contains one property: `.color`. You can set the color during construction (it will be set by value) or using the `.color.set(...)` method. The `ColorAttribute` requires an attribute type to be specified, by default the following types are available:
+`ColorAttribute` 允许向着色器传递颜色，因此只包含一个属性：`.color`。可以在构造时设置颜色（按值设置），也可以使用 `.color.set(...)` 方法设置。`ColorAttribute` 需要指定属性类型，默认提供以下类型：
 * `ColorAttribute.Diffuse`
 * `ColorAttribute.Specular`
 * `ColorAttribute.Ambient`
@@ -174,43 +174,43 @@ The `ColorAttribute` allows you to pass a color to the shader. For that it only 
 * `ColorAttribute.AmbientLight`
 * `ColorAttribute.Fog`
 
-Where the latter two are most commonly used for Environment, while the others or commonly used for Material.
+其中后两种通常用于 Environment，其余类型通常用于 Material。
 
 ### CubemapAttribute
-To pass a `Cubemap` to the shader the `CubemapAttribute` can be used. It's value is the `textureDescription` member which can be used to specify the cubemap along with other texture related values. The `CubemapAttribute` requires an attribute type to be specified, by default the `CubemapAttribute.EnvironmentMap` is the only valid type.
+要向着色器传递 `Cubemap`，可以使用 `CubemapAttribute`。它的值是 `textureDescription` 成员，可与其他纹理相关值一起指定 cubemap。`CubemapAttribute` 需要指定属性类型，默认只有 `CubemapAttribute.EnvironmentMap` 有效。
 
 ### DepthTestAttribute
-Just like the `BlendingAttribute`, does the `DepthTestAttribute` not require an attribute type. It is always `DepthTestAttribute.Type`. The `DepthTestAttribute` can be used to specify depth testing and writing, using the following properties:
-* `depthFunc` The depth test function, or 0 (or GL_NONE) to disable depth test, by default it is GL20.GL_LEQUAL.
-* `depthRangeNear` Mapping of near clipping plane to window coordinates, by default 0.0
-* `depthRangeFar` Mapping of far clipping plane to window coordinates, by default 1.0
-* `depthMask` Whether or not to write to the depth buffer, enabled by default.
+与 `BlendingAttribute` 一样，`DepthTestAttribute` 不需要属性类型，其类型始终为 `DepthTestAttribute.Type`。`DepthTestAttribute` 可用于通过以下属性指定深度测试和深度写入：
+* `depthFunc` 深度测试函数；设为 0（或 GL_NONE）可禁用深度测试，默认值为 GL20.GL_LEQUAL。
+* `depthRangeNear` 将近裁剪面映射到窗口坐标，默认值为 0.0。
+* `depthRangeFar` 将远裁剪面映射到窗口坐标，默认值为 1.0。
+* `depthMask` 是否写入深度缓冲，默认启用。
 
 ### DirectionalLightsAttribute
-The DirectionalLightsAttribute does not require an attribute type. It is always `DirectionalLightsAttribute.Type`. The ` DirectionalLightsAttribute` can be used to specify an array of [`DirectionalLight`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/environment/DirectionalLight.html) instances, using the following property:
-* `lights` The array of lights, should be sorted on importance.
+DirectionalLightsAttribute 不需要属性类型，其类型始终为 `DirectionalLightsAttribute.Type`。`DirectionalLightsAttribute` 可使用以下属性指定 [`DirectionalLight`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/environment/DirectionalLight.html) 实例数组：
+* `lights` 光源数组，应按重要性排序。
 
 ### FloatAttribute
-To pass a single floating point value to the shader, the `FloatAttribute` can be used. The value can be specified on construction or using the `.value` member. The `FloatAttribute` requires an attribute type, which by default can be:
-* `FloatAttribute.Shininess` Used for specular lighting.
-* `FloatAttribute.AlphaTest` Used to discard pixels when the alpha value is equal or below the specified value.
+要向着色器传递单个浮点值，可以使用 `FloatAttribute`。可以在构造时指定该值，也可以使用 `.value` 成员设置。`FloatAttribute` 需要属性类型，默认可使用：
+* `FloatAttribute.Shininess` 用于镜面反射光照。
+* `FloatAttribute.AlphaTest` 当 alpha 值等于或低于指定值时丢弃像素。
 
 ### IntAttribute
-Similar to the `FloatAttribute` class, the `IntAttribute` allows you to pass an integer value to the shader. Likewise the `.value` member can be used or the value can be set on construction. The `IntAttribute` requires an attribute type, which by default can be:
-* `IntAttribute.CullFace` OpenGL enum to specify face culling, either GL_NONE (no culling), GL_FRONT (only render back faces) or GL_BACK (only render front faces). The default depends on the shader, the default shader uses GL_BACK by default.
+与 `FloatAttribute` 类类似，`IntAttribute` 允许向着色器传递整数值。同样，可以使用 `.value` 成员，也可以在构造时设置该值。`IntAttribute` 需要属性类型，默认可使用：
+* `IntAttribute.CullFace` 用于指定面剔除的 OpenGL 枚举，可以是 GL_NONE（不剔除）、GL_FRONT（仅渲染背面）或 GL_BACK（仅渲染正面）。默认值取决于着色器，默认着色器使用 GL_BACK。
 
 ### PointLightsAttribute
-The PointLightsAttribute does not require an attribute type. It is always `PointLightsAttribute.Type`. The `PointLightsAttribute` can be used to specify an array of [`PointLight`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/environment/PointLight.html) instances, using the following property:
-* `lights` The array of lights, should be sorted on importance.
+PointLightsAttribute 不需要属性类型，其类型始终为 `PointLightsAttribute.Type`。`PointLightsAttribute` 可使用以下属性指定 [`PointLight`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/environment/PointLight.html) 实例数组：
+* `lights` 光源数组，应按重要性排序。
 
 ### SpotLightsAttribute
-Not supported by the default shader. The SpotLightsAttribute does not require an attribute type. It is always `SpotLightsAttribute.Type`. The `SpotLightsAttribute` can be used to specify an array of [`SpotLight`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/environment/SpotLight.html) instances, using the following property:
-* `lights` The array of lights, should be sorted on importance.
+默认着色器不支持。SpotLightsAttribute 不需要属性类型，其类型始终为 `SpotLightsAttribute.Type`。`SpotLightsAttribute` 可使用以下属性指定 [`SpotLight`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/environment/SpotLight.html) 实例数组：
+* `lights` 光源数组，应按重要性排序。
 
 ### TextureAttribute
-`TextureAttribute` can be used to pass a `Texture` to the shader. Just like the `CubemapAttribute` it has a `textureDescription` member which allows you to set the `Texture` amongst some texture related values like repeat and filter. Additionally it contains the `offsetU`, `offsetV`, `scaleU` and `scaleY` members, which can be used to specify the region (texture coordinates transformation) of the texture to use. It also has an `uvIndex` member (defaults to 0) which can be used to specify which texture coordinates should be used. Note that the default shader currently ignores this uvIndex member and always uses the first texture coordinates.
+`TextureAttribute` 可用于向着色器传递 `Texture`。与 `CubemapAttribute` 一样，它包含 `textureDescription` 成员，可以在设置 `Texture` 的同时指定重复和过滤等纹理相关值。此外还包含 `offsetU`、`offsetV`、`scaleU` 和 `scaleY` 成员，用于指定要使用的纹理区域（纹理坐标变换）。它还包含 `uvIndex` 成员（默认为 0），用于指定应使用哪组纹理坐标。请注意，默认着色器目前会忽略 uvIndex 成员，始终使用第一组纹理坐标。
 
-The `TextureAttribute` requires an attribute type, which by default can be one of the following:
+`TextureAttribute` 需要属性类型，默认可使用以下类型之一：
 * `TextureAttribute.Diffuse`
 * `TextureAttribute.Specular`
 * `TextureAttribute.Bump`

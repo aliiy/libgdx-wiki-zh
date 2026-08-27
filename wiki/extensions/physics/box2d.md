@@ -1,57 +1,57 @@
 ---
-title: Box2d
+title: Box2D
 ---
-# Setting up Box2D with libGDX
+# 在 libGDX 中设置 Box2D
 
-Box2D is a 2D physics library. It is one of the most popular physics libraries for 2D games and has been ported to many languages and many different engines, including libGDX. The Box2D implementation in libGDX is a thin Java wrapper around the C++ engine. Therefore, their [documentation](https://box2d.org/documentation/) may come in handy.
+Box2D 是一个二维物理库，是最流行的 2D 游戏物理库之一，已被移植到许多语言和不同引擎中，包括 libGDX。libGDX 中的 Box2D 实现是 C++ 引擎外的一层轻量 Java 封装，因此其[文档](https://box2d.org/documentation/)可能会很有帮助。
 
-Box2D is an extension and not included with libGDX by default. Thus a manual installation is required.
+Box2D 是一个扩展，默认不包含在 libGDX 中，因此需要手动安装。
 
-## Table of Contents
+## 目录
 
-  * [Initialization](/wiki/extensions/physics/box2d#initialization)
-  * [Creating a World](/wiki/extensions/physics/box2d#creating-a-world)
-  * [Debug Renderer](/wiki/extensions/physics/box2d#debug-renderer)
-  * [Stepping the simulation](/wiki/extensions/physics/box2d#stepping-the-simulation)
-  * [Rendering](/wiki/extensions/physics/box2d#rendering)
-  * [Objects/Bodies](/wiki/extensions/physics/box2d#objectsbodies)
-    * [Dynamic Bodies](/wiki/extensions/physics/box2d#dynamic-bodies)
-    * [Static Bodies](/wiki/extensions/physics/box2d#static-bodies)
-    * [Kinematic Bodies](/wiki/extensions/physics/box2d#kinematic-bodies)
-  * [Impulses/Forces](/wiki/extensions/physics/box2d#impulsesforces)
-  * [Joints and Gears](/wiki/extensions/physics/box2d#joints-and-gears)
-  * [Fixture Shapes](/wiki/extensions/physics/box2d#fixture-shapes)
-  * [Sprites and Bodies](/wiki/extensions/physics/box2d#sprites-and-bodies)
-  * [Sensors](/wiki/extensions/physics/box2d#sensors)
-  * [Contact Listeners](/wiki/extensions/physics/box2d#contact-listeners)
-  * [Resources](/wiki/extensions/physics/box2d#resources)
-  * [Tools](/wiki/extensions/physics/box2d#tools)
+  * [初始化](/wiki/extensions/physics/box2d#initialization)
+  * [创建世界](/wiki/extensions/physics/box2d#creating-a-world)
+  * [调试渲染器](/wiki/extensions/physics/box2d#debug-renderer)
+  * [推进模拟](/wiki/extensions/physics/box2d#stepping-the-simulation)
+  * [渲染](/wiki/extensions/physics/box2d#rendering)
+  * [对象/刚体](/wiki/extensions/physics/box2d#objectsbodies)
+    * [动态刚体](/wiki/extensions/physics/box2d#dynamic-bodies)
+    * [静态刚体](/wiki/extensions/physics/box2d#static-bodies)
+    * [运动刚体](/wiki/extensions/physics/box2d#kinematic-bodies)
+  * [冲量/力](/wiki/extensions/physics/box2d#impulsesforces)
+  * [关节和齿轮](/wiki/extensions/physics/box2d#joints-and-gears)
+  * [Fixture 形状](/wiki/extensions/physics/box2d#fixture-shapes)
+  * [精灵和刚体](/wiki/extensions/physics/box2d#sprites-and-bodies)
+  * [传感器](/wiki/extensions/physics/box2d#sensors)
+  * [接触监听器](/wiki/extensions/physics/box2d#contact-listeners)
+  * [资源](/wiki/extensions/physics/box2d#resources)
+  * [工具](/wiki/extensions/physics/box2d#tools)
 
-## Initialization
+## 初始化
 
-To initialize Box2D it is necessary to call `Box2D.init()`. For backwards compatibility, creating a `World` for the first time will have the same effect, but using the `Box2D` class should be preferred.
+要初始化 Box2D，必须调用 `Box2D.init()`。为保持向后兼容，首次创建 `World` 也会产生相同效果，但应优先使用 `Box2D` 类。
 
-## Creating a World
+## 创建世界
 
-When setting up Box2D the first thing we need is a world. The world object is basically what holds all your physics objects/bodies and simulates the reactions between them. It does not however render the objects for you; for that you will use libGDX graphics functions. That said, libGDX does come with a Box2D debug renderer which is extremely handy for debugging your physics simulations, or even for testing your game-play before writing any rendering code.
+设置 Box2D 时首先需要一个世界。世界对象保存所有物理对象/刚体，并模拟它们之间的反应。但它不会替你渲染对象，这需要使用 libGDX 图形函数。不过，libGDX 提供了 Box2D 调试渲染器，非常适合调试物理模拟，甚至可以在编写渲染代码前测试游戏玩法。
 
-To create the world we use the following code:
+可以使用以下代码创建世界：
 
 ```java
 World world = new World(new Vector2(0, -10), true);
 ```
 
-The first argument we supply is a 2D vector containing the gravity: 0 to indicate no gravity in the horizontal direction, and -10 is a downwards force like in real life (assuming your y axis points upwards). These values can be anything you like, but remember to stick to a constant scale. In Box2D 1 unit = 1 meter.
+第一个参数是包含重力的二维向量：0 表示水平方向没有重力，-10 表示类似现实中的向下作用力（假设 y 轴向上）。这些值可以自行设置，但请保持比例恒定。在 Box2D 中，1 个单位 = 1 米。
 
-The second value in the world creation is a boolean value which tells the world if we want objects to sleep or not. Generally we want objects to sleep as this conserves CPU usage, but there are situations where you might not want your objects to sleep.
+创建世界时的第二个值是布尔值，用于告诉世界是否允许对象休眠。通常应允许对象休眠以节省 CPU，但某些情况下可能不希望对象休眠。
 
-It is advised to use the same scale you use for Box2D to draw graphics. This means drawing a Sprite with a width/height in meters. To scale up the graphics to make them visible, you should use a camera with a viewportWidth / viewportHeight also in meters. E.g: drawing a Sprite with a width of 2.0f (2 meters) and using a camera viewportWidth of 20.0f, the Sprite will fill 1/10th of the width on the window.
+建议使用与 Box2D 相同的比例绘制图形，也就是使用米作为 Sprite 的宽高单位。为了放大图形使其可见，应使用 viewportWidth / viewportHeight 同样以米为单位的相机。例如，绘制宽度为 2.0f（2 米）的 Sprite，并使用 viewportWidth 为 20.0f 的相机时，Sprite 将占窗口宽度的十分之一。
 
-**A common mistake** is measuring your world in pixels instead of meters. Box2D objects can only travel so fast. If pixels are used (such as 640 by 480) instead of meters (such as 12 by 9), objects will always move slowly no matter what you do.
+**一个常见错误**是用像素而不是米度量世界。Box2D 对象的移动速度有限。如果使用像素（如 640×480）而不是米（如 12×9），无论怎么做对象都会移动得很慢。
 
-## Debug Renderer
+## 调试渲染器
 
-The next thing we are going to do is setup our debug renderer. You generally will not use this in a released version of your game, but for testing purposes we will set it up now like so:
+接下来设置调试渲染器。通常不会在发布版本的游戏中使用它，但为了测试，可以这样设置：
 
 ```java
 Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
@@ -59,21 +59,21 @@ Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
 
 
 
-## Stepping the simulation
+## 推进模拟
 
-To update our simulation we need to tell our world to step. Stepping basically updates the world objects through time. The best place to call our step function is at the end of our `render()` loop. In a perfect world everyone's frame rate is the same
+要更新模拟，需要让世界推进。推进本质上是随时间更新世界对象。调用推进函数的最佳位置是在 `render()` 循环末尾。在理想情况下，每个人的帧率都相同。
 
 ```java
 world.step(1/60f, 6, 2);
 ```
 
-The first argument is the time-step, or the amount of time you want your world to simulate. In most cases you want this to be a fixed time step. libGDX recommends using a value between `1/60f` (which is 1/60th of a second) and `1/240f` (1/240th of a second).
+第一个参数是时间步长，即希望世界模拟的时间长度。大多数情况下应使用固定时间步长。libGDX 建议使用 `1/60f`（1/60 秒）到 `1/240f`（1/240 秒）之间的值。
 
-The other two arguments are `velocityIterations` and `positionIterations`. For now we will leave these at `6` and `2`, but you can read more about them in the Box2D documentation.
+另外两个参数是 `velocityIterations` 和 `positionIterations`。现在将它们设为 `6` 和 `2`，详情可参阅 Box2D 文档。
 
-Stepping your simulation is a topic unto itself. See [this article](https://gafferongames.com/post/fix_your_timestep/) for an excellent discussion on the use of variable time steps.
+模拟推进本身就是一个独立主题。关于可变时间步长的使用，请参阅[这篇文章](https://gafferongames.com/post/fix_your_timestep/)。
 
-The result might look similar to this:
+结果可能类似这样：
 
 ```java
 private float accumulator = 0;
@@ -90,34 +90,34 @@ private void doPhysicsStep(float deltaTime) {
 }
 ```
 
-## Rendering
+## 渲染
 
-It is recommended that you render all your graphics before you do your physics step, otherwise it will be out of sync. To do this with our debug renderer we do the following:
+建议在物理推进前渲染所有图形，否则会不同步。使用调试渲染器时可以这样做：
 
 ```java
 debugRenderer.render(world, camera.combined);
 ```
 
-The first argument is our Box2D world and the second argument is our libGDX camera.
+第一个参数是 Box2D 世界，第二个参数是 libGDX 相机。
 
 
 
-## Objects/Bodies
+## 对象/刚体
 
-Now if you run your game it will be pretty boring as nothing happens. The world steps but we don’t see anything as we don’t have anything to interact with it. So now we’re going to add some objects.
+现在运行游戏仍然很无聊，因为没有任何事情发生。世界在推进，但由于没有可交互的对象，我们什么也看不到。接下来添加一些对象。
 
-In Box2D our objects are called _bodies_, and each body is made up of one or more _fixtures_, which have a fixed position and orientation within the body. Our fixtures can be any shape you can imagine or you can combine a variety of different shaped fixtures to make the shape you want.
+在 Box2D 中，对象称为 _body_，每个 body 由一个或多个 _fixture_ 组成，fixture 在 body 中具有固定的位置和方向。fixture 可以是任意想象中的形状，也可以组合不同形状的 fixture 来构成所需形状。
 
-A fixture has a shape, density, friction and restitution attached to it. Shape is obvious. Density is the mass per square metre: a bowling ball is very dense, yet a balloon isn’t very dense at all as it is mainly filled with air. Friction is the amount of opposing force when the object rubs/slides along something: a block of ice would have a very low friction but a rubber ball would have a high friction. Restitution is how bouncy something is: a rock would have a very low restitution but a basketball would have a fairly high restitution. A body with a restitution of 0 will come to a halt as soon as it hits the ground, whereas a body with a restitution of 1 would bounce to the same height forever.
+fixture 包含形状、密度、摩擦力和恢复系数。形状不言自明。密度是每平方米的质量：保龄球密度很高，而主要充满空气的气球密度很低。摩擦力是对象摩擦或滑过某物时受到的阻力：冰块的摩擦力很低，而橡皮球的摩擦力很高。恢复系数表示弹性：岩石的恢复系数很低，而篮球的恢复系数相当高。恢复系数为 0 的 body 撞到地面后会立即停止，而恢复系数为 1 的 body 会永远弹到相同高度。
 
-Bodies come in three different types: dynamic, kinematic and static. Each type is described below.
+Body 有三种类型：dynamic、kinematic 和 static。下面分别介绍。
 
 
-### Dynamic Bodies
+### 动态刚体
 
-Dynamic bodies are objects which move around and are affected by forces and other dynamic, kinematic and static objects. Dynamic bodies are suitable for any object which needs to move and be affected by forces.
+动态刚体会移动，并受到力以及其他动态、运动和静态对象的影响。任何需要移动并受力影响的对象都适合使用动态刚体。
 
-We have now learned about fixtures which make up our bodies, so let's get dirty and start to create some bodies and add fixtures to them!
+现在已经了解了组成 body 的 fixture，接下来创建一些 body 并为其添加 fixture！
 
 ```java
 // First we create a body definition
@@ -149,15 +149,15 @@ Fixture fixture = body.createFixture(fixtureDef);
 circle.dispose();
 ```
 
-Now we have created a ball like object and added it to our world. If you run the game now you should see a ball fall down the screen. This is still fairly boring though, as it has nothing to interact with. So let's create a floor for our ball to bounce on.
+现在创建了一个球状对象并将其加入世界。运行游戏应该能看到球落下，但仍然比较无聊，因为它没有可交互的对象。接下来创建一个让球弹跳的地面。
 
 
 
-### Static Bodies
+### 静态刚体
 
-Static bodies are objects which do not move and are not affected by forces. Dynamic bodies are affected by static bodies. Static bodies are perfect for ground, walls, and any object which does not need to move. Static bodies require less computing power.
+静态刚体不会移动，也不受力影响。动态刚体会受到静态刚体影响。静态刚体非常适合地面、墙壁及任何不需要移动的对象，而且需要的计算资源更少。
 
-Let's go ahead and create our floor as a static body. This is much like creating our dynamic body earlier.
+现在将地面创建为静态刚体，过程与前面创建动态刚体很相似。
 
 ```java
 // Create our body definition
@@ -179,38 +179,38 @@ groundBody.createFixture(groundBox, 0.0f);
 groundBox.dispose();
 ```
 
-See how we created a fixture without the need to define a `FixtureDef`? If all you need to specify is a shape and a density, the `createFixture` method has a useful overload for that.
+注意，我们无需定义 `FixtureDef` 就创建了 fixture。如果只需指定形状和密度，`createFixture` 方法提供了方便的重载。
 
-Now if you run the game you should see a ball fall and then bounce on our newly created ground. Play around with some of the different values for the ball like density and restitution and see what happens.
+现在运行游戏，应该能看到球落下并在新建的地面上弹起。尝试修改球的密度和恢复系数等值，观察会发生什么。
 
 
 
-### Kinematic Bodies
+### 运动刚体
 
-Kinematic bodies are somewhat in between static and dynamic bodies. Like static bodies, they do not react to forces, but like dynamic bodies, they do have the ability to move. Kinematic bodies are great for things where you, the programmer, want to be in full control of a body's motion, such as a moving platform in a platform game.
+运动刚体介于静态和动态刚体之间。它像静态刚体一样不对力作出反应，但像动态刚体一样可以移动。运动刚体适合由程序员完全控制运动的对象，例如平台游戏中的移动平台。
 
-It is possible to set the position on a kinematic body directly, but it's usually better to set a velocity instead, and letting Box2D take care of position updates.
+可以直接设置运动刚体的位置，但通常更好的做法是设置速度，让 Box2D 负责更新位置。
 
-You can create a kinematic body in much the same way as the dynamic and static bodies above. Once created, you can control the velocity like this:
+创建运动刚体的方式与上面的动态和静态刚体基本相同。创建后可以这样控制速度：
 
 ```java
 // Move upwards at a rate of 1 meter per second
 kinematicBody.setLinearVelocity(0.0f, 1.0f);
 ```
 
-## Impulses/Forces
+## 冲量/力
 
-Impulses and Forces are used to move a body in addition to gravity and collision.
+除重力和碰撞外，还可以使用冲量和力移动 body。
 
-Forces occur gradually over time to change the velocity of a body. For example, a rocket lifting off would slowly have forces applied as the rocket slowly begins to accelerate.
+力会随时间逐渐改变 body 的速度。例如火箭升空时，随着火箭逐渐加速，作用力也会逐步施加。
 
-Impulses on the other hand make immediate changes to the body's velocity. For example, playing Pac-Man the character always moved at a constant speed and achieved instant velocity upon being moved.
+冲量则会立即改变 body 的速度。例如在吃豆人游戏中，角色始终以恒定速度移动，并在开始移动时立即达到该速度。
 
-First you will need a Dynamic Body to apply forces/impulses to, see the [Dynamic Bodies](#dynamic_bodies) section above.
+首先需要一个用于施加力/冲量的动态刚体，请参阅上面的[动态刚体](#dynamic_bodies)部分。
 
-**Applying Force**
+**施加力**
 
-Forces are applied in Newtons at a World Point. If the force is not applied to the center of mass, it will generate torque and affect the angular velocity.
+力以牛顿为单位施加在世界坐标点上。如果力没有施加在质心，会产生扭矩并影响角速度。
 
 ```java
 // Apply a force of 1 meter per second on the X-axis at pos.x/pos.y of the body slowly moving it right
@@ -220,25 +220,25 @@ dynamicBody.applyForce(1.0f, 0.0f, pos.x, pos.y, true);
 dynamicBody.applyForceToCenter(1.0f, 0.0f, true);
 ```
 
-**Applying Impulse**
+**施加冲量**
 
-Impulses are just like Forces with the exception that they immediately modify the velocity of a body. As with forces, if the impulse is not applied at the center of a body, it will create torque which modifies angular velocity. Impulses are applied in Newton-seconds or kg-m/s.
+冲量与力类似，但会立即修改 body 的速度。同样，如果冲量没有施加在 body 中心，就会产生改变角速度的扭矩。冲量的单位是牛顿秒或 kg-m/s。
 
 ```java
 // Immediately set the X-velocity to 1 meter per second causing the body to move right quickly
 dynamicBody.applyLinearImpulse(1.0f, 0, pos.x, pos.y, true);
 ```
 
-Keep in mind applying forces or impulses will wake the body. Sometimes this behavior is undesired. For example, you may be applying a steady force and want to allow the body to sleep to improve performance. In this case you can set the wake boolean value to false.
+请注意，施加力或冲量会唤醒 body。有时这不是期望的行为，例如施加持续的力时，可能希望允许 body 休眠以提高性能。这时可以将 wake 布尔值设为 false。
 
 ```java
 // Apply impulse but don't wake the body
 dynamicBody.applyLinearImpulse(0.8f, 0, pos.x, pos.y, false);
 ```
 
-**Player Movement Example**
+**玩家移动示例**
 
-In this example, we will make a player run left or right and accelerate to a maximum velocity, just like Sonic the Hedgehog. For this example we have already created a Dynamic Body named 'player'. In addition we have defined a MAX_VELOCITY variable so our player won't accelerate beyond this value. Now it's just a matter of applying a linear impulse when a key is pressed.
+在这个示例中，我们将让玩家像刺猬索尼克一样向左或向右奔跑，并加速到最大速度。示例中已经创建了一个名为 'player' 的 Dynamic Body。此外，我们还定义了 MAX_VELOCITY 变量，使玩家不会加速超过该值。现在只需在按下按键时施加线性冲量即可。
 
 ```java
 Vector2 vel = this.player.body.getLinearVelocity();
@@ -255,11 +255,11 @@ if (Gdx.input.isKeyPressed(Keys.D) && vel.x < MAX_VELOCITY) {
 }
 ```
 
-## Joints and Gears
+## 关节和齿轮
 
-Every joint requires to have definition set up before creating it by box2d world. Using *initialize* helps with ensuring that all joint parameters are set.
+使用 Box2D 世界创建 joint 前，必须先设置其定义。使用 *initialize* 有助于确保所有 joint 参数都已设置。
 
-Note that destroying the joint after the body will cause crash. Destroying the body also destroys joints connected to it.
+注意，在 body 之后销毁 joint 会导致崩溃。销毁 body 也会销毁与其连接的 joint。
 
 ```java
 DistanceJointDef defJoint = new DistanceJointDef ();
@@ -271,13 +271,13 @@ DistanceJoint joint = (DistanceJoint) world.createJoint(defJoints); // Returns s
 
 ### DistanceJoint
 
-Distance joint makes length between bodies constant.
+Distance joint 会使两个 body 之间的距离保持不变。
 
-Distance joint definition requires defining an anchor point on both bodies and the non-zero length of the distance joint.
+Distance joint 定义需要指定两个 body 上的锚点，以及非零的 joint 长度。
 
-The definition uses local anchor points so that the initial configuration can violate the constraint slightly. This helps when saving and loading a game.
+该定义使用局部锚点，因此初始配置可以稍微违反约束。这有助于保存和加载游戏。
 
-**Do not use a zero or short length!**
+**不要使用零长度或过短的长度！**
 
 ```java
 // DistanceJointDef.initialize (Body bodyA, Body bodyB, Vector2 anchorA, Vector2 anchorB)
@@ -289,7 +289,7 @@ defJoint.initialize(bodyA, bodyB, new Vector2(0,0), new Vector2(128, 0));
 
 ### FrictionJoint
 
-Friction joint is used for top-down friction. It provides 2D translational friction and angular friction.
+Friction joint 用于俯视游戏中的摩擦效果。它提供二维平移摩擦和角摩擦。
 
 ```java
 FrictionJointDef jointDef = new FrictionJointDef ();
@@ -300,14 +300,14 @@ jointDef.initialize(bodyA, bodyB, anchor);
 
 ### GearJoint
 
-A gear joint is used to connect two joints together. Either joint can be a revolute or prismatic joint. You specify a gear ratio to bind the motions together: coordinate1 + ratio * coordinate2 = constant The ratio can be negative or positive. If one joint is a revolute joint and the other joint is a prismatic joint, then the ratio will have units of length or units of 1/length.
+Gear joint 用于连接两个 joint。每个 joint 都可以是 revolute joint 或 prismatic joint。你可以指定齿轮比来绑定两者的运动：coordinate1 + ratio * coordinate2 = constant。齿轮比可以为正也可以为负。如果一个 joint 是 revolute joint，另一个是 prismatic joint，那么齿轮比的单位将是长度或 1/长度。
 
 ```java
 GearJointDef jointDef = new GearJointDef (); // has no initialize
 ```
 
 ### MotorJoint
-A motor joint is used to control the relative motion between two bodies. A typical usage is to control the movement of a dynamic body with respect to the ground.
+Motor joint 用于控制两个 body 之间的相对运动。典型用法是控制动态 body 相对于地面的运动。
 
 ```java
 MotorJointDef jointDef = new MotorJointDef ();
@@ -320,7 +320,7 @@ jointDef.initialize(bodyA, bodyB);
 ```
 
 ### MouseJoint
-The mouse joint is used in the testbed to manipulate bodies with the mouse. It attempts to drive a point on a body towards the current position of the cursor. There is no restriction on rotation.
+Mouse joint 用于在测试平台中通过鼠标操作 body。它会尝试将 body 上的某个点移动到光标当前位置。旋转不受限制。
 
 ```java
 MouseJointDef jointDef = new MouseJointDef();
@@ -332,7 +332,7 @@ joint.setTarget(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
 
 ### PrismaticJoint
 
-A prismatic joint allows for relative translation of two bodies along a specified axis. A prismatic joint prevents relative rotation. Therefore, a prismatic joint has a single degree of freedom.
+Prismatic joint 允许两个 body 沿指定轴相对平移，同时阻止相对旋转。因此，Prismatic joint 只有一个自由度。
 
 ```java
 PrismaticJointDef jointDef = new PrismaticJointDef ();
@@ -348,7 +348,7 @@ jointDef.motorSpeed = 0.0f;
 
 ### PulleyJoint
 
-A pulley is used to create an idealized pulley. The pulley connects two bodies to ground and to each other. As one body goes up, the other goes down. The total length of the pulley rope is conserved according to the initial configuration.
+Pulley 用于创建理想化滑轮。滑轮将两个 body 分别连接到地面以及彼此。当一个 body 上升时，另一个会下降。根据初始配置，滑轮绳的总长度保持不变。
 
 ```java
 JointDef jointDef = new JointDef ();
@@ -358,7 +358,7 @@ jointDef.Initialize(myBody1, myBody2, groundAnchor1, groundAnchor2, anchor1, anc
 
 ### RevoluteJoint
 
-A revolute joint forces two bodies to share a common anchor point, often called a hinge point. The revolute joint has a single degree of freedom: the relative rotation of the two bodies. This is called the joint angle
+Revolute joint 强制两个 body 共享一个锚点，通常称为铰链点。Revolute joint 只有一个自由度：两个 body 的相对旋转，这称为 joint angle。
 
 ```java
 RevoluteJointDef jointDef = new RevoluteJoint();
@@ -376,7 +376,7 @@ jointDef.motorSpeed = 0.0f;
 
 ### RopeJoint
 
-A rope joint enforces a maximum distance between two points on two bodies. It has no other effect. Warning: if you attempt to change the maximum length during the simulation you will get some non-physical behavior. A model that would allow you to dynamically modify the length would have some sponginess, so I chose not to implement it that way. See b2DistanceJoint if you want to dynamically control length.
+Rope joint 强制两个 body 上的两个点之间保持最大距离，除此之外没有其他作用。警告：如果尝试在模拟过程中修改最大长度，会出现不符合物理规律的行为。允许动态修改长度的模型会有一定弹性，因此这里没有采用这种实现。如果需要动态控制长度，请参阅 b2DistanceJoint。
 
 ```java
 RopeJointDef jointDef = new RopeJointDef (); // has no initialize
@@ -384,7 +384,7 @@ RopeJointDef jointDef = new RopeJointDef (); // has no initialize
 
 ### WeldJoint
 
-A weld joint essentially glues two bodies together. A weld joint may distort somewhat because the island constraint solver is approximate.
+Weld joint 本质上会将两个 body 粘在一起。由于 island 约束求解器是近似的，Weld joint 可能会有些变形。
 
 ```java
 WeldJointDef jointDef = new WeldJointDef ();
@@ -393,7 +393,7 @@ jointDef.initialize(bodyA, bodyB, anchor);
 
 ### WheelJoint
 
-A wheel joint. This joint provides two degrees of freedom: translation along an axis fixed in bodyA and rotation in the plane. You can use a joint limit to restrict the range of motion and a joint motor to drive the rotation or to model rotational friction. This joint is designed for vehicle suspensions.
+Wheel joint 提供两个自由度：沿 bodyA 中固定轴的平移，以及平面内的旋转。可以使用 joint limit 限制运动范围，并使用 joint motor 驱动旋转或模拟旋转摩擦。该 joint 专为车辆悬挂设计。
 
 ```java
 WheelJointDef jointDef = new WheelJointDef();
@@ -406,31 +406,31 @@ WheelJoint joint = (WheelJoint) physics.createJoint(jointDef);
 joint.setMotorSpeed(1f);
 ```
 
-## Fixture Shapes
+## Fixture 形状
 
-As mentioned previously, a fixture has a shape, density, friction and restitution attached to it.
-Out of the box you can easily create boxes (as seen in the section [Static Bodies](/wiki/extensions/physics/box2d#static-bodies) section) and circle shapes (as seen in the [Dynamic Bodies](/wiki/extensions/physics/box2d#dynamic-bodies) section).
+如前所述，fixture 包含形状、密度、摩擦力和恢复系数。
+开箱即用即可轻松创建方形（如[静态刚体](/wiki/extensions/physics/box2d#static-bodies)一节所示）和圆形（如[动态刚体](/wiki/extensions/physics/box2d#dynamic-bodies)一节所示）。
 
-You can programatically define more complex shapes using the following classes
+可以使用以下类以编程方式定义更复杂的形状：
 * ChainShape,
 * EdgeShape,
 * PolygonShape
 
-However using third party tools you can simply define your shapes and import them into your game.
+不过，使用第三方工具可以直接定义形状并将其导入游戏。
 
-### Importing Complex Shapes using box2d-editor
+### 使用 box2d-editor 导入复杂形状
 
-[box2d-editor](https://github.com/julienvillegas/box2d-editor) is a free open source tool to define complex shapes and load them into your game.
-An example of how to import a shape into your game using box2d-editor is available on [Libgdx.info](https://libgdxinfo.wordpress.com/box2d-importing-complex-bodies/).
+[box2d-editor](https://github.com/julienvillegas/box2d-editor) 是一个免费的开源工具，可用于定义复杂形状并将其加载到游戏中。
+使用 box2d-editor 将形状导入游戏的示例可在 [Libgdx.info](https://libgdxinfo.wordpress.com/box2d-importing-complex-bodies/) 找到。
 
-Check out the [Tools section](/wiki/extensions/physics/box2d#Tools) for more tools.
+更多工具请查看[工具](/wiki/extensions/physics/box2d#Tools)一节。
 
-In a nutshell, if you are using Box2d-editor:
-* Create your shape within Box2d-editor.
-* Export your scene and copy the file into your asset folder.
-* Copy file BodyEditorLoader.java into your "core" module source folder.
+简而言之，如果使用 Box2d-editor：
+* 在 Box2d-editor 中创建形状。
+* 导出场景，并将文件复制到资源文件夹。
+* 将 BodyEditorLoader.java 文件复制到 "core" 模块的源代码文件夹。
 
-Then in your game you can do:
+然后可以在游戏中这样使用：
 
 ```java
 BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.internal("box2d_scene.json"));
@@ -449,25 +449,25 @@ fd.restitution = 0.3f;
 loader.attachFixture(body, "gear", fd, scale);
 ```
 
-## Sprites and Bodies
+## 精灵和刚体
 
-The easiest way to manage a link between your sprites or game objects and Box2D is with Box2D’s User Data. You can set the user data to your game object and then update the object's position based on the Box2D body.
+管理精灵或游戏对象与 Box2D 之间关联的最简单方法是使用 Box2D 的 User Data。你可以将用户数据设置为游戏对象，然后根据 Box2D body 更新对象的位置。
 
-Setting a body's user data is easy
+设置 body 的用户数据很简单：
 
 ```java
 body.setUserData(Object);
 ```
 
-This can be set to any Java object. It is also good to create your own game actor/object class which allows you to set a reference to its physics body.
+它可以设置为任意 Java 对象。也可以创建自己的游戏 actor/object 类，以便在其中保存对物理 body 的引用。
 
-Fixtures can also have user data set to them in the same way.
+Fixture 也可以用相同方式设置用户数据。
 
 ```java
 fixture.setUserData(Object);
 ```
 
-To update all your actors/sprites you can loop through all the world's bodies easily in your game/render loop.
+要更新所有 actor/sprite，可以在游戏的渲染循环中遍历世界中的所有 body。
 
 ```java
 // Create an array to be filled with the bodies
@@ -490,24 +490,24 @@ for (Body b : bodies) {
 }
 ```
 
-Then render your sprites using a libGDX `SpriteBatch` as usual.
+然后像往常一样使用 libGDX `SpriteBatch` 渲染精灵。
 
-## Sensors
-Sensors are Bodies that do not produce automatic responses during a collision (such as applying force). This is useful when one needs to be in complete control of what happens when two shapes collide.
-For example, think of a drone that has some kind of circular distance of sight. This body should follow the drone but shouldn't have a physical reaction to it, or any other bodies. It should detect when some target is inside it's shape.
+## 传感器
+传感器是碰撞时不会产生自动响应（例如施加力）的 Body。当需要完全控制两个形状碰撞时发生的事情时，这很有用。
+例如，考虑一个具有圆形视野范围的无人机。这个 body 应跟随无人机，但不应对无人机或其他 body 产生物理反应，只需检测目标是否进入其形状范围。
 
-To configure a body to be a sensor, set the 'isSensor' flag to true. An example would be:
+要将 body 配置为传感器，请将 `isSensor` 标志设为 true。例如：
 
 ```java
 //At the definition of the Fixture
 fixtureDef.isSensor = true;
 ```
 
-In order to listen to this sensor contact, we need to implement the ContactListener interface methods.
+要监听传感器接触，需要实现 ContactListener 接口方法。
 
-## Contact Listeners
-The Contact Listeners listen for collisions events on a specific fixture. The methods are passed a Contact object, which contain information about the two bodies involved.
-The beginContact method is called when the object overlaps another. When the objects are no longer colliding, the endContact method is called.
+## 接触监听器
+ContactListener 会监听特定 fixture 上的碰撞事件。方法会接收 Contact 对象，其中包含参与碰撞的两个 body 的信息。
+对象与另一个对象重叠时会调用 beginContact 方法；对象不再碰撞时会调用 endContact 方法。
 
 ```java
 public class ListenerClass implements ContactListener {
@@ -523,34 +523,34 @@ public class ListenerClass implements ContactListener {
 	};
 ```
 
-This class needs to be set as the world's contact listener in the screen's show() or init() method.
+需要在 screen 的 show() 或 init() 方法中将此类设置为世界的 contact listener。
 
 ```java
 world.setContactListener(ListenerClass);
 ```
 
-We might get information about the bodies from the contact fixtures.
-Depending on the application design, the Entity class should be referenced in the Body or Fixture user data, so we can use it from the Contact and make some changes (e.g. change the player health).
+可以从 contact 的 fixture 中获取 body 的信息。
+根据应用设计，可以将 Entity 类的实例放入 Body 或 Fixture 的用户数据中，这样就能从 Contact 中使用它并进行修改（例如改变玩家生命值）。
 
-## Resources
+## 资源
 
-There are a lot of really good Box2D resources out there and most of the code can be easily converted to libgdx.
+网上有许多优秀的 Box2D 资源，其中大部分代码都可以轻松转换为 libGDX 代码。
 
-  * A basic implementation and code sample for Box2D with Scene2D is also available on [LibGDX.info](https://libgdxinfo.wordpress.com/box2d-basic/).
-  * [Box2D documentation](https://box2d.org/documentation/) and [Discord](https://discord.com/invite/NKYgCBP) are a great place to find help.
-  * A really good [tutorial series on Box2D](https://www.iforce2d.net/b2dtut/). Covers a lot of different problems which you will more than likely run across in your game development.
+  * [LibGDX.info](https://libgdxinfo.wordpress.com/box2d-basic/) 还提供了 Box2D 与 Scene2D 的基础实现和代码示例。
+  * [Box2D 文档](https://box2d.org/documentation/)和 [Discord](https://discord.com/invite/NKYgCBP) 都是寻求帮助的好去处。
+  * 一套非常优秀的 [Box2D 教程](https://www.iforce2d.net/b2dtut/)，涵盖了许多不同问题，而你在开发游戏时很可能会遇到这些问题。
 
-## Tools
+## 工具
 
-The following is a list of tools for use with box2d and libgdx:
+以下是可与 Box2D 和 libGDX 配合使用的工具列表：
 
-### Free Open Source
+### 免费开源
 
   * [Physics Body Editor](https://github.com/julienvillegas/box2d-editor)
 
-Code sample available on [https://libgdxinfo.wordpress.com](https://libgdxinfo.wordpress.com/box2d-importing-complex-bodies//)
+代码示例见 [https://libgdxinfo.wordpress.com](https://libgdxinfo.wordpress.com/box2d-importing-complex-bodies//)
 
-### Commercial
+### 商业工具
 
-  * [RUBE](https://www.iforce2d.net/rube/) editor for creating box2d worlds. Use[RubeLoader](https://github.com/indiumindeed/RubeLoader) for loading RUBE data into libgdx.
+  * [RUBE](https://www.iforce2d.net/rube/) 编辑器可用于创建 Box2D 世界。使用 [RubeLoader](https://github.com/indiumindeed/RubeLoader) 将 RUBE 数据加载到 libGDX 中。
   * [PhysicsEditor](https://www.codeandweb.com/physicseditor)

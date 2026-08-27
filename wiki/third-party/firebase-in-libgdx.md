@@ -1,11 +1,11 @@
 ---
-title: Firebase in libGDX
+title: 在 libGDX 中使用 Firebase
 ---
-If you are interested in using [Firebase](https://firebase.google.com) with libGDX, take a look at mk-5's [gdx-fireapp](https://github.com/mk-5/gdx-fireapp).
+如果你有兴趣在 libGDX 中使用 [Firebase](https://firebase.google.com)，可以参考 mk-5 的 [gdx-fireapp](https://github.com/mk-5/gdx-fireapp)。
 
 
-## Setup
-Add the following dependencies to the corresponding places in your `build.gradle` files. For further information check out the project's extensive wiki: [Android guide](https://github.com/mk-5/gdx-fireapp/wiki/Android-guide), [iOS guide](https://github.com/mk-5/gdx-fireapp/wiki/iOS-Guide), [GWT guide](https://github.com/mk-5/gdx-fireapp/wiki/GWT-guide).
+## 设置
+将以下依赖添加到 `build.gradle` 文件中对应的位置。更多信息请参阅项目的完整 wiki：[Android 指南](https://github.com/mk-5/gdx-fireapp/wiki/Android-guide)、[iOS 指南](https://github.com/mk-5/gdx-fireapp/wiki/iOS-Guide)、[GWT 指南](https://github.com/mk-5/gdx-fireapp/wiki/GWT-guide)。
 
 **Core:**
 ```
@@ -27,17 +27,17 @@ implementation "pl.mk5.gdx-fireapp:gdx-fireapp-ios:$gdxFireappVersion"
 implementation "pl.mk5.gdx-fireapp:gdx-fireapp-html:$gdxFireappVersion"
 ```
 
-## Basics
-Gdx-firebase is a bridge between a libGDX app and the Firebase SDK. It covers Firebase functionality, so if you have some knowledge of the Firebase SDK, using gdx-firebase's API should be intuitive.
+## 基础
+Gdx-firebase 是 libGDX 应用与 Firebase SDK 之间的桥梁，涵盖了 Firebase 的功能。因此，如果你了解 Firebase SDK，使用 gdx-firebase 的 API 应该会很直观。
 
-To initialize the library, just put this line somewhere in your app's initialization code:
+要初始化该库，只需在应用的初始化代码中加入这一行：
 
 ```java
 GdxFIRApp.inst().configure();
 ```
 
-Firebase Analytics should start working just after this step.
+完成这一步后，Firebase Analytics 应该就会开始工作。
 
 
-## Examples
-The project's wiki provides various examples. Check them out [here](https://github.com/mk-5/gdx-fireapp/wiki/Examples).
+## 示例
+项目 wiki 提供了各种示例，可在[这里](https://github.com/mk-5/gdx-fireapp/wiki/Examples)查看。

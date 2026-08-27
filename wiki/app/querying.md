@@ -1,10 +1,10 @@
 ---
-title: Querying
+title: 查询
 ---
-The `Application` interface provides various methods to query properties of the run-time environment.
+`Application` 接口提供多种方法，用于查询运行时环境的属性。
 
-### Getting the Application Type
-Sometimes it is necessary to implement certain functionality differently depending on the platform it is running on. The `Application.getType()` method returns the platform the application is currently running on:
+### 获取应用程序类型
+有时需要根据运行平台以不同方式实现某些功能。`Application.getType()` 方法返回应用程序当前运行的平台：
 
 ```java
 switch (Gdx.app.getType()) {
@@ -22,20 +22,20 @@ switch (Gdx.app.getType()) {
 }
 ```
 
-On Android and iOS, one can also query the OS version the application is currently running on:
+在 Android 和 iOS 上，还可以查询应用程序当前运行的操作系统版本：
 
 ```java
 int androidVersion = Gdx.app.getVersion();
 ```
 
-On Android, this will return the SDK level supported on the current device, e.g., 3 for Android 1.5; on iOS it will return the major version of the current OS.
+在 Android 上，它返回当前设备支持的 SDK 级别，例如 Android 1.5 对应 3；在 iOS 上，它返回当前操作系统的主版本号。
 
-### Memory Consumption
-For debugging and profiling purposes it is often necessary to know the memory consumption, for both the Java heap and the native heap:
+### 内存占用
+出于调试和性能分析的需要，经常需要了解 Java 堆和本地堆的内存占用：
 
 ```java
 long javaHeap = Gdx.app.getJavaHeap();
 long nativeHeap = Gdx.app.getNativeHeap();
 ```
 
-Both methods return the number of bytes currently in use on the respective heap.
+两个方法都返回相应堆当前使用的字节数。

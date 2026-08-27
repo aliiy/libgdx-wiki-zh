@@ -1,12 +1,12 @@
 ---
-title: Bullet Wrapper Contact callbacks
+title: Bullet 封装：接触回调
 ---
-Contact callbacks allow you to be notified when a contact/collision on two objects occur ([more info and a performance related warning](https://web.archive.org/web/20180906172418/http://bulletphysics.org/mediawiki-1.5.8/index.php/Collision_Callbacks_and_Triggers)).
+接触回调允许你在两个对象发生接触或碰撞时收到通知（参见[更多信息及性能警告](https://web.archive.org/web/20180906172418/http://bulletphysics.org/mediawiki-1.5.8/index.php/Collision_Callbacks_and_Triggers)）。
 
-By default there are three callbacks: [`onContactAdded`](https://web.archive.org/web/20180906172418/http://bulletphysics.org/mediawiki-1.5.8/index.php/Collision_Callbacks_and_Triggers#gContactAddedCallback), [`onContactProcessed`](https://web.archive.org/web/20180906172418/http://bulletphysics.org/mediawiki-1.5.8/index.php/Collision_Callbacks_and_Triggers#gContactProcessedCallback) and [`onContactDestroyed`](https://web.archive.org/web/20180906172418/http://bulletphysics.org/mediawiki-1.5.8/index.php/Collision_Callbacks_and_Triggers#gContactDestroyedCallback)) . The wrapper adds two additional callbacks: `onContactStarted` and `onContactEnded` ([more info](https://pybullet.org/Bullet/phpBB3/viewtopic.php?t=7739&p=32470)). The callbacks are global (independent of e.g. the collision world), there can be only one implementation per callback active at any given time.
+默认提供三个回调：[`onContactAdded`](https://web.archive.org/web/20180906172418/http://bulletphysics.org/mediawiki-1.5.8/index.php/Collision_Callbacks_and_Triggers#gContactAddedCallback)、[`onContactProcessed`](https://web.archive.org/web/20180906172418/http://bulletphysics.org/mediawiki-1.5.8/index.php/Collision_Callbacks_and_Triggers#gContactProcessedCallback) 和 [`onContactDestroyed`](https://web.archive.org/web/20180906172418/http://bulletphysics.org/mediawiki-1.5.8/index.php/Collision_Callbacks_and_Triggers#gContactDestroyedCallback)。封装还增加了两个回调：`onContactStarted` 和 `onContactEnded`（参见[更多信息](https://pybullet.org/Bullet/phpBB3/viewtopic.php?t=7739&p=32470)）。回调是全局的（例如独立于碰撞世界），任意时刻每个回调只能有一个实现处于活动状态。
 
-### Contact Listeners
-You can extend the ContactListener class to implement one or more callbacks:
+### 接触监听器
+你可以扩展 ContactListener 类来实现一个或多个回调：
 ```java
 public class MyContactListener extends ContactListener {
 	@Override
@@ -20,9 +20,9 @@ public class MyContactListener extends ContactListener {
 }
 ```
 
-Note that there can only be one listener enabled for each callback at a time. You can use the `enable();` method to set the listener active, which disables any other listeners on that particular callback. Use the `disable();` method to stop being notified for that particular callback. Instantiating a listener automatically enables that callback and destroying (`dispose();` method) automatically disables it.
+请注意，每个回调同时只能启用一个监听器。可以使用 `enable();` 方法激活监听器，这会停用该回调的其他监听器；使用 `disable();` 方法停止接收该回调的通知。实例化监听器会自动启用对应回调，而销毁监听器（调用 `dispose();` 方法）会自动停用它。
 
-The ContactListener class provides one or more method signatures per callback you can override. For example the `onContactAdded` callback can be overridden using the following signatures:
+ContactListener 类为每个回调提供了一个或多个可供重写的方法签名。例如，可以使用以下签名重写 `onContactAdded` 回调：
 
 ```java
 boolean onContactAdded(btManifoldPoint cp, btCollisionObjectWrapper colObj0Wrap, int partId0, int index0, btCollisionObjectWrapper colObj1Wrap, int partId1, int index1);
@@ -38,22 +38,22 @@ boolean onContactAdded(btCollisionObject colObj0, int partId0, int index0, btCol
 boolean onContactAdded(int userValue0, int partId0, int index0, int userValue1, int partId1, int index1);
 ```
 
-As you can see it has three methods which provide the `btManifoldPoint` and three which don’t. To provide the actual collision objects, you can choose between either the `btCollisionObjectWrapper`, `btCollisionObject` or the `userValue`.
+可以看到，其中三个方法提供 `btManifoldPoint`，另外三个不提供。要获取实际碰撞对象，可以选择 `btCollisionObjectWrapper`、`btCollisionObject` 或 `userValue`。
 
-Make sure to override the method that only provides the arguments you are actually going to use. For example, if you are not going to use the `btManifoldPoint` then it wouldn’t make sense to create an object for that argument each time the callback is called. Likewise using `btCollisionObject` is more performant than using `btCollisionObjectWrapper`, because the `btCollisionObject` is reused. The `userValue` is even more performant, because the object isn’t mapped at all  (see [#btCollisionObject btCollisionObject] on how to use the useValue).
+请重写只提供你实际需要的参数的方法。例如，如果不使用 `btManifoldPoint`，那么每次调用回调都为该参数创建对象就没有意义。同样，使用 `btCollisionObject` 的性能优于 `btCollisionObjectWrapper`，因为前者会被复用。使用 `userValue` 的性能更好，因为完全不需要映射对象（关于如何使用 userValue，请参阅 [#btCollisionObject btCollisionObject]）。
 
-The `onContactAdded` callback will only be triggered if at least one of the two colliding bodies has the `CF_CUSTOM_MATERIAL_CALLBACK` set:
+只有当两个碰撞刚体中至少有一个设置了 `CF_CUSTOM_MATERIAL_CALLBACK` 时，才会触发 `onContactAdded` 回调：
 ```java
 body.setCollisionFlags(e.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
 ```
 
-To identify a contact along the added, processed and destroyed callbacks, you can use the `setUserValue(int);` and `getUserValue();` of the `btManifoldPoint` instance that the callback provides. This is also the value supplied to the `onContactDestroyed(int)` method of the `ContactListener` class. Note that the `onContactDestroyed` callback is only triggered if the user value is non-zero.
+要在 added、processed 和 destroyed 回调之间识别同一个接触，可以使用回调提供的 `btManifoldPoint` 实例的 `setUserValue(int);` 和 `getUserValue();`。这也是传给 ContactListener 类 `onContactDestroyed(int)` 方法的值。注意，只有 user value 非零时才会触发 `onContactDestroyed` 回调。
 
-### Contact Filtering
+### 接触过滤
 
-Contact callbacks are invoked a lot. JNI bridging between C++ and Java on every call adds quite an overhead, which decreases performance. Therefor the bullet wrapper allows you to specify for which objects you would like to receive contacts. This is done by contact filtering.
+接触回调会被频繁调用。每次调用都在 C++ 与 Java 之间进行 JNI 桥接，会产生相当大的开销并降低性能。因此，Bullet 封装允许你指定希望接收哪些对象的接触通知，这通过接触过滤实现。
 
-Similar to collision filtering, for every `btCollisionObject`, you can specify a flag using the `setContactCallbackFlag(int);` method and a filter using the `setContactCallbackFilter(int);` method. The filter of object A matches object B if `A.filter & B.flag == B.flag`. Only if one or both of the filters match the contact is passed to the listener.
+与碰撞过滤类似，可以为每个 `btCollisionObject` 使用 `setContactCallbackFlag(int);` 设置标志，并使用 `setContactCallbackFilter(int);` 设置过滤器。当 `A.filter & B.flag == B.flag` 时，对象 A 的过滤器与对象 B 匹配。只有一个或两个过滤器匹配时，接触才会传递给监听器。
 
 ```java
 static int PLAYER_FLAG = 2; // second bit
@@ -66,11 +66,11 @@ coin.setContactCallbackFilter(PLAYER_FLAG);
 // The listener will only be called if a coin collides with player
 ```
 
-By default the `contactCallbackFlag` of a `btCollisionObject` is set to 1 and the `contactCallbackFilter` is set to 0. Note that setting the flag to zero will cause the callback always to be invoked for that object (because `x & 0 == 0`).
+默认情况下，`btCollisionObject` 的 `contactCallbackFlag` 为 1，`contactCallbackFilter` 为 0。注意，将标志设为零会导致该对象始终触发回调（因为 `x & 0 == 0`）。
 
-Whether or not contact filtering is used, is decided by which method signature you override. For every callback that supports contact filtering the `ContactListener` class provides method signatures with the `boolean match0` and `boolean match1` arguments. If you override such method, contact filtering is used on that method. If you override a method that doesn’t have the `boolean match` arguments, then contact filtering is not used for that method.
+是否使用接触过滤取决于你重写的方法签名。对于支持接触过滤的每个回调，ContactListener 类都提供带有 `boolean match0` 和 `boolean match1` 参数的方法签名。重写这类方法时，该方法会使用接触过滤；如果重写不带 `boolean match` 参数的方法，则该方法不会使用接触过滤。
 
-You can use the `boolean match0` and `boolean match1` values to check which of both filters matches.
+可以使用 `boolean match0` 和 `boolean match1` 的值检查两个过滤器中的哪一个匹配。
 ```java
 public class MyContactListener extends ContactListener {
 	@Override
@@ -85,4 +85,4 @@ public class MyContactListener extends ContactListener {
 }
 ```
 
-Even when using contact filtering, the callbacks can be invoked quite often on collision. To avoid this you can set the filter to zero after processing. For example, in the case of the player and the coin, it's best to let the coin collide with the player and than set it's filter to zero on first contact, instead of letting the player collide with the coin.
+即使使用接触过滤，碰撞时仍可能频繁调用回调。要避免这种情况，可以在处理后将过滤器设为零。例如对于玩家和硬币，最好让硬币与玩家发生一次碰撞，然后在首次接触时将硬币的过滤器设为零，而不是让玩家持续与硬币碰撞。

@@ -1,7 +1,7 @@
 ---
-title: 3D Picking
+title: 3D 拾取
 ---
-1. Compose a pick ray with and origin and direction:
+1. 使用起点和方向构造拾取射线：
 
 ```java
 float viewportX = (2.0f * getMousePosX()) / viewportWidth - 1.0f;
@@ -19,4 +19,4 @@ gdxDirection.sub(gdxOrigin).nor();
 // collide geometries
 ```
 
-One way to do picking is to do CPU based collision math using [Euclid](https://github.com/ihmcrobotics/euclid), a performant and comprehensive vector math and geometry library.
+一种拾取方式是在 CPU 上使用[Euclid](https://github.com/ihmcrobotics/euclid)执行碰撞计算。Euclid 是一个高性能且完整的向量数学和几何库。

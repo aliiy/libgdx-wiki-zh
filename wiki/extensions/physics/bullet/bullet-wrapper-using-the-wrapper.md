@@ -1,28 +1,28 @@
 ---
-title: Bullet Wrapper Using the wrapper
+title: Bullet 封装：使用封装
 ---
-## Initializing Bullet
+## 初始化 Bullet
 
-Before you can use Bullet, you’ll need to load the libraries. This can be done by adding the following line in your create method:
+使用 Bullet 前，需要加载相关库。可以在 create 方法中加入以下代码：
 ```java
 Bullet.init();
 ```
 
-Be aware not to use bullet before it is initialized. For example, the following will result in an error because the `btGhostPairCallback` is created before the library is loaded.
+注意，在初始化完成前不要使用 Bullet。例如，下面的代码会出错，因为 `btGhostPairCallback` 在库加载前就被创建了。
 ```java
 public class InvokeRuntimeExceptionTest {
   final static btGhostPairCallback ghostPairCallback = new btGhostPairCallback();
 }
 ```
 
-## Working with Bullet wrapper
-The wrapper tends to follow the original bullet class names. Meaning that most classes are prefixed with “bt”. There are a few exceptions on this, which are mostly nested structs. These are custom implemented directly into the `com.badlogic.gdx.physics.bullet` package. Unfortunately some nested structs and some base classes are not suitable for a one on one translation. See the custom classes section for more information on that. If you find a class that is missing you can post it on the forums or issue tracker (https://github.com/libgdx/libgdx/issues), so it can be added to the wrapper.
+## 使用 Bullet 封装
+封装通常遵循原始 Bullet 的类名，也就是说大多数类都以 “bt” 开头。少数例外主要是嵌套结构体，它们直接在 `com.badlogic.gdx.physics.bullet` 包中自定义实现。不幸的是，某些嵌套结构体和基类不适合一对一转换，详情请参阅自定义类部分。如果发现缺少某个类，可以在论坛或 issue tracker（https://github.com/libgdx/libgdx/issues）中提出，以便将其加入封装。
 
-## Callbacks
+## 回调
 
-Callbacks require some special attention. By default the wrapper only supports a one way interaction (from Java to C++). Callback interfaces, where C++ needs to call Java code are custom implemented. If you find a callback interface that isn't implemented yet, you can post it on the forums so it can be added to the wrapper.
+回调需要特别注意。默认情况下，封装只支持单向交互（从 Java 到 C++）。需要由 C++ 调用 Java 代码的回调接口都是自定义实现的。如果发现尚未实现的回调接口，可以在论坛中提出，以便将其加入封装。
 
-List of callback interfaces (might not be complete):
+回调接口列表（可能不完整）：
  * `LocalShapeInfo`
  * `LocalRayResult`
  * `RayResultCallback`
@@ -38,47 +38,47 @@ List of callback interfaces (might not be complete):
  * `ContactListener`
  * `ContactCache`
 
-## Properties
-Properties are encapsulated by getter and setter methods. The naming of the getter and setter methods omits the `m_` prefix. For example, the `m_collisionObject` member of the native class `btCollisionObjectWrapper` is implemented as `getCollisionObject()` and `setCollisionObject(...)`.
+## 属性
+属性通过 getter 和 setter 方法封装。getter 和 setter 方法的名称会省略 `m_` 前缀。例如，本机类 `btCollisionObjectWrapper` 的 `m_collisionObject` 成员实现为 `getCollisionObject()` 和 `setCollisionObject(...)`。
 
-## Creating and destroying objects
-Every time you create a bullet class in Java it also creates the corresponding class in C++. While the Java object is maintained by the garbage collector, the C++ object isn’t. To avoid having orphaned C++ objects resulting in memory leaks, the C++ object is by default automatically destroyed when the Java object is destroyed by the garbage collector.
+## 创建和销毁对象
+每次在 Java 中创建 Bullet 类时，也会在 C++ 中创建对应的类。Java 对象由垃圾回收器维护，而 C++ 对象不会。为避免孤立的 C++ 对象造成内存泄漏，默认情况下，当垃圾回收器销毁 Java 对象时，也会自动销毁 C++ 对象。
 
-While this might be useful in some cases, it’s merely a fail-safe and you shouldn't rely on it. Since you can’t control the garbage collector, you can’t control _if_, _when_ and _in which order_ the objects are actually being destroyed. Therefore the wrapper logs an error when an object is automatically destroyed by the garbage collector. You can disable this error logging using the second argument of the `Bullet.init()` method, but you should preferably use the method in the following paragraph.
+虽然这在某些情况下有用，但它只是故障保护机制，不应依赖它。由于无法控制垃圾回收器，也就无法控制对象是否销毁、何时销毁以及销毁顺序。因此，当对象被垃圾回收器自动销毁时，封装会记录错误。可以使用 `Bullet.init()` 方法的第二个参数禁用此错误日志，但更推荐使用下一段介绍的方法。
 
-In order to ensure correct garbage collection you should keep a reference to every object you create until it’s not needed anymore and then destroy it yourself. You can destroy the C++ object by calling the `.dispose()` method on the Java object, after which you should remove all references to the Java object since it’s unusable after that.
+为确保正确的垃圾回收，应一直保留所创建对象的引用，直到不再需要它，然后自行销毁。可以对 Java 对象调用 `.dispose()` 方法销毁 C++ 对象；之后应移除对该 Java 对象的所有引用，因为它已不可用。
 
-The above is only true for the objects you are responsible of, which are all Bullet classes you create with the `new` keyword as well as classes you create using helper methods. You don’t have to dispose objects that are returned by regular methods or provided to you in callback methods.
+上述规则只适用于由你负责的对象，即使用 `new` 关键字创建的所有 Bullet 类，以及通过辅助方法创建的类。不需要销毁普通方法返回的对象，也不需要销毁回调方法提供给你的对象。
 
-## Referencing objects
-As stated above, you should keep a reference to every Bullet class and call the dispose method when it’s no longer needed. When your application becomes more complex and objects are shared amongst multiple other objects, it can become difficult to keep track of references. Therefore the bullet wrapper support reference counting.
+## 引用对象
+如上所述，应保留每个 Bullet 类的引用，并在不再需要时调用 dispose 方法。应用变得复杂、对象被多个其他对象共享后，跟踪引用可能会变得困难。因此 Bullet 封装支持引用计数。
 
-Reference counting is disabled by default. To enable it, call `Bullet.init();` with the first argument set to true:
+默认禁用引用计数。要启用它，请将 `Bullet.init();` 的第一个参数设为 true：
 ```java
 Bullet.init(true);
 ```
 
-When using reference counting, you must call the `obtain()` method on each object you need to reference. When you no longer need to reference an object, you must call the `release()` method. The release method will dispose the object if it’s doesn't have any more references to it.
+使用引用计数时，必须对每个需要引用的对象调用 `obtain()` 方法。不再需要引用对象时，必须调用 `release()` 方法。如果对象没有其他引用，release 方法会销毁它。
 
-Some wrapper classes help you in managing references. For example the `btCompoundShape` class obtains a reference to all its child shapes and releases them when it is disposed.
+一些封装类可以帮助管理引用。例如，`btCompoundShape` 类会获取所有子形状的引用，并在销毁时释放它们。
 
-## Extending classes
-You can extend the bullet classes, but it’s recommended not to do so except for callback classes (in which case you should only override the intended methods). The information you add to a class is not available in C++. Furthermore the result of any method of the bullet wrapper that returns a class you’ve overridden will not implement that class. For example:
+## 扩展类
+可以扩展 Bullet 类，但除回调类外不建议这样做（扩展回调类时也只能重写预期的方法）。添加到类中的信息在 C++ 中不可用。此外，Bullet 封装中返回被扩展类的方法，其结果不会实现该扩展类。例如：
 ```java
 btCollisionShape shape = collisionObjectA.getCollisionShape();
 ```
 
-This will create a new Java btCollisionShape class which doesn’t implement any extended class.
+这会创建一个新的 Java btCollisionShape 类，它不会实现任何扩展类。
 
-There is one exception to this for btCollisionObject, where the wrapper tries to reuse the same Java class. Furthermore the Java implementation of the btCollisionObject class adds a `userData` member which can be used to attach additional data to the object. To accomplish this the wrapper maintains an array with references to all btCollisionObject instances. You can access that array using the static field `btCollisionObject.instances`. Check the btCollisionObject `./Bullet Wrapper: Custom classes#btcollisionobject` section for detailed information on this.
+btCollisionObject 是一个例外，封装会尝试复用同一个 Java 类。此外，btCollisionObject 的 Java 实现增加了 `userData` 成员，可用于向对象附加额外数据。为此，封装维护了一个包含所有 btCollisionObject 实例引用的数组。可以通过静态字段 `btCollisionObject.instances` 访问该数组。详情请参阅 btCollisionObject 的 `./Bullet Wrapper: Custom classes#btcollisionobject` 部分。
 
-The upcast methods are not present because of a [issue](https://code.google.com/archive/p/libgdx/issues/1453). There is no need for them for classes that are created in java. These classes can directly be casted.
+由于存在一个[问题](https://code.google.com/archive/p/libgdx/issues/1453)，这里没有 upcast 方法。对于在 Java 中创建的类不需要这些方法，可以直接进行类型转换。
 
-## Comparing classes
-You can compare wrapper classes using the `equals()` method, which checks if the classes both wrap the same native class. To get the pointer to the underlying C++ class you can use the `getCPointer` method of the specific object. You can also compare these pointers to check whether the Java classes wrap the same C++ class.
+## 比较类
+可以使用 `equals()` 方法比较封装类，它会检查两个类是否封装了同一个本机类。要获取底层 C++ 类的指针，可以使用具体对象的 `getCPointer` 方法。也可以比较这些指针，以检查 Java 类是否封装了同一个 C++ 类。
 
-## Common classes
-Bullet uses some classes also available in the libGDX core. While these bullet classes are available for you to use, the wrapper tries to use the libGDX class where possible. Currently these are implemented for:
+## 常用类
+Bullet 使用了一些 libGDX 核心库中也提供的类。虽然这些 Bullet 类也可以使用，但封装会尽可能使用 libGDX 类。目前包括：
 
 | *Bullet* | *Libgdx* |
 |:--------:|:--------:|
@@ -88,11 +88,11 @@ Bullet uses some classes also available in the libGDX core. While these bullet c
 | btTransform | Matrix4 |
 | btScalar | float |
 
-<sub>Note that the conversion from Matrix4 to btTransform might lose some information, because btTransform only contains an origin and rotation. In addition, note that btScalar is synonym for the primitive type float.</sub>
+<sub>注意，从 Matrix4 转换为 btTransform 可能会丢失一些信息，因为 btTransform 只包含原点和旋转。另外，btScalar 是基本类型 float 的同义类型。</sub>
 
-To avoid creating objects for these common classes, the wrapper reuses the same instances. Therefore, be aware of the following two cases:
+为避免为这些常用类创建对象，封装会复用同一个实例。因此请注意以下两种情况：
 
- 1. The result of wrapper methods that return such a class are overwritten by the next method that returns the same type:
+  1. 返回这类对象的封装方法，其结果会被下一个返回相同类型的方法覆盖：
 ```java
 // Wrong method:
 Matrix4 transformA = collisionObjectA.getWorldTransform();
@@ -104,7 +104,7 @@ Matrix4 transformB = collisionObjectB.getWorldTransform();
 transformA.set(collisionObjectA.getWorldTransform());
 transformB.set(collisionObjectB.getWorldTransform());
 ```
- 2. The arguments of interface callbacks with arguments of such a class are unusable after the call:
+  2. 接口回调中这类对象的参数在调用结束后不可使用：
 ```java
 // Wrong method:
 @Override
@@ -118,7 +118,7 @@ public void setWorldTransform (final Matrix4 worldTrans) {
 }
 ```
 
-## Using arrays
-Where possible the wrapper uses direct ByteBuffer objects to pass arrays from Java to C++. This avoids copying the array on the call and allows you to share the same byte buffer for both OpenGL ES and Bullet. If needed you can create a new ByteByffer using `BufferUtils.newUnsafeByteBuffer`, which you should manually delete using `BufferUtils.disposeUnsafeByteBuffer`.
+## 使用数组
+在可能的情况下，封装使用直接 ByteBuffer 对象将数组从 Java 传递到 C++。这样可以避免调用时复制数组，并允许 OpenGL ES 和 Bullet 共享同一个字节缓冲区。如有需要，可以使用 `BufferUtils.newUnsafeByteBuffer` 创建新的 ByteBuffer，并使用 `BufferUtils.disposeUnsafeByteBuffer` 手动删除它。
 
-In cases where ByteBuffer can't be used or is unwanted, a normal array is used. By default this means that the array is copied using iteration from Java to C++ at start of the method and copied back at the end of the method. To avoid this overhead the wrapper tries to use the Java array directly from within C++ where possible using critical arrays. During such method Java garbage collecting is blocked. An example of such method is `btBroadphasePairArray.getCollisionObjects`.
+无法或不希望使用 ByteBuffer 时，会使用普通数组。默认情况下，这意味着方法开始时通过迭代将数组从 Java 复制到 C++，方法结束时再复制回来。为避免此开销，封装会在可能时通过 critical array 直接在 C++ 中使用 Java 数组。此类方法执行期间会阻止 Java 垃圾回收。`btBroadphasePairArray.getCollisionObjects` 就是一个示例。

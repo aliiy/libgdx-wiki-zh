@@ -1,32 +1,32 @@
 ---
-title: Continuous and Non Continuous Rendering
+title: 连续与非连续渲染
 ---
-By default in libGDX, the rendering thread calls the `render()` method of your ApplicationListener class continuously, with a frequency that depends on your hardware (30-50-80 times per second).
+默认情况下，libGDX 的渲染线程会持续调用 ApplicationListener 类的 `render()` 方法，调用频率取决于硬件（每秒 30、50 或 80 次）。
 
-If you have many still frames in your game (think about a card game) you can save precious battery power by disabling the continuous rendering, and calling it only when you really need it.
+如果游戏中有许多静止画面（例如卡牌游戏），可以禁用连续渲染，只在确实需要时调用它，从而节省宝贵的电量。
 
-All you need is put the following lines in your ApplicationListener's create() method
+只需将下面几行放入 ApplicationListener 的 create() 方法中：
 
 ```java
 Gdx.graphics.setContinuousRendering(false);
 Gdx.graphics.requestRendering();
 ```
 
-The first line tells the game to stop calling the render() method automatically. The second line triggers the render() method once. You have to use the second line wherever you want the render() method to be called.
+第一行让游戏停止自动调用 render() 方法，第二行触发一次 render() 方法。每当需要调用 render() 方法时，都必须使用第二行。
 
-If continuous rendering is set to false, the render() method will be called only when the following things happen.
+如果将连续渲染设为 false，只有发生以下情况时才会调用 render() 方法：
 
-  * An input event is triggered
-  * Gdx.graphics.requestRendering() is called
-  * Gdx.app.postRunnable() is called
+  * 触发输入事件
+  * 调用 Gdx.graphics.requestRendering()
+  * 调用 Gdx.app.postRunnable()
 
-**UI Actions**: Many Actions, such as the default fade-in and fade-out of dialogs, have a duration in which they need rendering to occur, so they will call `Gdx.graphics.requestRendering()` on your behalf. This is enabled by default. To disable it, you can call:
+**UI Actions**：许多 Action（例如对话框默认的淡入和淡出）都有持续时间，需要在此期间进行渲染，因此会代你调用 `Gdx.graphics.requestRendering()`。此功能默认启用。如需禁用，可以调用：
 
 ```java
 Stage.setActionsRequestRendering(false);
 ```
 ----
 
-Good article about this topic: [https://bitiotic.com/blog/2012/10/01/enabling-non-continuous-rendering-in-libgdx/](https://bitiotic.com/blog/2012/10/01/enabling-non-continuous-rendering-in-libgdx/)
+关于此主题的好文章：[https://bitiotic.com/blog/2012/10/01/enabling-non-continuous-rendering-in-libgdx/](https://bitiotic.com/blog/2012/10/01/enabling-non-continuous-rendering-in-libgdx/)
 
-Official libGDX blog post: [https://web.archive.org/web/20201028180041/https://www.badlogicgames.com/wordpress/?p=2289](https://web.archive.org/web/20201028180041/https://www.badlogicgames.com/wordpress/?p=2289)
+libGDX 官方博客文章：[https://web.archive.org/web/20201028180041/https://www.badlogicgames.com/wordpress/?p=2289](https://web.archive.org/web/20201028180041/https://www.badlogicgames.com/wordpress/?p=2289)

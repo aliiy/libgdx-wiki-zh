@@ -1,13 +1,13 @@
 ---
-title: Configuration and Querying
+title: 配置与查询
 ---
-Sometimes it is necessary to know which input devices are supported. It is also often the case that your game does not need the full range of input devices supported, e.g. you might not need the accelerometer or compass. It is good practice to disable those input devices in that case to preserve battery on Android. The following sections will show you how to perform these actions.
+有时需要知道支持哪些输入设备。游戏也常常不需要所有受支持的输入设备，例如可能不需要加速度计或指南针。在这种情况下禁用这些输入设备是节省 Android 电量的良好实践。以下部分将介绍如何执行这些操作。
 
 
-## Disabling Accelerometer & Compass (Android, iOS and Html)
-The [AndroidApplicationConfiguration](https://github.com/libgdx/libgdx/tree/master/backends/gdx-backend-android/src/com/badlogic/gdx/backends/android/AndroidApplicationConfiguration.java) class has a couple of public fields you can set before you hand it of to the `AndroidApplication.initialize()` method.
+## 禁用加速度计和指南针（Android、iOS 和 Html）
+[AndroidApplicationConfiguration](https://github.com/libgdx/libgdx/tree/master/backends/gdx-backend-android/src/com/badlogic/gdx/backends/android/AndroidApplicationConfiguration.java) 类提供了几个 public 字段，可以在将其传给 `AndroidApplication.initialize()` 方法前进行设置。
 
-Assuming our game doesn't need the accelerometer and compass, we can disable this input devices as follows:
+假设游戏不需要加速度计和指南针，可以按如下方式禁用这些输入设备：
 
 ```java
 public class MyGameActivity extends AndroidApplication {
@@ -22,10 +22,10 @@ public class MyGameActivity extends AndroidApplication {
 }
 ```
 
-Both the accelerometer and the compass are enabled by default. The above code disables them and will thus preserve some precious battery.
+加速度计和指南针默认都已启用。上面的代码会禁用它们，从而节省宝贵的电量。
 
-## Enabling Gyroscope (Android and Html)
-The gyroscope is disabled by default to preserve battery, you can enable it as follows:
+## 启用陀螺仪（Android 和 Html）
+陀螺仪默认禁用以节省电量，可以按如下方式启用：
 
 ```java
 public class MyGameActivity extends AndroidApplication {
@@ -39,14 +39,14 @@ public class MyGameActivity extends AndroidApplication {
 }
 ```
 
-## Querying Available Input Devices
-To check whether a specific input device is available on the platform the application currently runs, you can use the `Input.isPeripheralAvailable()` method.
+## 查询可用输入设备
+要检查应用程序当前运行的平台是否提供特定输入设备，可以使用 `Input.isPeripheralAvailable()` 方法。
 
 ```java
    boolean hardwareKeyboard = Gdx.input.isPeripheralAvailable(Peripheral.HardwareKeyboard);
    boolean multiTouch = Gdx.input.isPeripheralAvailable(Peripheral.MultitouchScreen);
 ```
 
-Please refer to the [Peripheral](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/Input.java#L560) enumeration to see the rest of the available constants.
+其余可用常量请参阅 [Peripheral](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/Input.java#L560) 枚举。
 
-Note that only a few Android devices have a hardware keyboard. Even if the keyboard is physically present, the user might not have slid it out. The method shown above will return false in this case.
+请注意，只有少数 Android 设备配备硬件键盘。即使设备确实有键盘，用户也可能没有将其滑出。在这种情况下，上述方法会返回 false。

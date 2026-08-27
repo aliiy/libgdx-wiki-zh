@@ -1,45 +1,45 @@
 ---
 title: ModelBatch
 ---
-[ModelBatch](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/ModelBatch.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g3d/ModelBatch.java)) is a class used for managing render calls. It is typically used to render instances of [models](/wiki/graphics/3d/models), although it is not restricted to models. The ModelBatch class abstracts away all rendering code, providing a layer on top of it and allowing you to focus on more game specific logic. Every part of the ModelBatch functionality is customizable by design.
+[ModelBatch](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/ModelBatch.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g3d/ModelBatch.java)）用于管理渲染调用。它通常用于渲染[模型](/wiki/graphics/3d/models)的实例，但并不局限于模型。ModelBatch 抽象了全部渲染代码，在其上提供一层封装，让你可以专注于更具体的游戏逻辑。ModelBatch 的每一部分功能都可以按设计进行自定义。
 
-**Caution:** because ModelBatch manages the render calls and therefore the rendering context, you should not try to manually modify the render context (e.g. bind shaders, texture or meshes, or call any function starting with `gl`) in between the `ModelBatch.begin()` and `ModelBatch.end()` calls. This will not work and might cause unpredictable behavior. Instead use the customization options that ModelBatch offers.
+**注意：**由于 ModelBatch 管理渲染调用，也就管理渲染上下文，因此不应在 `ModelBatch.begin()` 和 `ModelBatch.end()` 之间手动修改渲染上下文（例如绑定着色器、纹理或网格，或调用任何以 `gl` 开头的函数）。这样做不会生效，还可能导致不可预测的行为。应改用 ModelBatch 提供的自定义选项。
 
-* [Common misconceptions](#common-misconceptions)
-* [Overview](#overview)
-* [Using ModelBatch](#using-modelbatch)
-* [Gather render calls](#gather-render-calls)
-  * [What are render calls?](#what-are-render-calls)
+* [常见误解](#common-misconceptions)
+* [概述](#overview)
+* [使用 ModelBatch](#using-modelbatch)
+* [收集渲染调用](#gather-render-calls)
+  * [什么是渲染调用？](#what-are-render-calls)
   * [RenderableProvider](#renderableprovider)
-* [Gather Shaders](#gather-shaders)
-  * [What is a shader?](#what-is-a-shader)
+* [收集着色器](#gather-shaders)
+  * [什么是着色器？](#what-is-a-shader)
   * [ShaderProvider](#shaderprovider)
-  * [Default shader](#default-shader)
-* [Sorting render calls](#sorting-render-calls)
-* [Managing the render context](#managing-the-render-context)
+  * [默认着色器](#default-shader)
+* [排序渲染调用](#sorting-render-calls)
+* [管理渲染上下文](#managing-the-render-context)
   * [RenderContext](#rendercontext)
   * [TextureBinder](#texturebinder)
     * [TextureDescriptor](#texturedescriptor)
 
-# Common misconceptions
-* ModelBatch is often compared to [SpriteBatch](/wiki/graphics/2d/spritebatch-textureregions-and-sprites). While this might be understandable from an API view, there are some very big differences making them less comparable. The main difference is that SpriteBatch merges multiple sprites into a single draw call, while ModelBatch doesn't combine render calls. This does have performance implications, so be aware to merge any render calls before sending them to the ModelBatch.
-* ModelBatch does not perform (frustum) culling. It simply hasn't enough information to do this using the best performing method. By default, every call to `ModelBatch.render()` will at least lead to one actual render call. ModelBatch does allow you to customize this though and perform frustum culling prior to actually rendering. However, typically, you should perform (frustum) culling prior to calling `ModelBatch.render()`.
+# 常见误解
+* ModelBatch 经常被拿来与 [SpriteBatch](/wiki/graphics/2d/spritebatch-textureregions-and-sprites) 比较。虽然从 API 角度看这可以理解，但二者存在很大差异，因此并不适合直接比较。主要区别是 SpriteBatch 会将多个精灵合并为一次绘制调用，而 ModelBatch 不会合并渲染调用。这会影响性能，因此应在将渲染调用交给 ModelBatch 前先合并它们。
+* ModelBatch 不会执行（视锥体）剔除，因为它没有足够信息以最佳性能完成这项工作。默认情况下，每次调用 `ModelBatch.render()` 至少会产生一次实际渲染调用。不过可以自定义 ModelBatch，在实际渲染前执行视锥体剔除。通常应在调用 `ModelBatch.render()` 之前完成剔除。
 
-# Overview
-So what does ModelBatch actually do?
+# 概述
+那么 ModelBatch 到底做什么？
 
-1. It gathers render calls
-2. It gathers a shader for each render call
-3. It sorts the render calls
-4. It manages the rendering context
-5. It executes the render calls
+1. 收集渲染调用
+2. 为每个渲染调用收集着色器
+3. 对渲染调用排序
+4. 管理渲染上下文
+5. 执行渲染调用
 
-That's it. Nothing more, nothing less. And every part of this is customizable. Please be aware that because of this design, there might be multiple ways to accomplish the same basic task.
+仅此而已，不多不少。上述每一部分都可以自定义。请注意，由于这种设计，完成同一基本任务可能有多种方式。
 
-# Using ModelBatch
-ModelBatch is a relatively heavy weight object, because of the shaders it might create. When possible you should try to reuse it. You'd typically create a ModelBatch in the `create()` method. Because it contains native resources (like the shaders it uses), you'll need to call the `dispose()` method when no longer needed.
+# 使用 ModelBatch
+ModelBatch 是相对重量级的对象，因为它可能创建着色器。应尽可能复用它。通常在 `create()` 方法中创建 ModelBatch。由于它包含原生资源（例如使用的着色器），不再需要时必须调用 `dispose()` 方法。
 
-Rendering should be done every frame, typically in your `render()` method. To start rendering you should call `modelBatch.begin(camera);`. Next use the `modelBatch.render(...);` method to add one or more render calls. When done adding render calls, you must call `modelBatch.end();` to actually render to specified calls.
+通常应在每一帧渲染，一般是在 `render()` 方法中完成。开始渲染时调用 `modelBatch.begin(camera);`，然后使用 `modelBatch.render(...);` 方法添加一个或多个渲染调用。添加完成后，必须调用 `modelBatch.end();` 才会真正执行这些渲染调用。
 ```java
     ModelBatch modelBatch;
     ...
@@ -66,49 +66,49 @@ Rendering should be done every frame, typically in your `render()` method. To st
         ...
     }
 ```
-The call to `modelBatch.render(...)` is only valid in between the call to `modelBatch.begin(camera)` and `modelBatch.end()`. The actual rendering is performed at the call to `end();`. If you want to force rendering in between, then you can use the `modelBatch.flush();` method.
+只有在 `modelBatch.begin(camera)` 和 `modelBatch.end()` 之间才能调用 `modelBatch.render(...)`。实际渲染在调用 `end();` 时执行。如果希望在中间强制渲染，可以使用 `modelBatch.flush();` 方法。
 
-The [`Camera`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/Camera.html) you supply is hold by reference, meaning that it must not be changed in between the begin and end calls. If you need to switch camera in between the begin and end calls, then you can call the `modelBatch.setCamera(camera);`, which will `flush()` the batch if needed.
+传入的 [`Camera`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/Camera.html) 按引用保存，因此在 begin 和 end 调用之间不能更改它。如果需要在两者之间切换摄像机，可以调用 `modelBatch.setCamera(camera);`，必要时该方法会对批处理执行 `flush()`。
 
-# Gather render calls
-## What are render calls?
-The purpose of ModelBatch is to manage render calls. So what exactly is a render call and how do you specify them?
+# 收集渲染调用
+## 什么是渲染调用？
+ModelBatch 的作用是管理渲染调用。那么渲染调用究竟是什么，又该如何指定？
 
-A "render call" (often also referred to as "draw call") is basically the instruction to the GPU to render (display) something. Simply said, each "render call" displays a shape with some properties (e.g. a location, image, color, etc). Or to be more precise, it instructs the GPU to render a given part of a mesh using a given shader in a given context. We will look more in depth on this later.
+“渲染调用”（也常称为“绘制调用”）本质上是让 GPU 渲染（显示）某个内容的指令。简单来说，每次渲染调用都会显示带有某些属性（例如位置、图像、颜色等）的形状。更准确地说，它会指示 GPU 在给定上下文中使用给定着色器渲染网格的指定部分。后文会进一步介绍。
 
-> For basic usage, you don't have to know the exact details about a render call, because ModelBatch abstracts them away. However, there's a performance impact of render calls. Typically each render call is executed on the GPU, meaning that it is executed in parallel to CPU code. Whenever a new render call is executed, it might imply that GPU and CPU need to be synchronized. Or in other words, having are few large render calls is typically better performing than having many smaller render calls.
+> 对于基本用法，无需了解渲染调用的确切细节，因为 ModelBatch 已将其抽象出来。不过，渲染调用会影响性能。通常每次渲染调用都在 GPU 上执行，与 CPU 代码并行；每执行一次新的渲染调用，都可能需要同步 GPU 和 CPU。换句话说，少量大型渲染调用通常比大量小型调用性能更好。
 
-To specify a render call, libGDX contains the [Renderable](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/Renderable.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g3d/Renderable.java)) class, which contains almost everything (except for the camera) required to perform a single render call. Basically it contains how (the shader) and where (the transformation) to render the shape (the mesh part) in which context (the environment and material).
+为了指定渲染调用，libGDX 提供 [Renderable](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/Renderable.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g3d/Renderable.java)）类，其中包含执行一次渲染调用所需的几乎全部信息（摄像机除外）。它描述了使用什么方式（着色器）、在什么位置（变换）、以什么上下文（环境和材质）渲染形状（网格部件）。
 
-The `render(...)` method of `ModelBatch` has many signatures (variations with different method arguments), one of which is `ModelBatch.render(Renderable);`. Using this method you can directly specify the render call you want to add to the ModelBatch. The other `render(...)` methods allow you to specify one or more render calls using a `RenderableProvider`. In those methods, the other arguments let you provide default values for those render calls. For example, when using the `ModelBatch#render(RenderableProvider, Environment, Shader)` method it will set (override) the `environment` and `shader` members of every `Renderable` the `RenderableProvider` provides.
+`ModelBatch` 的 `render(...)` 方法有多种签名（方法参数不同的变体），其中一个是 `ModelBatch.render(Renderable);`。使用它可以直接指定要添加到 ModelBatch 的渲染调用。其他 `render(...)` 方法允许通过 `RenderableProvider` 指定一个或多个渲染调用，并通过其他参数为这些调用提供默认值。例如，使用 `ModelBatch#render(RenderableProvider, Environment, Shader)` 时，会设置（覆盖）RenderableProvider 提供的每个 `Renderable` 的 `environment` 和 `shader` 成员。
 
 ## RenderableProvider
-[`RenderableProvider`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/RenderableProvider.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g3d/RenderableProvider.java)) is an interface which you can implement to supply one or more `Renderable` instances. Probably the most common implementation of this interface is the [`ModelInstance`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/ModelInstance.html) class, which traverses all [nodes](/wiki/graphics/3d/models#nodes) ([parts](/wiki/graphics/3d/models#nodepart)) and translates them into a `Renderable` instance. However, you can use the `RenderableProvider` anyway you need. For example, when creating a voxel engine, you could create a `Renderable` for each chunk. Or when using an entity component system, you could use `RenderableProvider` as component.
+[`RenderableProvider`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/RenderableProvider.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g3d/RenderableProvider.java)）是一个可实现的接口，用于提供一个或多个 `Renderable` 实例。最常见的实现可能是 [`ModelInstance`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/ModelInstance.html)，它会遍历所有[节点](/wiki/graphics/3d/models#nodes)（[部件](/wiki/graphics/3d/models#nodepart)），并将它们转换为 `Renderable` 实例。不过，也可以按需要使用 `RenderableProvider`。例如，创建体素引擎时，可以为每个区块创建一个 `Renderable`；使用实体组件系统时，则可以将 `RenderableProvider` 作为组件。
 
-`RenderableProvider` only has one method:
+`RenderableProvider` 只有一个方法：
 ```java
 public void getRenderables (Array<Renderable> renderables, Pool<Renderable> pool);
 ```
-This is a very open API (e.g. it gives you access to the `Array` of all previously added `Renderable`s), but you should restrict your usage to only adding elements to the array. The pool can optionally be used to avoid allocation. You're free to ignore it or to use it for any dynamic `Renderable` needed. Any `Renderable` you `obtain()` from it, will be automatically be free'd by the `ModelBatch`, you don't have to take care for that.
+这是一个非常开放的 API（例如可以访问包含所有已添加 `Renderable` 的 `Array`），但应限制自己只向数组添加元素。对象池可以选择性地用于避免分配。可以忽略对象池，也可以用它获取所需的动态 `Renderable`。从对象池 `obtain()` 的任何 `Renderable` 都会由 ModelBatch 自动释放，无需自行处理。
 
-# Gather shaders
-## What is a shader?
-A [`Shader`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/Shader.html)  ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g3d/Shader.java)) is an interface that abstracts the implementation of actually performing the render call. Typically its implementation uses a [`ShaderProgram`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/glutils/ShaderProgram.html) which is the GPU program (e.g. the _vertex shader_ and _fragment shader_) needed to perform the render call. The `Shader` implementation also contains everything needed to use this `ShaderProgram`, like setting _uniform_ values.
+# 收集着色器
+## 什么是着色器？
+A [`Shader`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/Shader.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g3d/Shader.java)）是一个接口，用于抽象实际执行渲染调用的实现。它通常使用 [`ShaderProgram`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/glutils/ShaderProgram.html)，这是执行渲染调用所需的 GPU 程序（例如 _vertex shader_ 和 _fragment shader_）。`Shader` 实现还包含使用该 `ShaderProgram` 所需的全部内容，例如设置 _uniform_ 值。
 
 ## ShaderProvider
-Independent of how the actual rendering is performed, the ModelBatch needs one `Shader` per `Renderable`. For this it uses the [`ShaderProvider`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/utils/ShaderProvider.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g3d/utils/ShaderProvider.java)) interface. For every `Renderable` added to the batch (even if it contains a shader), the `getShader` of the `ShaderProvider` will be called to fetch to shader to render it.
+无论实际如何渲染，ModelBatch 都需要为每个 `Renderable` 准备一个 `Shader`。为此，它使用 [`ShaderProvider`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/utils/ShaderProvider.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g3d/utils/ShaderProvider.java)）接口。对于添加到批处理中的每个 `Renderable`（即使它已经包含着色器），都会调用 ShaderProvider 的 `getShader` 来获取用于渲染它的着色器。
 
 ```java
 public Shader getShader (Renderable renderable);
 ```
 
-By default the [DefaultShaderProvider](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/utils/DefaultShaderProvider.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g3d/utils/DefaultShaderProvider.java)) is used, which will create a [DefaultShader](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/shaders/DefaultShader.html) whenever a previous created shader can't be reused. You can, however, customize this by supplying your own `ShaderProvider` or by extending the `DefaultShaderProvider`.
+默认使用 [DefaultShaderProvider](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/utils/DefaultShaderProvider.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g3d/utils/DefaultShaderProvider.java)）。当之前创建的着色器无法复用时，它会创建 [DefaultShader](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/shaders/DefaultShader.html)。不过，也可以提供自己的 `ShaderProvider` 或扩展 `DefaultShaderProvider` 来自定义行为。
 
-`ModelBatch` delegates managing `Shader`'s to the `ShaderProviders`. Because a `Shader` typically uses a `ShaderProgram`, they need to be disposed. When `modelBatch.dispose();` is called, `ModelBatch` will call the `dispose()` method the `ShaderProvider`.
+`ModelBatch` 将 `Shader` 的管理委托给 `ShaderProvider`。由于 `Shader` 通常使用 `ShaderProgram`，因此需要释放它们。调用 `modelBatch.dispose();` 时，`ModelBatch` 会调用 `ShaderProvider` 的 `dispose()` 方法。
 
-To help managing and reusing shaders, libGDX offers the abstract [`BaseShaderProvider`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/utils/BaseShaderProvider.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g3d/utils/BaseShaderProvider.java)). This class keeps track of all shaders created, reuses them if possible and disposes them when no longer needed. If you extend this class, it will call the `createShader(Renderable)` method when it hasn't got a shader it can reuse. Whether a `Shader` can be reused, is determined by the call to [`shader.canRender(Renderable)`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/Shader.html#canRender-com.badlogic.gdx.graphics.g3d.Renderable-).
+为了帮助管理和复用着色器，libGDX 提供了抽象类 [`BaseShaderProvider`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/utils/BaseShaderProvider.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g3d/utils/BaseShaderProvider.java)）。该类会跟踪创建的所有着色器，在可能时复用它们，并在不再需要时释放它们。如果扩展此类，当没有可复用的着色器时，它会调用 `createShader(Renderable)` 方法。`Shader` 是否可以复用由 [`shader.canRender(Renderable)`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/Shader.html#canRender-com.badlogic.gdx.graphics.g3d.Renderable-) 的调用结果决定。
 
-A typical use-case is to extend `DefaultShaderProvider` (which extends BaseShaderProvider) and provide a custom shader when needed, while falling back to the DefaultShader when you can't use your custom shader.
+一种常见用法是扩展 `DefaultShaderProvider`（它扩展了 BaseShaderProvider），在需要时提供自定义着色器；无法使用自定义着色器时，则回退到 DefaultShader。
 ```java
 public static class MyShaderProvider extends DefaultShaderProvider {
 	@Override
@@ -120,16 +120,16 @@ public static class MyShaderProvider extends DefaultShaderProvider {
 	}
 }
 ```
-Here the [Material](/wiki/graphics/3d/material-and-environment) is used to decide whether the custom shader should be used. This is the preferred and easiest method. However, you can use any value, including the generic [`renderable.userData`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/Renderable.html#userData) to decide which shader to use, as long as its `shader.canRender(renderable)` method returns true for the given renderable.
+这里使用 [Material](/wiki/graphics/3d/material-and-environment) 来决定是否使用自定义着色器。这是推荐且最简单的方法。不过，也可以使用任意值（包括通用的 [`renderable.userData`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/Renderable.html#userData)）来决定使用哪个着色器，只要其 `shader.canRender(renderable)` 方法对给定的 renderable 返回 true 即可。
 
-## Default shader
-When you don't specify a custom `ShaderProvider`, then `ModelBatch` will use the `DefaultShaderProvider`. This provider creates a new [`DefaultShader`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/shaders/DefaultShader.html) instance when needed.
+## 默认着色器
+如果没有指定自定义 `ShaderProvider`，`ModelBatch` 就会使用 `DefaultShaderProvider`。需要时，该提供器会创建新的 [`DefaultShader`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/shaders/DefaultShader.html) 实例。
 
-The `DefaultShader` class provides a default implementation of most of the standard [material and environment attributes](/wiki/graphics/3d/material-and-environment), including lighting, normal maps, reflection cubemaps, etc. That is: it binds the attribute values to the corresponding `uniform`s. [A list of uniform names can be found here](https://github.com/libgdx/libgdx/blob/1.7.0/gdx/src/com/badlogic/gdx/graphics/g3d/shaders/DefaultShader.java#L81-L120).
+`DefaultShader` 类为大多数标准的[材质和环境属性](/wiki/graphics/3d/material-and-environment)提供默认实现，包括光照、法线贴图、反射立方体贴图等。也就是说，它会将属性值绑定到对应的 `uniform`。 [这里可以找到 uniform 名称列表](https://github.com/libgdx/libgdx/blob/1.7.0/gdx/src/com/badlogic/gdx/graphics/g3d/shaders/DefaultShader.java#L81-L120)。
 
-> **NOTE: by default, the shader program (the glsl files) use per-vertex lighting ([Gouraud shading](https://en.wikipedia.org/wiki/Gouraud_shading)).Normal mapping, reflection etc. is not applied by default.**
+> **注意：默认情况下，着色器程序（glsl 文件）使用逐顶点光照（[Gouraud 着色](https://en.wikipedia.org/wiki/Gouraud_shading)）。默认不会应用法线贴图、反射等效果。**
 
-The behavior of this class is configurable by supplying a [`DefaultShader.Config`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/shaders/DefaultShader.Config.html) instance to the `DefaultShaderProvider`.
+向 `DefaultShaderProvider` 提供 [`DefaultShader.Config`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/shaders/DefaultShader.Config.html) 实例，可以配置此类的行为。
 
 ```java
 DefaultShader.Config config = new DefaultShader.Config();
@@ -139,9 +139,9 @@ config.numBones = 16;
 modelBatch = new ModelBatch(new DefaultShaderProvider(config));
 ```
 
-> **NOTE:** the default configuration is rarely the most optimal for each use-case. For example it uses 5 point lights and 2 directional lights, even if you're only using 1 direction and 1 point light. Make sure to adjust it to your specific use-case to get the most out of it. [If you're using skinning, then the number of bones must match the number of bones the model is created with.](/wiki/graphics/3d/3d-animations-and-skinning)
+> **注意：**默认配置很少能针对每种使用场景达到最优。例如，即使只使用 1 个方向光和 1 个点光源，它也会使用 5 个点光源和 2 个方向光。请根据具体场景调整配置，以充分发挥其效果。[如果使用蒙皮，骨骼数量必须与创建模型时使用的骨骼数量一致。](/wiki/graphics/3d/3d-animations-and-skinning)
 
-The [GPU shader](/wiki/graphics/opengl-utils/shaders) (the vertex and fragment shader) to be used is also configurable using this config. Because this shader can be used for various combinations of attributes, it typically is a so-called *ubershader*. This is shader glsl code of which parts are enabled or disabled based on the `Renderable` by using [pre-processor macro directives](https://www.opengl.org/wiki/Core_Language_(GLSL)#Preprocessor_directives). For example:
+要使用的 [GPU 着色器](/wiki/graphics/opengl-utils/shaders)（顶点着色器和片段着色器）也可以通过此配置进行设置。由于该着色器可用于各种属性组合，因此通常称为 *ubershader*。它是一段 GLSL 着色器代码，会使用[预处理器宏指令](https://www.opengl.org/wiki/Core_Language_(GLSL)#Preprocessor_directives)，根据 `Renderable` 启用或禁用其中的部分代码。例如：
 
 ```glsl
 #ifdef blendedFlag
@@ -155,13 +155,13 @@ The [GPU shader](/wiki/graphics/opengl-utils/shaders) (the vertex and fragment s
 #endif
 ```
 
-In this snippet, the actual code used for the shader depends on whether `blendedFlag` and/or `alphaTestFlag` are defined. [The `DefaultShader` class defines these based on the values of the `Renderable`.](https://github.com/libgdx/libgdx/blob/1.7.0/gdx/src/com/badlogic/gdx/graphics/g3d/shaders/DefaultShader.java#L631-L702)
+在此代码片段中，着色器实际使用的代码取决于是否定义了 `blendedFlag` 和/或 `alphaTestFlag`。[`DefaultShader` 类会根据 `Renderable` 的值定义这些标志。](https://github.com/libgdx/libgdx/blob/1.7.0/gdx/src/com/badlogic/gdx/graphics/g3d/shaders/DefaultShader.java#L631-L702)
 
-If you don't specify a custom ubershader, then the default ubershader will be used (see the source of the: [vertex shader](https://github.com/libgdx/libgdx/blob/1.7.0/gdx/src/com/badlogic/gdx/graphics/g3d/shaders/default.vertex.glsl) and [fragment shader](https://github.com/libgdx/libgdx/blob/1.7.0/gdx/src/com/badlogic/gdx/graphics/g3d/shaders/default.fragment.glsl)). Although this shader supports most basic attributes (like skinning, diffuse and specular per-vertex lighting etc.), it is very generic and cannot support every possible combination of attributes.
+如果没有指定自定义 ubershader，则会使用默认 ubershader（参见[顶点着色器](https://github.com/libgdx/libgdx/blob/1.7.0/gdx/src/com/badlogic/gdx/graphics/g3d/shaders/default.vertex.glsl)和[片段着色器](https://github.com/libgdx/libgdx/blob/1.7.0/gdx/src/com/badlogic/gdx/graphics/g3d/shaders/default.fragment.glsl)的源代码）。虽然该着色器支持大多数基本属性（例如蒙皮、逐顶点漫反射和镜面反射光照等），但它非常通用，无法支持所有可能的属性组合。
 
-> If you want to have per-fragment lighting, normal mapping, reflection then you can use [this "unofficial" shader](https://gist.github.com/xoppa/9766698). But, please note that this shader adds this functionality at the cost of e.g. being restricted to a single directional light.
+> 如果需要逐片段光照、法线贴图和反射，可以使用[这个“非官方”着色器](https://gist.github.com/xoppa/9766698)。但请注意，该着色器是以限制为单个方向光等代价来增加这些功能的。
 
-If you look at the source of the default ubershader, then you'll probably notice that it is huge and almost impossible to read, let alone maintain it. Luckily you don't have to support every possible combination of attributes and as we've seen in the previous paragraph you can extend the `DefaultShaderProvider` and break it into multiple shaders to make it easier to maintain. For example:
+如果查看默认 ubershader 的源代码，可能会注意到它非常庞大，几乎难以阅读，更不用说维护了。幸运的是，不必支持所有可能的属性组合；如上一段所述，可以扩展 `DefaultShaderProvider`，将其拆分为多个着色器以便维护。例如：
 
 ```java
 public static class MyShaderProvider extends DefaultShaderProvider {
@@ -183,49 +183,49 @@ public static class MyShaderProvider extends DefaultShaderProvider {
 }
 ```
 
-# Sorting render calls
-If render calls would be executed in a random order, then it would cause strange and less performing result. For example, if a transparent object would be rendered prior to an object that's behind it then you won't see the object behind it. This is because the depth buffer will prevent the object further away from being rendered. Sorting the render calls helps to solve this.
+# 排序渲染调用
+如果以随机顺序执行渲染调用，可能会产生奇怪且性能较差的结果。例如，如果透明对象在其后方的对象之前渲染，就看不到后方对象。这是因为深度缓冲会阻止更远处的对象被渲染。对渲染调用排序有助于解决这个问题。
 
-By default `ModelBatch` will use the [DefaultRenderableSorter](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/utils/DefaultRenderableSorter.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g3d/utils/DefaultRenderableSorter.java)) to sort the render calls. This implementation will cause that opaque objects are rendered first from front to back, after which transparent objects are rendered from back to front. To decide whether an object is transparent or not, the default implementation checks the [BlendingAttribute#blended](/wiki/graphics/3d/material-and-environment) value.
+默认情况下，`ModelBatch` 使用 [DefaultRenderableSorter](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/utils/DefaultRenderableSorter.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g3d/utils/DefaultRenderableSorter.java)）对渲染调用排序。该实现会先从前到后渲染不透明对象，再从后到前渲染透明对象。默认实现通过检查 [BlendingAttribute#blended](/wiki/graphics/3d/material-and-environment) 值来判断对象是否透明。
 
-Customizing sorting can help increase performance. For example, sorting based on shader, mesh or used textures might help decreasing shader, mesh or texture switches. These kind of optimizations are very application specific. You can customize sorting by specifying your own [`RenderableSorter`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/utils/RenderableSorter.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g3d/utils/RenderableSorter.java)) implementation while constructing the `ModelBatch`. This interface contains only one method:
+自定义排序有助于提升性能。例如，根据着色器、网格或所用纹理进行排序，可能有助于减少着色器、网格或纹理切换。这类优化高度依赖具体应用。构造 `ModelBatch` 时，可以指定自己的 [`RenderableSorter`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/utils/RenderableSorter.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g3d/utils/RenderableSorter.java)）实现来自定义排序。该接口只有一个方法：
 ```java
 public void sort (Camera camera, Array<Renderable> renderables);
 ```
-This method provides all information the `ModelBatch` has just before the actually rendering. It is also a very open API, you are allowed to modify the array as needed. This makes it possible to perform any last-minute actions (that might not be even related to sorting, like frustum culling) in this interface. The order of the `renderables` after this method completes, will be the order in which the render calls will be actually executed.
+该方法会在实际渲染前提供 `ModelBatch` 的全部信息。它也是一个非常开放的 API，允许按需修改数组。因此可以在此接口中执行任何最后时刻的操作（甚至不一定与排序有关，例如视锥体剔除）。该方法完成后，`renderables` 的顺序就是实际执行渲染调用的顺序。
 
-# Managing the render context
-`ModelBatch` allows you to avoid redundant OpenGL calls, including texture binds, across multiple `Shader` implementations. For example, when a `Shader` requires backface culling and a previous shader enabled backface culling, then the redundant call to `glEnable` and `glCullFace` can be avoided.
+# 管理渲染上下文
+`ModelBatch` 可以在多个 `Shader` 实现之间避免冗余的 OpenGL 调用，包括纹理绑定。例如，当一个 `Shader` 要求进行背面剔除，而前一个着色器已经启用背面剔除时，就可以避免冗余调用 `glEnable` 和 `glCullFace`。
 
 ## RenderContext
-The [`RenderContext`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/utils/RenderContext.html) class tries to avoid these unnecessary calls. This class acts as a thin layer on top of OpenGL ES that keeps track of previous calls and therefore avoids making redundant calls. Only a small subset of the GL calls is implemented, but you can extend it to add additional calls. When not specified as argument in the constructor, `ModelBatch` will create and manage a `RenderContext` for you.
+[`RenderContext`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/utils/RenderContext.html) 类会尝试避免这些不必要的调用。该类是 OpenGL ES 之上的薄封装层，会跟踪之前的调用，从而避免发出冗余调用。目前只实现了少量 GL 调用，但可以扩展它以添加其他调用。如果没有在构造函数中指定，`ModelBatch` 会为你创建并管理 `RenderContext`。
 
-**Caution:** Obviously this will only work if all `Shader` implementations use the `RenderContext` instead of directly making GL calls. You should always use the `RenderContext` if possible, instead of directly calling the corresponding GL call.
+**注意：**显然，只有所有 `Shader` 实现都使用 `RenderContext` 而不是直接进行 GL 调用时，这种方式才有效。如果可能，应始终使用 `RenderContext`，而不是直接调用相应的 GL 函数。
 
-For example: When depth testing is enabled using the RenderContext, then it will enable depth testing for you. Now when you use e.g. SpriteBatch then that disables depth testing but doesn't update the RenderContext. This will lead to unexpected results. To avoid this, by default (when you don't specify a RenderContext yourself) ModelBatch will _reset_ the RenderContext on both the `begin()` and `end()` methods, by calling the same named methods on the RenderContext. This is to make sure that context switches outside the ModelBatch don't interfere with the rendering.
+例如：使用 RenderContext 启用深度测试时，它会代为启用深度测试。如果此时使用 SpriteBatch，而 SpriteBatch 禁用了深度测试却没有更新 RenderContext，就会导致意外结果。为避免这种情况，默认情况下（未自行指定 RenderContext 时），ModelBatch 会在 `begin()` 和 `end()` 方法中调用 RenderContext 的同名方法，从而_重置_ RenderContext。这可以确保 ModelBatch 外部的上下文切换不会干扰渲染。
 
-However, when you specify your own `RenderContext` (which doesn't have to be a custom implementation of it) then you're responsible for calling the `context.begin()` and `context.end()` methods. This allows you use the same context for multiple ModelBatch instances or even avoid having to reset the context all together.
+不过，如果指定自己的 `RenderContext`（不一定要是自定义实现），就需要负责调用 `context.begin()` 和 `context.end()` 方法。这样可以让多个 ModelBatch 实例使用同一个上下文，甚至完全避免重置上下文。
 
-> If you specify a RenderContext on construction then you own that RenderContext and are expected to reset (call its begin() and end() methods) when needed. You can call the [modelBatch.ownsRenderContext](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/ModelBatch.html#ownsRenderContext--) method to check whether the ModelBatch owns and manages the RenderContext.
+> 如果在构造时指定 RenderContext，那么该 RenderContext 由你负责，并应在需要时重置（调用其 begin() 和 end() 方法）。可以调用 [modelBatch.ownsRenderContext](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/ModelBatch.html#ownsRenderContext--) 方法检查 RenderContext 是否由 ModelBatch 拥有和管理。
 
 ## TextureBinder
-To keep track of the textures currently being bound, RenderContext contains a [textureBinder](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/utils/RenderContext.html#textureBinder) member. [`TextureBinder`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/utils/TextureBinder.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g3d/utils/TextureBinder.java)) is an interface used to keep track of texture binds, as well as texture context (e.g. the minification/magnification filters). By default the [`DefaultTextureBinder`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/utils/DefaultTextureBinder.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g3d/utils/DefaultTextureBinder.java)) is used. Although you can specify your own implementation, this is rarely required.
+为了跟踪当前绑定的纹理，RenderContext 包含一个 [textureBinder](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/utils/RenderContext.html#textureBinder) 成员。[`TextureBinder`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/utils/TextureBinder.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g3d/utils/TextureBinder.java)）是用于跟踪纹理绑定及纹理上下文（例如缩小/放大过滤器）的接口。默认使用 [`DefaultTextureBinder`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g3d/utils/DefaultTextureBinder.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g3d/utils/DefaultTextureBinder.java)）。虽然可以指定自己的实现，但通常不需要这样做。
 
-The DefaultTextureBinder uses every available texture unit (within the specified range) to avoid unneeded texture binds. A typical modern mobile GPU offers around 16 or 32 texture units to which textures can be bound. OpenGL ES limits the number of units to 32. You can specify the range to use when constructing the DefaultTextureBinder, using the `offset` and `count` arguments. If you don't specify an offset, then 0 is assumed. If you don't specify a count then all available remaining units will be used. ModelBatch will, by default, exclude texture unit 0 from the range, because this is often used for GUI. So by default, texture unit `1` to `31` will be used, unless the GPU supports less texture units.
+DefaultTextureBinder 会使用所有可用的纹理单元（在指定范围内），以避免不必要的纹理绑定。典型的现代移动 GPU 提供约 16 或 32 个可绑定纹理的纹理单元。OpenGL ES 将纹理单元数量限制为 32。构造 DefaultTextureBinder 时，可以使用 `offset` 和 `count` 参数指定使用范围。如果未指定 offset，则假定为 0；如果未指定 count，则使用剩余的所有可用单元。默认情况下，ModelBatch 会将纹理单元 0 排除在范围之外，因为它通常用于 GUI。因此默认使用纹理单元 `1` 到 `31`，除非 GPU 支持的纹理单元更少。
 
 `DefaultTextureBinder` supports two methods:
-* **ROUNDROBIN:** When a texture is already bound, then it is reused. Otherwise the first texture is bound to the first available unit, the next texture is bound to the next available unit, and so on. When all available units are used, then binding restarts at the first available unit, overwriting the previous bound texture.
-* **WEIGHTED:** Weights the textures by counting the number of times a texture is used or not. Often reused textures are less likely to be overwritten, while less reused textures are more likely to be overwritten.
+* **ROUNDROBIN：**如果纹理已经绑定，则会复用它。否则，将第一张纹理绑定到第一个可用单元，下一张纹理绑定到下一个可用单元，以此类推。当所有可用单元都已使用后，会从第一个可用单元重新开始绑定，并覆盖之前绑定的纹理。
+* **WEIGHTED：**通过统计纹理是否以及被使用的次数来为纹理加权。经常复用的纹理不太可能被覆盖，而较少复用的纹理更可能被覆盖。
 
-By default ModelBatch will use the _WEIGHTED_ method.
+ModelBatch 默认使用 _WEIGHTED_ 方法。
 
-You can bind a texture using `TextureBinder` by calling the `bind(...)` method. This method will return the unit the texture is bound to. So, practically, you can bind a texture in your `Shader` to an _uniform_ like this:
+可以通过调用 `bind(...)` 方法使用 `TextureBinder` 绑定纹理。该方法会返回纹理所绑定的单元。因此，实际上可以在 `Shader` 中像下面这样将纹理绑定到一个 _uniform_：
 ```java
 program.setUniformi(uniformLocation, context.textureBinder.bind(texture));
 ```
 
 ### TextureDescriptor
-The api often uses a `TextureDescriptor` when specifying a texture. This is because you might want to use a texture but do require specific context properties. These properties currently include the minification and magnification filters, as well as the horizontal wrapping and vertical wrapping. Therefor the TextureDescriptor is also used by e.g. the [TextureAttribute](/wiki/graphics/3d/material-and-environment#textureattribute) and [CubemapAttribute](/wiki/graphics/3d/material-and-environment#cubemapattribute). For convenience, TextureBinder allows you to directly specify a TextureDescriptor:
+指定纹理时，API 经常使用 `TextureDescriptor`。这是因为除了纹理本身，还可能需要指定上下文属性。目前这些属性包括缩小和放大过滤器，以及水平和垂直环绕方式。因此，[TextureAttribute](/wiki/graphics/3d/material-and-environment#textureattribute) 和 [CubemapAttribute](/wiki/graphics/3d/material-and-environment#cubemapattribute) 等也会使用 TextureDescriptor。为方便起见，TextureBinder 允许直接指定 TextureDescriptor：
 ```java
 program.setUniformi(uniformLocation, context.textureBinder.bind(
     (TextureAttribute)(renderable.material.get(TextureAttribute.Diffuse)))

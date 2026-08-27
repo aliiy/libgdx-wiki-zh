@@ -1,21 +1,21 @@
 ---
-title: Gesture detection
+title: 手势检测
 ---
-# Gesture Detection
-Touch screens lend themselves well to gesture based input. A gesture could be a pinch with two fingers to indicate the desire to zoom, a tap or double tap, a long press and so on.
+# 手势检测
+触摸屏非常适合基于手势的输入。手势可以是用两根手指捏合表示缩放意图，也可以是点击、双击、长按等。
 
-libGDX provides a [GestureDetector](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/input/GestureDetector.html) [(source)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/input/GestureDetector.java) that lets you detect the following gestures:
+libGDX 提供了 [GestureDetector](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/input/GestureDetector.html) [(源码)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/input/GestureDetector.java)，可以检测以下手势：
 
-  * **touchDown**: A user touches the screen.
-  * **longPress**: A user touches the screen for some time.
-  * **tap**: A user touches the screen and lifts the finger again. The finger must not move outside a specified square area around the initial touch position for a tap to be registered. Multiple consecutive taps will be detected if the user performs taps within a specified time interval.
-  * **pan**: A user drags a finger across the screen. The detector will report the current touch coordinates as well as the delta between the current and previous touch positions. Useful to implement camera panning in 2D.
-  * **panStop**: Called when no longer panning.
-  * **fling**: A user dragged the finger across the screen, then lifted it. Useful to implement swipe gestures.
-  * **zoom**: A user places two fingers on the screen and moves them together/apart. The detector will report both the initial and current distance between fingers in pixels. Useful to implement camera zooming.
-  * **pinch**: Similar to zoom. The detector will report the initial and current finger positions instead of the distance. Useful to implement camera zooming and more sophisticated gestures such as rotation.
+  * **touchDown**：用户触摸屏幕。
+  * **longPress**：用户触摸屏幕一段时间。
+  * **tap**：用户触摸屏幕后再次抬起手指。要被识别为点击，手指不能移出初始触摸位置周围指定的方形区域。如果用户在指定时间间隔内连续点击，还会检测到多次点击。
+  * **pan**：用户用手指拖过屏幕。检测器会报告当前触摸坐标，以及当前触摸位置与上一次触摸位置之间的差值。适合实现 2D 摄像机平移。
+  * **panStop**：不再平移时调用。
+  * **fling**：用户在屏幕上拖动手指后抬起。适合实现滑动手势。
+  * **zoom**：用户将两根手指放在屏幕上并使其相互靠拢或分开。检测器会以像素为单位报告手指之间的初始距离和当前距离。适合实现摄像机缩放。
+  * **pinch**：与缩放类似。检测器报告的是手指的初始位置和当前位置，而不是距离。适合实现摄像机缩放以及旋转等更复杂的手势。
 
-A `GestureDetector` is an [event handler](/wiki/input/event-handling) in disguise. To listen for gestures, one has to implement the [GestureListener](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/input/GestureDetector.GestureListener.html) interface and pass it to the constructor of the `GestureDetector`. The detector is then set as an InputProcessor, either on an InputMultiplexer or as the main InputProcessor:
+`GestureDetector` 本质上是一个[事件处理器](/wiki/input/event-handling)。要监听手势，需要实现 [GestureListener](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/input/GestureDetector.GestureListener.html) 接口，并将其传给 `GestureDetector` 的构造函数。然后将检测器设置为 InputProcessor，可以设置到 InputMultiplexer 中，也可以将其作为主 InputProcessor：
 
 ```java
 public class MyGestureListener implements GestureListener{
@@ -77,8 +77,8 @@ public class MyGestureListener implements GestureListener{
 Gdx.input.setInputProcessor(new GestureDetector(new MyGestureListener()));
 ```
 
-The `GestureListener` can signal whether it consumed the event or wants it to be passed on to the next InputProcessor by returning either true or false respectively from its methods.
+`GestureListener` 可以通过方法返回 true 或 false，表示是否消费了事件，或是否希望将事件传递给下一个 InputProcessor。
 
-As with the events reported to a normal `InputProcessor`, the respective methods will be called right before the call to `ApplicationListener.render()` on the rendering thread.
+与普通 `InputProcessor` 报告的事件一样，相应方法会在渲染线程上、调用 `ApplicationListener.render()` 之前调用。
 
-The `GestureDetector` also has a second constructor that allows it to specify various parameters for gesture detection. Please refer to the [Javadocs](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/input/GestureDetector.html#GestureDetector(float,%20float,%20float,%20float,%20com.badlogic.gdx.input.GestureDetector.GestureListener)) for more information.
+`GestureDetector` 还提供了第二个构造函数，可用于指定手势检测的各种参数。更多信息请参阅 [Javadocs](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/input/GestureDetector.html#GestureDetector(float,%20float,%20float,%20float,%20com.badlogicgames.gdx.input.GestureDetector.GestureListener))。

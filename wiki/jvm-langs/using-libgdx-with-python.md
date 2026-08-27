@@ -1,21 +1,21 @@
 ---
-title: Using libGDX with Python
+title: 使用 Python 编写 libGDX
 ---
-Python is a dynamic and strongly typed language that supports many programming paradigms, such as procedural, object-oriented, and functional programming.
+Python 是一种动态且强类型的语言，支持过程式、面向对象和函数式等多种编程范式。
 
-Python has been implemented in several different ways: the standard interpreter in C (CPython), in Python itself (PyPy), in the .Net Dynamic Language Runtime (C#) (IronPython), and in Java on the Java Virtual Machine (Jython). Jython comes with Java interoperability, allowing it to leverage powerful Java libraries, such as libGDX, while keeping the succinctness and readability of Python.
+Python 有多种实现方式：使用 C 编写的标准解释器（CPython）、使用 Python 自身编写的实现（PyPy）、运行于 .Net 动态语言运行时（C#）的实现（IronPython），以及运行在 Java 虚拟机上的 Java 实现（Jython）。Jython 提供 Java 互操作能力，因此可以利用 libGDX 等强大的 Java 库，同时保留 Python 的简洁性和可读性。
 
-This article uses the Jython 2.7b1, which aims to bring compatibility with CPython 2.7. We will be programming with Python 2.7 syntax in this article. The current and older versions are available [here](https://www.jython.org/download.html).
+本文使用 Jython 2.7b1，其目标是兼容 CPython 2.7。本文中的代码使用 Python 2.7 语法。当前版本和旧版本可在[这里](https://www.jython.org/download.html)获取。
 
-**Note:** At the time of writing, you can only use Jython with libGDX on the desktop.
+**注意：**本文撰写时，Jython 与 libGDX 只能在桌面端一起使用。
 
-## Setup
+## 设置
 
-Jython can be worked on with any text editor, including Vim or Emacs. [PyDev](http://pydev.org/) is an option for Eclipse users. Once the environment is set up, create a new Jython project and add all the libGDX dependencies to the `PYTHONPATH`. For using the desktop LWJGL3 backend, this includes `gdx.jar`, `gdx-backend-lwjgl3.jar`, `gdx-platform-natives-desktop.jar`, and `gdx-sources.jar`.
+Jython 可以使用任意文本编辑器进行开发，包括 Vim 或 Emacs。Eclipse 用户可以选择 [PyDev](http://pydev.org/)。环境设置好后，创建一个新的 Jython 项目，并将所有 libGDX 依赖添加到 `PYTHONPATH`。使用桌面端 LWJGL3 后端时，这些依赖包括 `gdx.jar`、`gdx-backend-lwjgl3.jar`、`gdx-platform-natives-desktop.jar` 和 `gdx-sources.jar`。
 
-## Coding With Python
+## 使用 Python 编程
 
-The entirety of the [Drop Tutorial](/wiki/start/a-simple-game) can be contained into a single Python file.
+整个 [Drop 教程](/wiki/start/a-simple-game)都可以放在一个 Python 文件中。
 
 ```python
 from com.badlogic.gdx.backends.lwjgl import Lwjgl3Application, Lwjgl3ApplicationConfiguration
@@ -135,8 +135,8 @@ if __name__ == '__main__':
     main()
 ```
 
-**Note that during asset creation we need to specify the `assets/` folder. When not using Android, we must specify the folder structure that we use, whereas on Android all internal assets are assumed to be in the `assets/` directory.**
+**注意，在创建资源时需要指定 `assets/` 文件夹。不使用 Android 时，必须指定所使用的文件夹结构；而在 Android 上，所有内部资源都默认位于 `assets/` 目录中。**
 
-## Games written in Python using libGDX
+## 使用 Python 和 libGDX 编写的游戏
 
 * [Bubbles: PyGDX Edition](https://github.com/XyperCode/bubbles-pygdx)

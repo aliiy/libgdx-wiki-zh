@@ -1,21 +1,21 @@
 ---
-title: More Info
-# Not listed in ToC
+title: 更多信息
+# 不列入目录
 ---
-If you have been sent to this page it is because you failed to provide enough information for us to take action on your issue. We handle hundreds of issues and cannot burn our time explaining to each person how to properly post an issue. Instead we send you here, which explains what you need to do.
+如果你被引导到本页，是因为你没有提供足够的信息让我们处理问题。我们要处理数百个问题，无法花时间向每个人解释如何正确提交问题。因此我们把你引导到这里，说明你需要做什么。
 
-## What do I do now?
+## 现在该怎么办？
 
-We have an extensive guide called [Getting Help](/wiki/articles/getting-help). Read it. Yes, the whole thing. 99% of the time you will need to post an [executable example](/wiki/articles/getting-help#executable-example-code).
+我们有一份详尽的[获取帮助指南](/wiki/articles/getting-help)。请阅读它，没错，是全部内容。99% 的情况下，你都需要提交一个[可执行示例](/wiki/articles/getting-help#executable-example-code)。
 
-If your issue has been closed, don't take it personal or be offended. Instead, remedy the problem by adding the necessary information to your issue and it will be re-opened. Do not file another separate issue for the same problem.
+如果你的问题已被关闭，请不要介意或感到冒犯。你只需在问题中补充必要的信息，问题就会重新开放。不要为同一个问题另行提交新的 issue。
 
-## Why are you doing this to me?
+## 为什么要这样对我？
 
-A problem must be reproducible in order to 1) test and identify the problem, 2) implement a fix, and 3) verify the fix works. **If we can't reproduce your problem, we can't fix it.** We do not blindly implement fixes and hope they work.
+问题必须能够复现，才能 1）测试并定位问题，2）实现修复，3）验证修复有效。**如果我们无法复现你的问题，就无法修复它。**我们不会盲目实施修复并寄希望于它能够奏效。
 
-If you think you posted enough information for us to work on your issue, you are wrong. Either your post lacks required information or it requires too much effort for us to figure out what you are talking about. You almost certainly did not include an [executable example](/wiki/articles/getting-help#executable-example-code).
+如果你认为自己已经提供了足够的信息，那你可能判断错了。要么你的帖子缺少必要信息，要么我们需要付出太多精力才能弄清你所说的内容。你几乎肯定没有附上[可执行示例](/wiki/articles/getting-help#executable-example-code)。
 
-## Indignation, resentment, exasperation, and friends
+## 愤怒、怨恨、恼怒及类似情绪
 
-libGDX is a community-based open source project. If you are not able to contribute a fix for your issue then we are happy to help, but we do require you to provide enough information so that we can be productive when we spend our time on your issue. Please respect our time.
+libGDX 是一个社区驱动的开源项目。如果你无法为问题贡献修复，我们很乐意提供帮助，但需要你提供足够的信息，让我们投入时间处理问题时能够高效工作。请尊重我们的时间。

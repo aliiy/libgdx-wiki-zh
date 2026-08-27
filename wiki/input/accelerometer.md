@@ -1,45 +1,45 @@
 ---
-title: Accelerometer
+title: 加速度计
 ---
-An accelerometer measures the acceleration of a device on three axes (at least on Android). From this acceleration one can derive the tilt or orientation of the device.
+加速度计测量设备沿三个轴的加速度（至少在 Android 上如此）。通过该加速度可以推导设备的倾斜或方向。
 
-Acceleration is measured in meters per second per second (m/s²). If an axis is pointing straight towards the center of the earth, its acceleration will be roughly -10 m/s². If it is pointing in the opposite direction, the acceleration will be 10 m/s².
+加速度以米每二次方秒（m/s²）为单位。如果某个轴正对地心，其加速度约为 -10 m/s²；如果指向相反方向，加速度则为 10 m/s²。
 
-The axes in an Android device are setup as follows:
+Android 设备中的轴设置如下：
 
 ![images/accelerometer.png](/assets/wiki/images/accelerometer.png)
 
-Unfortunately, this configuration is different for tablets. Android devices have a notion called default orientation. For phones, portrait mode (as in the image above) is the default orientation. For tablets, landscape mode is the default orientation. A default landscape orientation device has its axes rotated, so that the y-axis points up the smaller side of the device and the x-axis points to the right of the wider side.
+遗憾的是，平板电脑的配置有所不同。Android 设备有一个称为默认方向的概念。对于手机，竖屏模式（如上图所示）是默认方向；对于平板电脑，横屏模式是默认方向。默认横屏方向的设备会旋转其坐标轴，使 y 轴指向设备较短边的上方，x 轴指向设备较宽边的右方。
 
-libGDX takes care of this and presents the accelerometer readings as shown in the image above, no matter the default orientation of the device (positive z-axis comes out of the screen, positive x-axis points to the right along the wider side of the device, positive y-axis points upwards along the smaller side of the device).
+libGDX 会处理这一差异，无论设备的默认方向如何，都按上图所示方式提供加速度计读数（z 轴正方向从屏幕向外，x 轴正方向沿设备较宽边向右，y 轴正方向沿设备较短边向上）。
 
-## Checking Availability
-Different Android devices have different hardware configurations. Checking whether the device has an accelerometer can be done as follows:
+## 检查可用性
+不同 Android 设备的硬件配置不同。可以按如下方式检查设备是否有加速度计：
 
 ```java
 boolean available = Gdx.input.isPeripheralAvailable(Peripheral.Accelerometer);
 ```
 
-## Querying Current/Native Orientation
-If your game needs to know the current orientation of the device, the following method can be used:
+## 查询当前/原生方向
+如果游戏需要知道设备当前方向，可以使用以下方法：
 
 ```java
 int orientation = Gdx.input.getRotation();
 ```
 
-This will return a value of 0, 90, 180 or 270, giving you the angular difference between the current orientation and the native orientation.
+该方法返回 0、90、180 或 270，表示当前方向与原生方向之间的角度差。
 
-The native orientation is either portrait mode (as in the image above) or landscape mode (mostly for tablets). It can be queried as follows:
+原生方向可以是竖屏模式（如上图所示）或横屏模式（主要用于平板）。可以按如下方式查询：
 
 ```java
 Orientation nativeOrientation = Gdx.input.getNativeOrientation();
 ```
 
-This returns either Orientation.Landscape or Orientation.Portrait.
+它返回 Orientation.Landscape 或 Orientation.Portrait。
 
-## Acceleration Readings
+## 加速度读数
 
-Accelerometer readings can only be accessed via polling in libgdx:
+在 libGDX 中只能通过轮询访问加速度计读数：
 
 ```java
     float accelX = Gdx.input.getAccelerometerX();
@@ -47,12 +47,12 @@ Accelerometer readings can only be accessed via polling in libgdx:
     float accelZ = Gdx.input.getAccelerometerZ();
 ```
 
-Platforms or devices that don't have accelerometer support will return zero.
+不支持加速度计的平台或设备会返回零。
 
-See the [Super Jumper](https://github.com/libgdx/libgdx-demo-superjumper) demo game for a demonstration on the usage of the accelerometer.
+有关加速度计用法的演示，请参阅 [Super Jumper](https://github.com/libgdx/libgdx-demo-superjumper) 示例游戏。
 
-## Rotation Matrix
-If you want to use the orientation of your device for rendering, it might be beneficial to work with the rotation matrix. See <a href="https://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])">this link</a> for an explanation. You can plug the resulting matrix directly into your OpenGL rendering:
+## 旋转矩阵
+如果要使用设备方向进行渲染，使用旋转矩阵可能更有帮助。说明请参阅<a href="https://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])">此链接</a>。可以将得到的矩阵直接用于 OpenGL 渲染：
 
 ```java
 Matrix4 matrix = new Matrix4();

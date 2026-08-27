@@ -1,11 +1,11 @@
 ---
-title: Using libGDX with Clojure
+title: 使用 libGDX 与 Clojure
 ---
-Clojure is a dialect of Lisp, written for the JVM and with functional programming in mind. Clojure comes with native Java interoperability, making it able to leverage the powerful existing libraries in the Java ecosystem. [ClojureTV on YouTube](https://www.youtube.com/user/ClojureTV) has a lot of good videos, specifically [Clojure for Java Programmers](https://www.youtube.com/watch?v=P76Vbsk_3J0) [(Part 2)](https://www.youtube.com/watch?v=hb3rurFxrZ8).
+Clojure 是一种 Lisp 方言，面向 JVM 编写，并以函数式编程为核心。Clojure 原生支持 Java 互操作，因此可以利用 Java 生态中强大的现有库。[YouTube 上的 ClojureTV](https://www.youtube.com/user/ClojureTV) 有许多优质视频，尤其推荐 [Clojure for Java Programmers](https://www.youtube.com/watch?v=P76Vbsk_3J0) [（第二部分）](https://www.youtube.com/watch?v=hb3rurFxrZ8)。
 
-## Project setup
+## 项目设置
 
-Your project's directory structure should look something like:
+项目的目录结构应类似于：
 ```
 demo
 - android
@@ -92,18 +92,18 @@ demo
   (.setScreen this main-screen))
 ```
 
-You can launch the window with `lein run` in the `project.clj` directory, or the repl of your choice by calling `(demo.core.desktop-launcher/-main)`.
+在 `project.clj` 所在目录运行 `lein run` 可以启动窗口，也可以调用 `(demo.core.desktop-launcher/-main)` 启动你选择的 REPL。
 
-For repl based dev have your `main-screen` call `fn`s for each lifecycle method you wish to re-evaluate.
+如果使用基于 REPL 的开发方式，让 `main-screen` 为每个需要重新求值的生命周期方法调用 `fn`。
 
 
 ## play-clj
 
-The [play-clj](https://github.com/oakes/play-clj) library provides a Clojure wrapper for libGDX. To get started, install [Leiningen](http://leiningen.org/) and run the following command:
+[play-clj](https://github.com/oakes/play-clj) 库为 libGDX 提供了 Clojure 封装。开始使用前，请安装 [Leiningen](http://leiningen.org/)，然后运行以下命令：
 
     lein new play-clj hello-world
 
-A directory called `hello-world` should appear, and inside you'll find directories for `android` and `desktop`. Inside the `desktop` directory, you'll find a `src-common` directory, which contains the game code that both projects will read from. Navigate inside of it to find `core.clj`, which looks like this:
+此时应会出现名为 `hello-world` 的目录，其中包含 `android` 和 `desktop` 目录。在 `desktop` 目录中可以找到 `src-common` 目录，它包含两个项目都会读取的游戏代码。进入该目录即可找到 `core.clj`，内容如下：
 
 ```clojure
 (ns hello-world.core
@@ -127,9 +127,9 @@ A directory called `hello-world` should appear, and inside you'll find directori
     (set-screen! this main-screen)))
 ```
 
-This will display a label on the bottom left corner, which you can see by running `lein run` inside the `desktop` directory. To generate a JAR file that you can distribute to other people, run `lein uberjar` and grab the file in the `target` directory that contains the word "standalone".
+运行 `lein run`，即可在 `desktop` 目录中看到左下角显示的标签。要生成可分发给他人的 JAR 文件，请运行 `lein uberjar`，然后取出 `target` 目录中名称包含“standalone”的文件。
 
-## Links
+## 链接
 
-* The [play-clj tutorial](https://github.com/oakes/play-clj/blob/master/TUTORIAL.md) provides a more in-depth walk-through on how to use the library.
-* The [Nightmod](https://sekao.net/nightmod/) game tool provides an easier way to use play-clj by integrating the game and the text editor together so you can see instant results when you save your code.
+* [play-clj 教程](https://github.com/oakes/play-clj/blob/master/TUTORIAL.md) 更深入地介绍了如何使用该库。
+* [Nightmod](https://sekao.net/nightmod/) 游戏工具将游戏和文本编辑器集成在一起，让你在保存代码时立即看到结果，从而更方便地使用 play-clj。

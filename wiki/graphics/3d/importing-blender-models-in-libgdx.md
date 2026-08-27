@@ -1,94 +1,94 @@
 ---
-title: Importing Blender models in LibGDX
+title: 将 Blender 模型导入 LibGDX
 ---
-LibGDX provides its own 3D format out of the box called **G3D** (g3dj and g3db files), this article describes steps from Blender to your game using this format. **OBJ** format is partially supported and not recommended for production. Alternatively, you can use **glTF** format via third party library [gdx-gltf](https://github.com/mgsx-dev/gdx-gltf) which also provides advanced features like PBR rendering.
+LibGDX 原生提供一种名为 **G3D** 的 3D 格式（g3dj 和 g3db 文件），本文介绍如何使用该格式将 Blender 内容导入游戏。**OBJ** 格式仅得到部分支持，不建议用于生产环境。也可以通过第三方库 [gdx-gltf](https://github.com/mgsx-dev/gdx-gltf) 使用 **glTF** 格式，该库还提供 PBR 渲染等高级功能。
 
-**Note:** _while this page uses Blender for practical examples, most of it applies to **other modeling applications** as well._
+**注意：**_虽然本页使用 Blender 作为实践示例，但其中大部分内容同样适用于**其他建模应用**。_
 
-Blender is an open-source modeling application you can use to create 3D models, scenes and animations. You can get Blender at [blender.org](https://www.blender.org/). If you are new to creating 3D models using Blender, you can checkout the [blender tutorials](https://www.blender.org/support/tutorials/). This page provides practical tips on preparing and converting your Blender model for use in libGDX.
+Blender 是一个开源建模应用，可用于创建 3D 模型、场景和动画。可以从 [blender.org](https://www.blender.org/) 获取 Blender。如果刚开始使用 Blender 创建 3D 模型，可以查看 [Blender 教程](https://www.blender.org/support/tutorials/)。本页提供将 Blender 模型准备并转换为 libGDX 可用格式的实用建议。
 
-### Blender considerations
-As Blender is a multi-purpose tool, there are certain pitfalls you can stumble into that will make your model ill suited for game development. One such mistake is using the Rigify plugin to animate your model: it will add so much stuff that your model will grow in size to at the very least 3mb (per animated model), and possibly even more, so use that with great care.
+### Blender 注意事项
+Blender 是多用途工具，某些操作陷阱会让模型不适合游戏开发。例如使用 Rigify 插件为模型制作动画时，会添加大量内容，使模型大小至少增长到 3 MB（每个动画模型），甚至更多，因此务必谨慎使用。
 
-Another size consideration may be (depending on type and amount of animations) to set your key frame interpolation to linear (from the default bezier interpolation). This may drastically improve your g3db file size (but it may also change how your animations look, so check before you hit save). To change keyframe interpolation in blender, switch to the animation perspective, select all your keyframe nodes with the A key in the Dope Sheet, press T and select "Linear".
+另一个影响文件大小的因素是关键帧插值方式（具体取决于动画类型和数量）。可以将默认的 bezier 插值改为 linear，这可能会大幅减小 g3db 文件大小（但也可能改变动画效果，因此保存前请先检查）。要在 Blender 中修改关键帧插值，切换到动画视图，在 Dope Sheet 中按 A 选中所有关键帧节点，按 T 并选择 “Linear”。
 
-### Blender Animation
-Make sure to use the Action Editor for you animation of your models. The name you provide for the animation dropsheet in blender is the animation ID you can use in your code. In the below snapshot, CubeAction would be the name. Don't forget to hit that little F to ensure the action is saved!
+### Blender 动画
+请使用 Action Editor 制作模型动画。在 Blender 中为动画轨道指定的名称就是代码中使用的动画 ID。下图中名称应为 CubeAction。别忘了点击小 F，以确保 action 已保存！
 ![images/800px-Doc26-actionEditor.png](/assets/wiki/images/800px-Doc26-actionEditor.png)
 
-### Exporting to FBX and converting to G3DB
-**Note:** _see this project [here](https://github.com/haz00/blender-g3d-exporter)) which converts directly from .blend files. *For Older Blender versions <2.8, check this project: [here](https://github.com/Dancovich/libgdx_blender_g3d_exporter)._
+### 导出为 FBX 并转换为 G3DB
+**注意：**_可以查看[这个项目](https://github.com/haz00/blender-g3d-exporter)，它可以直接从 .blend 文件转换。*对于低于 2.8 的旧版 Blender，请查看[这个项目](https://github.com/Dancovich/libgdx_blender_g3d_exporter)。_
 
-The default (preferred) method is to export to FBX. Make sure you select all and only those options (e.g. nodes and animations) you want to actually include. Don't include your camera, lights, etc. Next download the latest version of [fbx-conv](https://github.com/libgdx/fbx-conv) and convert the FBX file to G3DB. You'll need to flip texture coordinates by using the `-f` commandline option.
+默认（推荐）方法是导出为 FBX。请只选择确实需要包含的选项（例如节点和动画），不要包含摄像机、灯光等内容。然后下载最新版本的 [fbx-conv](https://github.com/libgdx/fbx-conv)，将 FBX 文件转换为 G3DB。需要使用 `-f` 命令行选项翻转纹理坐标。
 `fbx-conv -f file.fbx`
 
-Optionally, you may also convert your file to the G3DJ format, which is a JSON format which is readily viewable with a simple text editor. `fbx-conv -f -o G3DJ file.fbx` Please note that G3DJ will take longer to load when you run your application, as it is not a binary format.
+也可以将文件转换为 G3DJ 格式。G3DJ 是 JSON 格式，用普通文本编辑器即可查看。`fbx-conv -f -o G3DJ file.fbx` 请注意，G3DJ 不是二进制格式，因此应用运行时加载时间会更长。
 
-Please note that there is a known limitation to using the FBX export in Blender. The current exporter only supports texface textures (i.e. textures assigned to an UV map).
+请注意，Blender 的 FBX 导出存在一个已知限制：当前导出器只支持 texface 纹理（即分配给 UV map 的纹理）。
 
-Also note that Blender exports at 1 unit = 1 meter, while libGDX imports at a scale of 1 unit = 1 cm, making imported models 100x bigger. Change the export options from the default 1.00 to 0.01 to fix.
+还要注意，Blender 导出时 1 单位等于 1 米，而 libGDX 导入时 1 单位等于 1 厘米，因此导入模型会大 100 倍。将导出选项从默认值 1.00 改为 0.01 即可修复。
 
 ![Changing Blender fbx export options.](/assets/wiki/images/importing-blender-models-in-libgdx1.png)
 
-### Setting the coordinate system (up-axis)
-The coordinate system Blender uses (z-up) is different compared to the most common system used for games (y-up). The Blender FBX exporter contains the option to change the coordinate system to y-up (which might be even the default in the FBX exporter), do not use this option, instead set it to Blender's default (z-up).
+### 设置坐标系（上轴）
+Blender 使用的坐标系（z-up）不同于游戏中最常见的坐标系（y-up）。Blender FBX 导出器提供将坐标系改为 y-up 的选项（甚至可能是导出器默认值），不要使用此选项，而应保持 Blender 的默认设置（z-up）。
 
-Fbx-conv will compensate the coordinate system by rotating the model (to y-up). However it will only be able to do this, if the fbx file itself contains the correct information. The Blender FBX exporter option will not modify the model, instead it will simply act like its y-up (causing fbx-conv unable to compensate).
+Fbx-conv 会通过旋转模型（转为 y-up）来补偿坐标系。但只有在 fbx 文件自身包含正确信息时才能这样做。Blender FBX 导出器的选项不会修改模型，只会让模型表现得像是 y-up，从而导致 fbx-conv 无法进行补偿。
 
-When fbx-conv needs to compensate the coordinate system, it will rotate all root nodes of the model 90 degrees along the X-axis. It will also modify any animations accordingly. The geometry (vertices) itself however, remains unchanged.
+当 fbx-conv 需要补偿坐标系时，会将模型的所有根节点绕 X 轴旋转 90 度，并相应修改动画。但几何体（顶点）本身保持不变。
 
-However, if you want to use z-up in your application, then you can set Blender's FBX exporter coordinate system option to y-up. This will cause fbx-conv not to rotate your model and animations, so it will be z-up.
+不过，如果希望在应用中使用 z-up，可以将 Blender FBX 导出的坐标系选项设为 y-up。这样 fbx-conv 就不会旋转模型和动画，最终仍会使用 z-up。
 
-### Troubleshooting missing textures
+### 排查纹理缺失
 
-If your faces are not drawn, please check try disabling back face culling. Your faces may be missing because they are facing away from the camera. `DefaultShader.defaultCullFace = 0;`  
-Also, it is quite common that the materials from Blender export with opacity set to Zero. If you notice your model is not being rendered. Go to the Material in Blender, and below "Transparency" set its Alpha to the desired one (usually 1, for full opacity).
+如果面没有被绘制，请尝试禁用背面剔除。面可能因为背向摄像机而不可见。`DefaultShader.defaultCullFace = 0;`
+此外，Blender 导出的材质经常会将不透明度设为 0。如果模型没有渲染，请在 Blender 中打开材质，在 “Transparency” 下将 Alpha 设置为所需值（通常为 1，表示完全不透明）。
 
-### Troubleshooting black textures
+### 排查黑色纹理
 
-Please ensure you limit the size of your texture files to POT (power of two dimensions) which are square shaped meaning of equal width and height (e.g. 32x32, 64x64 etc). A maximum recommended size would be 1024x1024 for widespread support, however larger sizes may still render, depending on device. Often non-POT textures render correctly on a desktop, but not on mobiles. This is a limitation specific to the GPU being used, and non-POT support will vary from device to device.
+请确保纹理文件使用 POT（power of two，宽高均为 2 的幂）尺寸，并且通常为正方形（例如 32x32、64x64 等）。为获得广泛支持，建议最大尺寸为 1024x1024；不过具体设备可能仍支持更大尺寸。非 POT 纹理经常能在桌面设备上正确渲染，却无法在移动设备上渲染。这是所用 GPU 的限制，不同设备对非 POT 的支持会有所不同。
 
-Additionally test that your lighting/color is configured in a way which will illuminate your model instance. A good test is to pass a null environment pointer to your Model Batch, which will disable lighting effects.
+还要检查灯光和颜色配置是否能照亮模型实例。一个简单的测试方法是向 Model Batch 传入 null environment，这会禁用灯光效果。
 
-If you have used Blender's FBX export script, please ensure your textures were assigned to a UV map, as the export script only supports texface textures, go to edit mode, in UV/Texture editor select the texture/image that you want to export with the object.
+如果使用了 Blender 的 FBX 导出脚本，请确保纹理已分配给 UV map，因为导出脚本只支持 texface 纹理。进入编辑模式，在 UV/Texture 编辑器中选择要随对象导出的纹理/图像。
 
-### RrSs warning
-When using the Blender FBX exporter, you might receive a RrSs warning when converting the FBX file. This is due to the Blender FBX exporter wrongfully exporting the transformations. The fbx-conv utility will correct this and you can safely ignore the warning.
+### RrSs 警告
+使用 Blender FBX 导出器时，转换 FBX 文件可能会收到 RrSs 警告。这是因为 Blender FBX 导出器错误地导出了变换。fbx-conv 工具会自动修正，可以安全忽略该警告。
 
-### Maximum vertices
-A model (g3dj or g3db file) can contain multiple meshes. These meshes are indexed. The indices used by libGDX are `short` values. Java's maximum `short` value is 32,767. In other words: you practically can't use more than 32767 vertices within a single mesh. Therefore you should make sure that your meshes never exceeds this limitation.
+### 最大顶点数
+模型（g3dj 或 g3db 文件）可以包含多个网格。这些网格使用索引。libGDX 使用 `short` 类型的索引，而 Java 的 `short` 最大值为 32,767。换句话说，单个网格实际不能使用超过 32767 个顶点。因此应确保网格不超过这一限制。
 
-By default, `fbx-conv` warns you when you try to convert a mesh that contains more than 32767 _indices_. While this doesn't have to mean that it will also result in more than 32767 _vertices_, it is a good indication that your mesh it is too ["high-poly"](https://en.wikipedia.org/wiki/Low_poly) and might cause issues. In this case you should consider lowering the polygon count or splitting the mesh into multiple parts.
+默认情况下，当尝试转换包含超过 32767 个_索引_的网格时，`fbx-conv` 会发出警告。虽然这不一定意味着顶点也超过 32767 个，但通常说明网格“[高模](https://en.wikipedia.org/wiki/Low_poly)”程度过高，可能引发问题。此时应考虑降低多边形数量，或将网格拆分为多个部件。
 
-If your model contains multiple similar meshes with less than 32767 vertices, then `fbx-conv` will try to combine these into a single mesh. When it combines meshes it will never exceed the maximum number of vertices of 32767. You can change this maximum using the `-m` command line option.
+如果模型包含多个顶点少于 32767 的相似网格，`fbx-conv` 会尝试将它们合并为一个网格。合并网格时，顶点数不会超过 32767 的最大值。可以使用 `-m` 命令行选项修改该最大值。
 
-**Warning:** increasing the maximum number of vertices used by `fbx-conv` **will not** increase java's maximum `short` value.
+**警告：**增加 `fbx-conv` 使用的最大顶点数**不会**增加 Java 的 `short` 最大值。
 
-**`fbx-conv` will never split your mesh**, unless your mesh is skinned and exceeds the maximum number amount of bones specified. Simply because it doesn't have enough information to do so.
+**`fbx-conv` 永远不会拆分网格**，除非网格带蒙皮且超过指定的最大骨骼数。原因很简单：它没有足够的信息完成拆分。
 
-> Note that in contrast to java, both fbx-conv and opengl support `unsigned` indices. Therefore you might not notice issues between 32767 and 65535 vertices in some cases and devices. You should not rely on this though.
+> 注意，与 Java 不同，fbx-conv 和 OpenGL 都支持 `unsigned` 索引。因此在某些情况下、某些设备上，32767 到 65535 个顶点之间可能不会出现问题。但不应依赖这一点。
 
-### Using the Model Preview Utility
+### 使用模型预览工具
 
-There is a model preview utility at [https://github.com/ASneakyFox/libgdx-fbxconv-gui](https://github.com/ASneakyFox/libgdx-fbxconv-gui) which you can use to preview your models. Download a precompiled release from [the releases section](https://github.com/ASneakyFox/libgdx-fbxconv-gui/releases).
+可以使用 [https://github.com/ASneakyFox/libgdx-fbxconv-gui](https://github.com/ASneakyFox/libgdx-fbxconv-gui) 中的模型预览工具预览模型。请从[发布区](https://github.com/ASneakyFox/libgdx-fbxconv-gui/releases)下载预编译版本。
 
 ![](https://user-images.githubusercontent.com/7131566/35468742-9a5dd6ac-02f2-11e8-8988-d32ba45b03a2.PNG)
 
-### Loading a G3DJ file into libGDX and instantiating it
+### 将 G3DJ 文件加载到 libGDX 并实例化
 
-The simplest way to load a G3DJ file into libGDX is the following:
+将 G3DJ 文件加载到 libGDX 的最简单方式如下：
 
 ```java
 Model model = new G3dModelLoader(new JsonReader()).loadModel(Gdx.files.internal(modelFileName));
 ```
-This will import the G3DJ file. To actually create a run-time instance of it, we can use a `ModelBuilder` in combination with a `ModelBatch`:
+这会导入 G3DJ 文件。要实际创建它的运行时实例，可以结合使用 `ModelBuilder` 和 `ModelBatch`：
 ```java
 ModelBuilder modelBuilder = new ModelBuilder();
 Model model = new G3dModelLoader(new JsonReader()).loadModel(Gdx.files.internal(modelFileName));
 ModelInstance instance = new ModelInstance(model);
 ```
 
-#### Loading and rendering a G3DJ file example
+#### 加载并渲染 G3DJ 文件的示例
 ```java
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;

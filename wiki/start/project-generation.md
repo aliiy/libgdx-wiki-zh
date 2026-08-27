@@ -1,92 +1,92 @@
 ---
-title: "Creating a Project"
-description: "The libGDX setup tool takes care of all the steps involved in setting up a libGDX Gradle project."
+title: "创建项目"
+description: "libGDX 项目生成工具会处理创建 libGDX Gradle 项目所需的全部步骤。"
 redirect_from:
   - /dev/project_generation/
   - /dev/project-generation/
 ---
 
-To setup your first project and download the necessary dependencies, libGDX offers a setup tool.
+要创建第一个项目并下载必要的依赖，libGDX 提供了一个项目生成工具。
 
 {% include setup_flowchart.html current='1' %}
 
-1. Download the libGDX Project Setup Tool (gdx-liftoff).
+1. 下载 libGDX 项目生成工具（gdx-liftoff）。
 
     <a href="https://github.com/libgdx/gdx-liftoff/releases/latest" class="btn btn--success">Download gdx-liftoff</a>
-2. The file will be in the Assets section of the release.  Download the file that ends in `.jar`.
+2. 文件位于版本发布页面的 Assets 部分。下载以 `.jar` 结尾的文件。
 
-3. Double-click the downloaded file. If this doesn't work, open your command line tool and go to the download folder where you saved the .jar file.  Run the command <br>`java -jar gdx-liftoff-x.x.x.x.jar`. Replace the 'x' with the version you downloaded.  For example 'gdx-liftoff-1.12.1.12.jar'.
-   <br>On Linux, you might need to right-click the file, select "Properties" and then check "Allow executing the file as program" in the "Permission" tab.
+3. 双击下载的文件。如果无法打开，请打开命令行工具，进入保存 `.jar` 文件的下载目录，并运行命令 <br>`java -jar gdx-liftoff-x.x.x.x.jar`。将 `x` 替换为下载的版本号，例如 `gdx-liftoff-1.12.1.12.jar`。
+   <br>在 Linux 上，可能需要右键点击该文件，选择“Properties”，然后在“Permission”选项卡中勾选“Allow executing the file as program”。
 
-This will open the following setup that will allow you to generate your project:
+随后会打开下面的设置界面，用于生成项目：
 
 ![Setup UI](https://github.com/libgdx/gdx-liftoff/raw/master/.github/screenshot.png){: style="width: 500px;" }
 
-You may follow the video guide <a href="https://youtu.be/VF6N_X_oWr0">GDX-Liftoff: libGDX Project Setup</a> or proceed with the following steps.
+可以观看视频指南 <a href="https://youtu.be/VF6N_X_oWr0">GDX-Liftoff：libGDX 项目设置</a>，也可以继续按照以下步骤操作。
 
-## Project
-You are asked to provide the following parameters:
+## 项目
+需要填写以下参数：
 
-* **PROJECT NAME**: the name of the application. This can contain letters, numbers, underscores, and dashes, e.g. `YourProjectName`<br>
-* **PACKAGE**: the Java package under which your code will reside, e.g. `io.github.some_example_name`<br>
-* **MAIN CLASS**: the name of the main game Java class of your app, e.g. `Main`<br>
+* **PROJECT NAME**：应用程序名称。可以包含字母、数字、下划线和短横线，例如 `YourProjectName`<br>
+* **PACKAGE**：代码所在的 Java 包，例如 `io.github.some_example_name`<br>
+* **MAIN CLASS**：应用程序主游戏 Java 类的名称，例如 `Main`<br>
 
-## Add-Ons
-Clicking the Project Options button will take you to the Add-Ons screen:
+## 附加组件
+点击 Project Options 按钮进入附加组件页面：
 
-* **Platforms**: The backends that your project will support. Core is required for all projects. Desktop is highly recommended for testing. Otherwise, select the additional platforms for the kinds of devices you want to support.<br>
+* **Platforms**：项目要支持的后端。所有项目都需要 Core，强烈建议选择 Desktop 进行测试。此外，请根据要支持的设备类型选择其他平台。<br>
 
-**Note:** To compile your game for iOS you need Xcode, which is only available on macOS!
+**注意：**要为 iOS 编译游戏，需要 Xcode，而它仅可在 macOS 上使用！
 {: .notice--info}
 
-* **Languages**: The languages besides Java that you want to include in the project (Groovy, Kotlin, Scala).<br>
-* **Extensions**: Officially supported add-ons that extend the functionality of libGDX.
-  * **[Ashley](https://github.com/libgdx/ashley)**: A tiny entity framework.<br>
-  * **[Box2dlights](https://github.com/libgdx/box2dlights)**: 2D lighting framework that uses box2d for raycasting and OpenGL ES 2.0 for rendering.<br>
-  * **[Ai](https://github.com/libgdx/gdx-ai)**: An artificial intelligence framework.<br>
-  * **[Box2d](/wiki/extensions/physics/box2d)**: Box2D is a 2D physics library.<br>
-  * **[Bullet](/wiki/extensions/physics/bullet/bullet-physics)**: 3D Collision Detection and Rigid Body Dynamics Library.<br>
-  * **[Controllers](https://github.com/libgdx/gdx-controllers?tab=readme-ov-file#%EF%B8%8F-game-controller-extension-for-libgdx-version-2)** Library to handle controllers (e.g.: XBox 360 controller).<br>
-  * **[FreeType](/wiki/extensions/gdx-freetype)**: Scalable font. Great to manipulate font size dynamically. However be aware that it does not work with HTML target if you cross compile for that target.<br>
-  * **Tools**: Set of tools including: particle editor (2d/3d), bitmap font and image texture packers.<br>
-* **Template**: Defines the base classes to be included in your project.<br>
+* **Languages**：除 Java 外要加入项目的语言（Groovy、Kotlin、Scala）。<br>
+* **Extensions**：扩展 libGDX 功能的官方支持附加组件。
+  * **[Ashley](https://github.com/libgdx/ashley)**：轻量级实体框架。<br>
+  * **[Box2dlights](https://github.com/libgdx/box2dlights)**：使用 box2d 进行射线检测、使用 OpenGL ES 2.0 渲染的 2D 光照框架。<br>
+  * **[Ai](https://github.com/libgdx/gdx-ai)**：人工智能框架。<br>
+  * **[Box2d](/wiki/extensions/physics/box2d)**：Box2D 是一个 2D 物理库。<br>
+  * **[Bullet](/wiki/extensions/physics/bullet/bullet-physics)**：3D 碰撞检测与刚体动力学库。<br>
+  * **[Controllers](https://github.com/libgdx/gdx-controllers?tab=readme-ov-file#%EF%B8%8F-game-controller-extension-for-libgdx-version-2)**：用于处理控制器的库（例如 XBox 360 控制器）。<br>
+  * **[FreeType](/wiki/extensions/gdx-freetype)**：可缩放字体，适合动态调整字体大小。但请注意，交叉编译到 HTML 目标时无法使用它。<br>
+  * **Tools**：一组工具，包括粒子编辑器（2D/3D）、位图字体打包器和图像纹理打包器。<br>
+* **Template**：定义要包含在项目中的基类。<br>
 
-## Third-Party
-Proceeding to the next screen takes you to the Third-Party screen. These are additional extensions that are not provided by the official libGDX maintainers:
+## 第三方
+进入下一页面后会到达 Third-Party 页面。这里列出的是官方 libGDX 维护者未提供的附加扩展：
 
-* **Search**: You may type the name or keyword of a third party library to filter the list.<br>
-* **Show only selected**: Use this option to filter for only libraries you have selected. This makes it easier to deselect any libraries you no longer want.<br>
-* If you want to add extensions later on, please take a look at [this](/wiki/articles/dependency-management-with-gradle#libgdx-extensions) wiki page.<br>
+* **Search**：可以输入第三方库的名称或关键词来筛选列表。<br>
+* **Show only selected**：使用此选项仅显示已选择的库，便于取消选择不再需要的库。<br>
+* 如果要稍后添加扩展，请查看[此 Wiki 页面](/wiki/articles/dependency-management-with-gradle#libgdx-extensions)。<br>
 
-## Settings
-The final screen allows you to set versions and other options:
+## 设置
+最后一个页面用于设置版本和其他选项：
 
-* **libGDX Version**: The official version of libGDX to be included in your project. The latest stable version is `{{ site.data.versions.libgdxRelease }}`. To implement the latest changes and bugfixes, use the snapshot version, which can be found on top of the [README file on GitHub](https://github.com/libgdx/libgdx#readme). Keep in mind that snapshot builds may be unstable and subject to API breaking changes.<br>
-* **Java Version**: The version of Java to be used to build your project.<br> 
-  * `8` is the recommendation for most projects.<br>
-  * Use `7` if you want to support old Android devices or iOS.<br>
-  * `11` is supported on desktop and HTML. Note that the GWT (HTML5) only supports a [subset of Java libraries](https://www.gwtproject.org/doc/latest/DevGuideCodingBasicsCompatibility)<br>
-  * The latest versions of Java like `22` are only supported on desktop<br>
-* **App Version**: The version number of your game used throughout your project. See [semantic versioning](https://semver.org/).<br>
-* **Add GUI Assets**: Adds a general use Scene2D UI skin.<br>
-* **Add README**: Adds a basic README file with placeholder text. Read the tips in the README to learn about helpful Gradle commands.<br>
-* **Add Gradle Tasks**: Add optional Gradle commands to be executed after the project is generated.<br>
-* **Project Path**: The destination folder for the project.<br>
-* **Android SDK Path**: If you selected Android as a target platform, you must provide the path to it here.<br>
-  * Linux default path: `~/Android/Sdk`<br>
-  * Mac default path: `~/Library/Android/sdk`<br>
+* **libGDX Version**：项目中要包含的 libGDX 官方版本。最新稳定版本为 `{{ site.data.versions.libgdxRelease }}`。要使用最新更改和错误修复，请使用 snapshot 版本，可在 GitHub 上的 [README 文件](https://github.com/libgdx/libgdx#readme)顶部找到。请注意，snapshot 构建可能不稳定，并且可能包含破坏 API 的更改。<br>
+* **Java Version**：用于构建项目的 Java 版本。<br>
+  * 对大多数项目，推荐使用 `8`。<br>
+  * 如果要支持旧版 Android 设备或 iOS，请使用 `7`。<br>
+  * `11` 支持桌面端和 HTML。请注意，GWT（HTML5）仅支持 [Java 库的一个子集](https://www.gwtproject.org/doc/latest/DevGuideCodingBasicsCompatibility)。<br>
+  * `22` 等最新 Java 版本仅支持桌面端。<br>
+* **App Version**：项目中使用的游戏版本号。请参阅[语义化版本](https://semver.org/)。<br>
+* **Add GUI Assets**：添加通用的 Scene2D UI skin。<br>
+* **Add README**：添加包含占位文本的基础 README 文件。阅读 README 中的提示，了解有用的 Gradle 命令。<br>
+* **Add Gradle Tasks**：添加项目生成后要执行的可选 Gradle 命令。<br>
+* **Project Path**：项目的目标文件夹。<br>
+* **Android SDK Path**：如果选择 Android 作为目标平台，必须在此提供其路径。<br>
+  * Linux 默认路径：`~/Android/Sdk`<br>
+  * Mac 默认路径：`~/Library/Android/sdk`<br>
   * Windows: `%LOCALAPPDATA%\Android\Sdk`<br>
-  * You can find out where it is in Android Studio by clicking "More Actions" in the welcome screen and selecting “SDK Manager”.<br>
+  * 在 Android Studio 欢迎屏幕中点击“More Actions”，然后选择“SDK Manager”，即可查看其位置。<br>
 
-## Project Generation
-After you click generate, you will be presented with a project summary screen:
+## 生成项目
+点击生成后，会显示项目摘要页面：
 
-* Any errors during the file generation process will be listed here with a stack trace.<br>
-* You can open your project directly in IntelliJ IDEA if you have it installed.<br>
-* Click "New Project" to begin the process from the beginning.
+* 文件生成过程中的任何错误都会在此列出，并附带 stack trace。<br>
+* 如果安装了 IntelliJ IDEA，可以直接在其中打开项目。<br>
+* 点击“New Project”从头开始该过程。
 
-## Project Layout
-The process of project generation will create a directory with the following layout:
+## 项目结构
+项目生成过程会创建一个目录，结构如下：
 
 ```
 gradle.properties          <- global variables used to define version numbers throughout the project
@@ -122,13 +122,13 @@ ios/
     src/                   <- Source folder for your iOS project, contains launcher
 ```
 
-## What is Gradle?
-libGDX projects are [Gradle](https://gradle.org/) projects, which makes managing dependencies and building considerably easier.
+## 什么是 Gradle？
+libGDX 项目是 [Gradle](https://gradle.org/) 项目，这让依赖管理和构建变得容易得多。
 
-Gradle is a **dependency management** system and thus provides an easy way to pull in third-party libraries into your project, without having to manually download them. Instead, Gradle just needs you to provide it with the names and versions of the libraries you want to include in your application. This is all done in the Gradle configuration files. Adding, removing and changing the version of a third-party library is as easy as changing a few lines in that configuration file. The dependency management system will pull in the libraries you specified from a central repository (in our case [Maven Central](https://search.maven.org/)) and store them in a directory outside of your project. Find out more in our [wiki](/wiki/articles/dependency-management-with-gradle).
+Gradle 是一个**依赖管理**系统，因此可以轻松将第三方库引入项目，而不必手动下载。你只需要提供要包含在应用程序中的库名称和版本，这些都在 Gradle 配置文件中完成。添加、删除或修改第三方库的版本，只需修改配置文件中的几行内容。依赖管理系统会从中央仓库（本例中是 [Maven Central](https://search.maven.org/)）获取指定的库，并将其存储在项目之外的目录中。更多信息请参阅我们的 [wiki](/wiki/articles/dependency-management-with-gradle)。
 {: .notice--info}
 
-In addition, Gradle is also a **build system** helping with building and packaging your application, without being tied to a specific IDE. This is especially useful if you use a build or continuous integration server, where IDEs aren't readily available. Instead, the build server can call the build system, providing it with a build configuration so it knows how to build your application for different platforms. If you want to know more about deploying your application, take a look [here](/wiki/deployment/deploying-your-application).
+此外，Gradle 还是一个**构建系统**，可以帮助构建和打包应用程序，而不依赖特定 IDE。如果使用构建服务器或持续集成服务器，这一点尤其有用，因为这类环境通常没有可用的 IDE。构建服务器可以调用构建系统，并提供构建配置，让它知道如何为不同平台构建应用程序。有关部署应用程序的更多信息，请查看[这里](/wiki/deployment/deploying-your-application)。
 {: .notice--info}
 
-**Now you are ready to [import the project into your IDE and run it](/wiki/start/import-and-running).**
+**现在可以[将项目导入 IDE 并运行](/wiki/start/import-and-running)了。**

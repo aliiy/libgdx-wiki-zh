@@ -1,13 +1,13 @@
 ---
-title: Rendering shapes
+title: 绘制形状
 ---
-[ShapeRenderer API](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/glutils/ShapeRenderer.html) (Javadoc provides an example in the top level!)
+[ShapeRenderer API](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/glutils/ShapeRenderer.html)（Javadoc 顶层提供了一个示例！）
 
-### What can the ShapeRenderer do?
+### ShapeRenderer 能做什么？
 
-You can use ShapeRenderer to draw simple shapes. Types of shapes include rectangle and ellipse. The shapes can be outlined or filled. You can also set the color to use for each shape draw. It is very similar to use like sprite batch.
+可以使用 ShapeRenderer 绘制简单形状，包括矩形和椭圆。形状可以绘制轮廓或填充，也可以为每次绘制设置颜色。它的使用方式与 sprite batch 非常相似。
 
-Example code that is taken from an actual project:
+下面的示例代码取自实际项目：
 
 ```java
 public class MyGame extends Game {
@@ -65,11 +65,11 @@ public class ScreenPlay implements Screen {
 }
 ```
 
-### Alternatives
+### 替代方案
 
-One of the downsides of using a ShapeRenderer is that it uses its own Mesh, meaning if you want to alternate between ShapeRenderer and a Batch you need to start and end (and flush) each one before switching, which can significantly drop performance. An alternative is to use the third party library [ShapeDrawer](https://github.com/earlygrey/shapedrawer), which uses a user-provided Batch to draw shapes. It has most of the functionality of ShapeRenderer, plus some extras like line joining/bevelling. It also doesn't draw over itself when drawing shapes so it can be used with transparent colours, and doesn't need to be flushed when switching from drawing lines to filled shapes.
+使用 ShapeRenderer 的缺点之一是它使用自己的 Mesh。这意味着如果要在 ShapeRenderer 和 Batch 之间交替使用，就必须在切换前分别对两者执行 start、end（以及 flush），这可能会显著降低性能。替代方案是使用第三方库 [ShapeDrawer](https://github.com/earlygrey/shapedrawer)，它使用用户提供的 Batch 绘制形状。它具备 ShapeRenderer 的大部分功能，并额外支持线段连接、倒角等功能。绘制形状时它也不会覆盖自身，因此可以使用透明颜色；从绘制线条切换到填充形状时也不需要 flush。
 
-Typical usage looks something like this:
+典型用法如下：
 
 ```java
 // batch drawing

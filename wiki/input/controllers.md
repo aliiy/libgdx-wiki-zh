@@ -1,6 +1,6 @@
 ---
-title: Controllers
+title: 控制器
 ---
-[Controllers extension has been moved to an own repo](https://github.com/libgdx/gdx-controllers).
+[控制器扩展已移至独立仓库](https://github.com/libgdx/gdx-controllers)。
 
-See the [Manual wiki page](https://github.com/libgdx/gdx-controllers/wiki) how to use.
+使用方法请参阅[手册 Wiki 页面](https://github.com/libgdx/gdx-controllers/wiki)。

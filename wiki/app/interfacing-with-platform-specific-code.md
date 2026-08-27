@@ -1,13 +1,13 @@
 ---
-title: Interfacing with platform specific code
+title: 与平台特定代码交互
 ---
-Oftentimes it can become necessary to access platform specific APIs, e.g., adding advertisement services or a leaderboard functionality which are only available for Android/iOS/desktop. This can be achieved by allowing a specific implementation to be defined through a common API interface.
+很多时候需要访问平台特定的 API，例如仅 Android/iOS/桌面端提供的广告服务或排行榜功能。可以通过公共 API 接口定义特定实现来完成这一点。
 
-Take the following example, which tries to use a very simple leaderboard API that is only available on Android. For other targets we simply want to log invocations or provide mock return values.
+以下示例尝试使用一个仅 Android 提供的简单排行榜 API。对于其他目标平台，我们只需记录调用或提供模拟返回值。
 
-## The common interface
+## 公共接口
 
-The first step is to create an abstraction of the API in form of an interface which is put into the **core project**:
+第一步是在**核心项目**中以接口的形式创建 API 抽象：
 
 ```java
 public interface Leaderboard {
@@ -15,13 +15,13 @@ public interface Leaderboard {
 }
 ```
 
-Next we create specific implementations for each platform and put these into their respective projects.
+接下来为每个平台创建具体实现，并将其放入相应项目中。
 
-## The Android implementation
+## Android 实现
 
-On Android, we would like our code to call the Google Play API, which provides the method `LeaderboardsClient#submitScore(String leaderboardId, long score);`.
+在 Android 上，我们希望代码调用 Google Play API，它提供 `LeaderboardsClient#submitScore(String leaderboardId, long score);` 方法。
 
-Thus, in the **Android project**, we need to implement our interface `Leaderboard` and call the platform-specific code as follows:
+因此，在**Android 项目**中，需要实现 `Leaderboard` 接口，并按如下方式调用平台特定代码：
 
 ```java
 /** Android implementation, can access PlayGames directly **/
@@ -35,9 +35,9 @@ public class AndroidLeaderboard implements Leaderboard {
 }
 ```
 
-## The desktop implementation
+## 桌面端实现
 
-The following code would go into the **desktop lwjgl3 project**:
+以下代码应放入**桌面 lwjgl3 项目**：
 
 ```java
 /** Desktop implementation, we simply log invocations **/
@@ -48,8 +48,8 @@ public class Lwjgl3Leaderboard implements Leaderboard {
 }
 ```
 
-## The GWT implementation
-The following code would go into the **HTML5 project**:
+## GWT 实现
+以下代码应放入**HTML5 项目**：
 
 ```java
 /** Html5 implementation, same as Lwjgl3Leaderboard **/
@@ -60,8 +60,8 @@ public class Html5Leaderboard implements Leaderboard {
 }
 ```
 
-## Obtaining the platform-specific implementation in core
-Next, our `ApplicationListener` gets a constructor to which we can pass the concrete Leaderboard implementation:
+## 在核心项目中获取平台特定实现
+接下来，为 `ApplicationListener` 添加一个构造函数，以便传入具体的 Leaderboard 实现：
 
 ```java
 public class MyGame implements ApplicationListener {
@@ -75,7 +75,7 @@ public class MyGame implements ApplicationListener {
 }
 ```
 
-In each [starter class](/wiki/app/starter-classes-and-configuration) we then simply instantiate `MyGame`, passing the corresponding Leaderboard implementation as an argument, e.g., on the desktop:
+然后在每个[启动类](/wiki/app/starter-classes-and-configuration)中实例化 `MyGame`，并将相应的 Leaderboard 实现作为参数传入，例如桌面端：
 
 ```java
 public static void main(String[] argv) {
@@ -84,7 +84,7 @@ public static void main(String[] argv) {
 }
 ```
 
-Alternatively, we can obtain the platform-specific implementation via reflection:
+或者，也可以通过反射获取平台特定实现：
 
 ```java
 if (Gdx.app.getType() == ApplicationType.Desktop || Gdx.app.getType() == ApplicationType.HeadlessDesktop) {

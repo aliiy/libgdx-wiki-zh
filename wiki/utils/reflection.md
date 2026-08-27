@@ -1,51 +1,51 @@
 ---
-title: Reflection
+title: 反射
 ---
-In order to utilize reflection in a cross-platform way, libGDX provides a small wrapper around Java's reflection API. The wrapper consists mainly of two classes containing the static methods you will use to perform reflection operations:
+为了以跨平台方式使用反射，libGDX 为 Java 反射 API 提供了一个小型封装。该封装主要由两个包含反射操作静态方法的类组成：
 
-  * `ArrayReflection` - encapsulates access to java.lang.reflect.Array
-  * `ClassReflection` - encapsulates access to java.lang.Class
+  * `ArrayReflection` - 封装对 java.lang.reflect.Array 的访问
+  * `ClassReflection` - 封装对 java.lang.Class 的访问
 
-Other classes included in the wrapper provide access to Constructors, Fields, and Methods. These classes (for the most part) mirror their java.lang.reflect equivalent. and can be used in the same way.
+封装中的其他类用于访问构造函数、字段和方法。这些类在很大程度上对应 java.lang.reflect 中的同名类，用法也相同。
 
-# Usage
+# 用法
 
-In general, you will use the reflection wrapper the same way you would use Java's reflection API, except you'd route the calls through the appropriate wrapper class instead of calling the methods directly.
+一般来说，反射封装的用法与 Java 反射 API 相同，只是需要通过相应的封装类调用，而不是直接调用方法。
 
-Examples:
+示例：
 
-| *Operation* | *Java* | *Wrapper* |
+| *操作* | *Java* | *封装类* |
 | ----------- | ------ | --------- |
-| Create a new instance of an array of a specified component type | `Array.newInstance(clazz, size)` | `ArrayReflection.newInstance(clazz, size)` |
-| Obtain the Class object for a class by name | `Class.forName("java.lang.Object")` | `ClassReflection.forName("java.lang.Object")` |
-| Create a new instance of a class | `clazz.newInstance()` | `ClassReflection.newInstance(clazz)` |
-| Get the fields of a class | `clazz.getFields()` | `ClassReflection.getFields(clazz)` |
+| 创建指定组件类型数组的新实例 | `Array.newInstance(clazz, size)` | `ArrayReflection.newInstance(clazz, size)` |
+| 根据类名获取类的 Class 对象 | `Class.forName("java.lang.Object")` | `ClassReflection.forName("java.lang.Object")` |
+| 创建类的新实例 | `clazz.newInstance()` | `ClassReflection.newInstance(clazz)` |
+| 获取类的字段 | `clazz.getFields()` | `ClassReflection.getFields(clazz)` |
 
 # GWT
 
-Because GWT does not allow for reflection in the same way as Java, extra steps are required to make reflection information available to your GWT application. In short, you must specify which classes you plan to use with reflection. When compiling the HTML project, libGDX takes that information and generates a reflection cache containing information about and providing access to the constructors, fields and methods of the specified classes. libGDX then uses this reflection cache to implement the reflection api.
+由于 GWT 不允许像 Java 那样使用反射，因此需要额外步骤才能让 GWT 应用使用反射信息。简而言之，必须指定计划通过反射使用的类。编译 HTML 项目时，libGDX 会根据这些信息生成反射缓存，其中包含指定类的构造函数、字段和方法信息，并提供对它们的访问。随后 libGDX 使用该缓存实现反射 API。
 
-Classes are specified by including a special configuration property in your GWT module definition (`*`.gwt.xml).
+通过在 GWT 模块定义（`*`.gwt.xml）中加入特殊配置属性来指定类。
 
-To include a single class:
+包含单个类：
 ```xml
 <extend-configuration-property name="gdx.reflect.include" value="com.me.reflected.ReflectedClass" />
 ```
 
-To include an entire package:
+包含整个包：
 ```xml
 <extend-configuration-property name="gdx.reflect.include" value="com.me.reflected" />
 ```
 
-You can also exclude classes of packages (for example when you include a package, but you don't want all classes or subpackages in that package):
+也可以排除包中的类（例如包含一个包，但不希望包含该包中的所有类或子包）：
 ```xml
 <extend-configuration-property name="gdx.reflect.exclude" value="com.me.reflected.NotReflectedClass" />
 ```
 
-## Notes
-  * You must specify the fully qualified name of the class or package.
-  * You must specify each class or package in its own `extend-configuration-property` element.
-  * Any classes referenced by those classes you include will automatically be included, so you need only include your own classes.
-  * Nested classes cannot be included directly. If, e.g., you want to have `CustomActor$CustomActorStyle` available for reflection (maybe to be used in uiskin.json), just include the parent class (i.e. CustomActor in this example)
-  * Visibility restrictions may cause the compiler to not include your class in the IReflectionCache. Public visibility is therefore recommended.
-  * `static` fields cannot be accessed directly via `field.get(Example.class);`, instance must be passed in as a parameter `field.get(new Example());`
+## 注意事项
+  * 必须指定类或包的完全限定名。
+  * 每个类或包都必须使用单独的 `extend-configuration-property` 元素指定。
+  * 这些类引用的任何类都会自动包含，因此只需包含自己的类。
+  * 不能直接包含嵌套类。例如，如果希望通过反射使用 `CustomActor$CustomActorStyle`（可能用于 uiskin.json），只需包含父类（本例中为 CustomActor）。
+  * 可见性限制可能导致编译器不将类包含在 IReflectionCache 中，因此建议使用 public 可见性。
+  * 不能直接通过 `field.get(Example.class);` 访问 `static` 字段，必须将实例作为参数传入：`field.get(new Example());`

@@ -1,24 +1,24 @@
 ---
-title: Path interface and Splines
+title: Path 接口和样条
 ---
-# Introduction
+# 简介
 
-The [Path interface](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/math/Path.html) [(code)](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/math/Path.html) have implementations that allows you to traverse smoothly through a set of defined points (in some cases, tangents too).
+﻿[Path 接口](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/math/Path.html) [(代码)](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/math/Path.html) 的实现允许你平滑地经过一组定义的点（某些情况下还包括切线）。
 
-Paths can be defined to be bi-dimensional or tri-dimensional, because it is a template that takes a derived of the Vector class, thus you can either use it with a set of Vector2's or Vector3's.
+Path 可以定义为二维或三维，因为它是接受 Vector 派生类的模板，因此可以配合一组 Vector2 或 Vector3 使用。
 
-Mathematically, it is defined as F(t) where t is [0, 1], where 0 is the start of the path, and 1 is the end of the path.
+在数学上，它定义为 F(t)，其中 t 的范围是 [0, 1]，0 表示路径起点，1 表示路径终点。
 
-# Types
+# 类型
 
-As of v0.9.9, we have 3 implementations of the Path interface (the splines), these are:
+从 v0.9.9 起，Path 接口有 3 个实现（即样条）：
 * [Bezier](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/math/Bezier.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/math/Bezier.java)
 * [BSpline](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/math/BSpline.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/math/BSpline.java)
 * [CatmullRomSpline](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/math/CatmullRomSpline.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/math/CatmullRomSpline.java)
 
-# Use
+# 使用
 
-Splines can be used statically like this:
+样条可以像这样以静态方式使用：
 
 ```java
     Vector2 out = new Vector2();
@@ -29,7 +29,7 @@ Splines can be used statically like this:
     CatmullRomSpline.derivative(out, t, dataSet, continuous, tmp); // the same as above, but stores the derivative of the time t in the vector out
 ```
 
-or they can be stored like this:
+也可以像这样保存：
 
 ```java
     CatmullRomSpline<Vector2> myCatmull = new CatmullRomSpline<Vector2>(dataSet, true);
@@ -38,13 +38,13 @@ or they can be stored like this:
     myCatmull.derivativeAt(out, t);
 ```
 
-It is preferred that you do the second way, since it's the only way guaranteed by the Path interface.
+推荐使用第二种方式，因为这是 Path 接口唯一保证支持的方式。
 
 # Snippets
 
-### Caching a spline
+### 缓存样条
 
-This is often done at loading time, where you load the data set, calculates the spline and stores the points calculated. So you only evaluates the spline once. Trading memory for CPU time. (You usually should always cache if drawing static things)
+这通常在加载时完成：加载数据集、计算样条并保存计算出的点，这样只需计算一次样条，以内存换取 CPU 时间。（绘制静态物体时通常应始终缓存。）
 
 ```java
 /*members*/
@@ -59,9 +59,9 @@ This is often done at loading time, where you load the data set, calculates the 
     }
 ```
 
-### Rendering cached spline
+### 渲染缓存的样条
 
-How to render the spline previously cached
+如何渲染之前缓存的样条：
 
 ```java
 /*members*/
@@ -77,9 +77,9 @@ How to render the spline previously cached
     shapeRenderer.end();
 ```
 
-### Calculating on the fly
+### 即时计算
 
-Do everything at render stage
+在渲染阶段完成所有计算：
 
 ```java
 /*members*/
@@ -96,9 +96,9 @@ Do everything at render stage
     shapeRenderer.end();
 ```
 
-### Make sprite traverse through the cached path
+### 让精灵沿缓存的路径移动
 
-This way uses a LERP through the cached points. It looks roughly sometimes but is very fast.
+这种方式使用缓存点进行 LERP。有时外观较粗糙，但速度很快。
 
 ```java
 /*members*/
@@ -126,9 +126,9 @@ This way uses a LERP through the cached points. It looks roughly sometimes but i
     batch.draw(sprite, first.x + (second.x - first.x) * t, first.y + (second.y - first.y) * t);
 ```
 
-### Make sprite traverse through path calculated on the fly
+### 让精灵沿即时计算的路径移动
 
-Calculate sprite position on the path every frame, so it looks much more pleasant (you usually should always calculate on the fly if drawing dynamic things)
+每帧计算精灵在路径上的位置，因此效果更加平滑。（绘制动态物体时通常应始终即时计算。）
 
 ```java
 /*members*/
@@ -143,19 +143,19 @@ Calculate sprite position on the path every frame, so it looks much more pleasan
     batch.draw(sprite, out.x, out.y);
 ```
 
-### Make sprite look at the direction of the spline
+### 让精灵朝向样条方向
 
-The angle can be found when applying the atan2 function to the normalised tangent(derivative) of the curve.
+将 atan2 函数应用于曲线的归一化切线（导数）即可得到角度。
 
 ```java
     myCatmull.derivativeAt(out, current);
     float angle = out.angle();
 ```
 
-### Make the sprite traverse at constant speed
+### 让精灵以恒定速度移动
 
-As the arc-length of the spline through the dataSet points is not constant, when going from 0 to 1 you may notice that the sprite sometimes goes faster or slower, depending on some factors. To cancel this, we will change the rate of change of the time variable.
-We can easily do this by dividing the speed by the length of the rate of change.
+由于经过 dataSet 点的样条弧长并不恒定，从 0 移动到 1 时，精灵可能会因各种因素时快时慢。为消除这一现象，我们需要改变时间变量的变化率。
+只需将速度除以变化率的长度即可。
 Instead of
 
 ```java
@@ -169,4 +169,4 @@ change to:
     current += (Gdx.graphics.getDeltaTime() * speed / myCatmull.spanCount) / out.len();
 ```
 
-You should change the speed variable too, since it doesn't take a "percent per second" value anymore, but a "meter(pixel?) per second") now. The spanCount is necessary since the derivativeAt method takes into account the current span only.
+还应修改 speed 变量，因为它不再表示“每秒百分比”，而是表示“每秒米数（或像素？）”。由于 derivativeAt 方法只考虑当前跨度，因此必须使用 spanCount。

@@ -1,7 +1,7 @@
 ---
-title: Clipping, with the use of scissorstack
+title: 使用 ScissorStack 进行裁剪
 ---
-# Clipping
+# 裁剪
 
 ```java
 Rectangle scissors = new Rectangle();
@@ -14,7 +14,7 @@ if (ScissorStack.pushScissors(scissors)) {
 }
 ```
 
-This will limit rendering to within the bounds of the rectangle "clipBounds". The actual drawing is encapsulated by the if-statement because the program would otherwise crash in some situations where the scissor couldn't be pushed to the stack (happens for example when the window is minimized on desktop, it's ok to not draw in this case though).
-You may also need to flush or end the `spriteBatch` before starting the active scissor region (that is, before calling `ScissorStack.pushScissors`) to prevent queued draw calls from before the scissor start getting flushed inside the active scissor region.
+这会将渲染限制在矩形 `clipBounds` 的范围内。实际绘制被放在 if 语句中，是因为在某些无法将 scissor 压入栈的情况下程序会崩溃（例如桌面窗口最小化时）；此时不绘制是可以接受的。
+在开始激活 scissor 区域前（也就是调用 `ScissorStack.pushScissors` 前），可能还需要 flush 或结束 `spriteBatch`，以防 scissor 开始前已排队的绘制调用被刷新到激活的 scissor 区域内。
 
-It is also possible to push multiple rectangles. Only the pixels of the sprites that are within <b>all</b> of the rectangles will be rendered.
+也可以压入多个矩形。只有位于<b>所有</b>矩形内部的精灵像素才会被渲染。

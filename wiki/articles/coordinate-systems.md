@@ -1,229 +1,229 @@
 ---
-title: Coordinate systems
+title: 坐标系
 ---
-When working with libGDX (or any other OpenGL based system), you will have to deal with various [coordinate systems](https://en.wikipedia.org/wiki/Coordinate_system). This is because OpenGL abstracts away device dependent units, making it more convenient to target multiple devices and to focus on game logic. Sometimes you may need to convert between coordinate systems for which libGDX offers various methods.
+使用 libGDX（或任何其他基于 OpenGL 的系统）时，需要处理各种[坐标系](https://en.wikipedia.org/wiki/Coordinate_system)。这是因为 OpenGL 抽象了设备相关的单位，使程序更容易适配多种设备，并专注于游戏逻辑。有时需要在坐标系之间转换，libGDX 为此提供了多种方法。
 
-**It is crucial to understand in which coordinate system you are working. Otherwise it can be easy to get confused and to make assumptions which aren't correct.**
+**理解当前使用的坐标系至关重要，否则很容易混淆并作出错误假设。**
 {: .notice--info}
 
-On this page the various coordinate systems are listed. It is highly recommended to first get familiar with the concept of [Cartesian coordinate systems](https://en.wikipedia.org/wiki/Cartesian_coordinate_system), which is the most widely used one.
+本页列出了各种坐标系。强烈建议先熟悉[笛卡尔坐标系](https://en.wikipedia.org/wiki/Cartesian_coordinate_system)的概念，这是最广泛使用的坐标系。
 
- * [Touch coordinates](#touch-coordinates)
- * [Screen or image coordinates](#screen-or-image-coordinates)
-  * [Pixmap and texture coordinates](#pixmap-and-texture-coordinates)
- * [Normalized render coordinates](#normalized-render-coordinates)
- * [Normalized texture (UV) coordinates](#normalized-texture-UV-coordinates)
- * [World coordinates](#world-coordinates)
-  * [GUI/HUD coordinates](#guihud-coordinates)
-  * [Game coordinates](#game-coordinates)
+  * [触摸坐标](#touch-coordinates)
+  * [屏幕或图像坐标](#screen-or-image-coordinates)
+   * [Pixmap 和纹理坐标](#pixmap-and-texture-coordinates)
+  * [归一化渲染坐标](#normalized-render-coordinates)
+  * [归一化纹理（UV）坐标](#normalized-texture-UV-coordinates)
+  * [世界坐标](#world-coordinates)
+   * [GUI/HUD 坐标](#guihud-coordinates)
+   * [游戏坐标](#game-coordinates)
 
-## Touch coordinates
+## 触摸坐标
 
 <table>
   <tr>
-    <td>Units</td>
-    <td>pixels</td>
+    <td>单位</td>
+    <td>像素</td>
   </tr>
   <tr>
-    <td>System</td>
-    <td>y-down</td>
+    <td>系统</td>
+    <td>y 轴向下</td>
   </tr>
   <tr>
-    <td>Type</td>
-    <td>integer (can't be fractional)</td>
+    <td>类型</td>
+    <td>整数（不能是小数）</td>
   </tr>
   <tr>
-    <td>Range</td>
-    <td>(`0`, `0`) (upper left corner) to (`Gdx.graphics.getWidth()-1`, `Gdx.graphics.getHeight()-1`) (lower right corner)</td>
+    <td>范围</td>
+    <td>(`0`, `0`)（左上角）到（`Gdx.graphics.getWidth()-1`, `Gdx.graphics.getHeight()-1`）（右下角）</td>
   </tr>
   <tr>
-    <td>Usage</td>
-    <td>touch/mouse coordinates</td>
+    <td>用途</td>
+    <td>触摸/鼠标坐标</td>
   </tr>
   <tr>
-    <td>Dependence</td>
-    <td>device specific</td>
+    <td>依赖</td>
+    <td>特定于设备</td>
   </tr>
 </table>
 
-Starts at the upper left *pixel* of the (application portion of the) physical screen and has the size of the (application portion of the) physical screens width and height in pixels.
+它从物理屏幕（应用部分）的左上角*像素*开始，宽度和高度等于物理屏幕（应用部分）的像素尺寸。
 
 ![images/screenpixels.png](/assets/wiki/images/screenpixels.png)
 
-Each coordinate is an index in the 2D array of this grid, representing a physical pixel on the screen. Therefore these coordinates are always represented as integers, they can't be fractional.
+每个坐标都是该网格二维数组的索引，表示屏幕上的一个物理像素。因此坐标始终表示为整数，不能是小数。
 
-This coordinate system is based on the classic representation of the display, which is usually also closest to the device/OS specific implementation. If you're familiar with canvas graphics or basic image editors, then you are probably already familiar with these coordinates. You might even lean towards using these as your default/favorite, which you shouldn't.
+此坐标系基于显示器的经典表示方式，通常也最接近设备或操作系统的具体实现。如果你熟悉画布图形或基础图像编辑器，那么可能已经熟悉这些坐标。你甚至可能倾向于把它们作为默认或首选坐标，但不应这样做。
 
-Whenever working with [mouse or touch](/wiki/input/mouse-touch-and-keyboard) coordinates, you'll be using this coordinate system. You typically want to convert these coordinates as soon as possible to a more convenient coordinate system. E.g. the `camera.unproject` or `viewport.unproject` method let's you convert them to world coordinates (see below).
+处理[鼠标或触摸](/wiki/input/mouse-touch-and-keyboard)坐标时使用的就是这个坐标系。通常应尽快将这些坐标转换到更方便的坐标系，例如使用 `camera.unproject` 或 `viewport.unproject` 方法将其转换为世界坐标（见下文）。
 
-## Screen or image coordinates
+## 屏幕或图像坐标
 
 <table>
   <tr>
-    <td>Units</td>
-    <td>pixels</td>
+    <td>单位</td>
+    <td>像素</td>
   </tr>
   <tr>
-    <td>System</td>
-    <td>y-up</td>
+    <td>系统</td>
+    <td>y 轴向上</td>
   </tr>
   <tr>
-    <td>Type</td>
-    <td>integer (can't be fractional)</td>
+    <td>类型</td>
+    <td>整数（不能是小数）</td>
   </tr>
   <tr>
-    <td>Range</td>
-    <td>(`0`, `0`) (lower left corner) to (`Gdx.graphics.getWidth()-1`, `Gdx.graphics.getHeight()-1`) (upper right corner)</td>
+    <td>范围</td>
+    <td>(`0`, `0`)（左下角）到（`Gdx.graphics.getWidth()-1`, `Gdx.graphics.getHeight()-1`）（右上角）</td>
   </tr>
   <tr>
-    <td>Usage</td>
-    <td>viewport, scissors and pixmap</td>
+    <td>用途</td>
+    <td>viewport、scissors 和 pixmap</td>
   </tr>
   <tr>
-    <td>Dependence</td>
-    <td>device/resource/asset specific</td>
+    <td>依赖</td>
+    <td>取决于设备、资源和 asset</td>
   </tr>
 </table>
 
-This is OpenGL's counterpart to touch coordinates; that is: it is used to specify (index) a pixel of the (portion of the) physical screen. It is also used as indexer for an image in memory. Likewise, these are integers, they can't be fractional.
+这是 OpenGL 中与触摸坐标对应的坐标系，用于指定（索引）物理屏幕（部分区域）中的像素，也用于索引内存中的图像。同样，这些坐标是整数，不能是小数。
 
-The only difference between touch and screen coordinates is that touch coordinates are y-down, while screen coordinates are y-up. Converting between them is therefore quite easy:
+触摸坐标与屏幕坐标的唯一区别是：触摸坐标的 y 轴向下，而屏幕坐标的 y 轴向上。因此，两者之间的转换很简单：
 
 ```java
 y = Gdx.graphics.getHeight() - 1 - y;
 ```
 
-You typically use these coordinates to specify which portion of the screen to render onto. For example when calling [`glViewport`](https://www.khronos.org/opengles/sdk/1.1/docs/man/glViewport.xml), [`glScissor`](https://www.khronos.org/opengles/sdk/1.1/docs/man/glScissor.xml) or manipulating a pixmap (see next). In the majority of use-cases you don't need this coordinate system a lot, if any, and it should be isolated from your game logic and its coordinate system. The `camera.project` and `viewport.project` methods can be used to convert world units to screen coordinates.
+通常使用这些坐标指定要渲染到屏幕的区域，例如调用 [`glViewport`](https://www.khronos.org/opengles/sdk/1.1/docs/man/glViewport.xml)、[`glScissor`](https://www.khronos.org/opengles/sdk/1.1/docs/man/glScissor.xml) 或操作 Pixmap（见下文）时。在大多数情况下，你几乎不需要使用此坐标系；它应与游戏逻辑及其坐标系隔离。可以使用 `camera.project` 和 `viewport.project` 方法将世界单位转换为屏幕坐标。
 
-### Pixmap and texture coordinates
+### Pixmap 和纹理坐标
 
-Pixmap coordinates are an exception. Pixmaps are commonly used to upload texture data. For example when loading a PNG image file to a texture, it is first decoded (uncompressed) to a Pixmap, which is the raw pixel data of the image, then it is copied to the GPU for use as texture. The texture can then be used to render to the screen. It is also possible to modify or create a pixmap by code, e.g. before uploading as texture data.
+Pixmap 坐标是一个例外。Pixmap 通常用于上传纹理数据。例如，将 PNG 图像文件加载为纹理时，首先会将其解码（解压缩）为 Pixmap，即图像的原始像素数据，然后复制到 GPU 作为纹理使用。之后可以使用该纹理渲染到屏幕，也可以通过代码修改或创建 Pixmap，例如在上传纹理数据之前。
 
-The "problem" with this is that OpenGL expects the texture data to be in image coordinates, which is y-up. However, most image formats store the image data comparable to touch coordinates, which is y-down. libGDX does not translate the image data between the two (which would involve copying the image line by line), instead it simply copies the data as is. This practically causes a Texture loaded from Pixmap to be up-side-down.
+这里的“问题”是，OpenGL 期望纹理数据使用图像坐标（y 轴向上），而大多数图像格式存储的图像数据类似于触摸坐标（y 轴向下）。libGDX 不会在两者之间转换图像数据（这需要逐行复制图像），而是直接原样复制。因此，从 Pixmap 加载的 Texture 实际上会上下颠倒。
 
-To compensate for this up-side-down texture, `SpriteBatch` flips the texture (UV) coordinates (see below) on the y axis when rendering. Likewise, fbx-conv has the option to flip texture coordinates on the y axis as well. However, when you use a texture which isn't loaded from a pixmap, for example a Framebuffer, then this might cause that texture to appear up-side-down.
+为了补偿这种上下颠倒的纹理，`SpriteBatch` 在渲染时会沿 y 轴翻转纹理（UV）坐标（见下文）。同样，fbx-conv 也提供沿 y 轴翻转纹理坐标的选项。不过，如果使用的纹理不是从 pixmap 加载的，例如 Framebuffer，就可能导致该纹理显示为上下颠倒。
 
-## Normalized render coordinates
+## 归一化渲染坐标
 
 <table>
   <tr>
-    <td>Units</td>
-    <td>one</td>
+    <td>单位</td>
+    <td>一</td>
   </tr>
   <tr>
-    <td>System</td>
-    <td>y-up</td>
+    <td>系统</td>
+    <td>y 轴向上</td>
   </tr>
   <tr>
-    <td>Type</td>
-    <td>floating point</td>
+    <td>类型</td>
+    <td>浮点数</td>
   </tr>
   <tr>
-    <td>Range</td>
-    <td>(`-1`, `-1`) (lower left corner) to (`+1`, `+1`) (upper right corner)</td>
+    <td>范围</td>
+    <td>(`-1`, `-1`)（左下角）到（`+1`, `+1`）（右上角）</td>
   </tr>
   <tr>
-    <td>Usage</td>
-    <td>shaders</td>
+    <td>用途</td>
+    <td>着色器</td>
   </tr>
   <tr>
-    <td>Dependence</td>
-    <td>none</td>
+    <td>依赖</td>
+    <td>无</td>
   </tr>
 </table>
 
-The above coordinate systems have one big issue in common: they are device specific. To solve that, OpenGL allows you to use a device independent coordinate system which is automatically mapped to screen coordinates when rendering. This coordinate system is normalized in the range [-1,-1] and [+1,+1] with (0,0) exactly in the center of the screen or framebuffer (the render target).
+上述坐标系有一个共同的大问题：它们都与设备相关。为了解决这一问题，OpenGL 允许使用与设备无关的坐标系，渲染时会自动将其映射到屏幕坐标。该坐标系的范围归一化为 [-1,-1] 到 [+1,+1]，其中 (0,0) 正好位于屏幕或 framebuffer（渲染目标）的中心。
 
 ![images/normalizedcoordinates.png](/assets/wiki/images/normalizedcoordinates.png)
 
-The *vertex shader* outputs (`gl_Position`) its coordinates in this coordinate system. But other than that, you should never have to use this coordinate system in a practical use-case. It is sometimes used in tutorials and such, though, to show the basics.
+*顶点着色器*在此坐标系中输出其坐标（`gl_Position`）。除此之外，在实际使用中通常不需要接触此坐标系。不过，教程有时会用它来演示基础概念。
 
-It might be worth to note that the normalization does not respect the aspect ratio. That is: the scale in the X direction does not have to match the scale in the Y direction. They are both within the range of `-1` to `+1`, regardless aspect ratio. It is up to the application to decide how to deal with various aspect ratios (see world units, below).
+需要注意的是，归一化不会考虑宽高比。也就是说，X 方向的缩放比例不必与 Y 方向相同；无论宽高比如何，两者都处于 `-1` 到 `+1` 的范围内。如何处理不同的宽高比由应用决定（见下文的世界单位）。
 
-The coordinates are floating point and no longer indexers. The device (GPU) will map these coordinates to the actual screen pixels using [rasterisation](https://en.wikipedia.org/wiki/Rasterisation). A good article (although targeting DirectX it also applies to OpenGL) for more information on that can be found [here](https://msdn.microsoft.com/en-us/library/windows/desktop/cc627092(v=vs.85).aspx).
+这些坐标是浮点数，不再用于索引。设备（GPU）会使用[光栅化](https://en.wikipedia.org/wiki/Rasterisation)将这些坐标映射到实际屏幕像素。关于这一过程的更多信息可参阅[这篇文章](https://msdn.microsoft.com/en-us/library/windows/desktop/cc627092(v=vs.85).aspx)；虽然文章面向 DirectX，但同样适用于 OpenGL。
 
-## Normalized texture (UV) coordinates
+## 归一化纹理（UV）坐标
 
 <table>
   <tr>
-    <td>Units</td>
-    <td>one</td>
+    <td>单位</td>
+    <td>一</td>
   </tr>
   <tr>
-    <td>System</td>
-    <td>y-up</td>
+    <td>系统</td>
+    <td>y 轴向上</td>
   </tr>
   <tr>
-    <td>Type</td>
-    <td>floating point</td>
+    <td>类型</td>
+    <td>浮点数</td>
   </tr>
   <tr>
-    <td>Range</td>
-    <td>(`0`, `0`) (lower left corner) to (`1`, `1`) (upper right corner)</td>
+    <td>范围</td>
+    <td>(`0`, `0`)（左下角）到（`1`, `1`）（右上角）</td>
   </tr>
   <tr>
-    <td>Usage</td>
-    <td>shaders, mesh, texture region, sprite</td>
+    <td>用途</td>
+    <td>着色器、网格、纹理区域、精灵</td>
   </tr>
   <tr>
-    <td>Dependence</td>
-    <td>none</td>
+    <td>依赖</td>
+    <td>无</td>
   </tr>
 </table>
 
-Likewise to the normalized render coordinates, OpenGL also uses normalized texture coordinates. The only difference is that these ranges from [0,0] to [1,1]. Depending on the specified wrap function, values outside that range will be mapped within that range.
+与归一化渲染坐标类似，OpenGL 也使用归一化纹理坐标。区别在于其范围是 [0,0] 到 [1,1]。根据指定的环绕函数，超出该范围的值会被映射回范围内。
 
 ![images/texturecoordinates.png](/assets/wiki/images/texturecoordinates.png)
 
-These coordinates are also called **UV coordinates**. In many use cases you don't have to deal with them. Typically these values are stored in the mesh or `TextureRegion`.
+这些坐标也称为 **UV 坐标**。在许多情况下不需要直接处理它们，通常这些值存储在网格或 `TextureRegion` 中。
 
-The use of normalized texture coordinates is very important, because it makes them independent of the asset size. Or in other words: it allows you to replace your assets with a scaled down or scaled up version, without having to modify the UV coordinates. An example where this is used are [mipmaps](https://en.wikipedia.org/wiki/Mipmap).
+使用归一化纹理坐标非常重要，因为它使坐标与资源大小无关。换句话说，你可以将资源替换为缩小或放大的版本，而不必修改 UV 坐标。[mipmap](https://en.wikipedia.org/wiki/Mipmap) 就是一个应用示例。
 
-When rendering, the GPU converts the UV coordinates to a [texel](https://en.wikipedia.org/wiki/Texel_(graphics)) (texture pixel). This is called "texture sampling" and is based on the [texture filtering](https://en.wikipedia.org/wiki/Texture_filtering).
+渲染时，GPU 会将 UV 坐标转换为 [texel](https://en.wikipedia.org/wiki/Texel_(graphics))（纹理像素）。这个过程称为“纹理采样”，并基于[纹理过滤](https://en.wikipedia.org/wiki/Texture_filtering)进行。
 
-## World coordinates
+## 世界坐标
 
 <table>
   <tr>
-    <td>Units</td>
-    <td>application specific, e.g. [SI Units](https://en.wikipedia.org/wiki/International_System_of_Units)</td>
+    <td>单位</td>
+    <td>取决于应用，例如 [SI Units](https://en.wikipedia.org/wiki/International_System_of_Units)</td>
   </tr>
   <tr>
-    <td>System</td>
-    <td>application specific, but usually y-up</td>
+    <td>系统</td>
+    <td>取决于应用，但通常为 y-up</td>
   </tr>
   <tr>
-    <td>Type</td>
-    <td>typically floating point</td>
+    <td>类型</td>
+    <td>通常为浮点数</td>
   </tr>
   <tr>
-    <td>Range</td>
-    <td>application specific</td>
+    <td>范围</td>
+    <td>取决于应用</td>
   </tr>
   <tr>
-    <td>Usage</td>
-    <td>game logic</td>
+    <td>用途</td>
+    <td>游戏逻辑</td>
   </tr>
   <tr>
-    <td>Dependence</td>
-    <td>game/application</td>
+    <td>依赖</td>
+    <td>游戏/应用</td>
   </tr>
 </table>
 
-Typically, your game logic should use a coordinate system which best fits the game logic. It should not depend on device or asset size. For example, a commonly used unit is meters.
+通常，游戏逻辑应使用最适合自身的坐标系，不应依赖设备或资源大小。例如，常用的单位是米。
 
-The world coordinates are converted, in the vertex shader, to normalized render coordinates. The [Camera](https://web.archive.org/web/20200427232345/https://www.badlogicgames.com/wordpress/?p=1550) or [Viewport](/wiki/graphics/viewports) is used to define the strategy on how to do that. For example, to maintain aspect ratio, black bars can be added. The camera is used to calculate the view matrix, which translates your world coordinates into coordinates relative to the camera, by taking in consideration the location and rotation of the camera. It also calculates the projection matrix, which converts the world coordinates to the normalized render coordinates in the range [-1,-1] to [+1,+1]. In 2D games, you mostly dont need the distinction between these two matrices and only need the combined transformation matrix instead. You can pass this matrix to the shader, for example, by calling `spriteBatch.setProjectionMatrix(camera.combined);`
+世界坐标会在顶点着色器中转换为归一化渲染坐标。[Camera](https://web.archive.org/web/20200427232345/https://www.badlogicgames.com/wordpress/?p=1550) 或 [Viewport](/wiki/graphics/viewports) 用于定义转换策略。例如，为保持宽高比，可以添加黑边。Camera 用于计算视图矩阵，该矩阵会考虑 Camera 的位置和旋转，将世界坐标转换为相对于 Camera 的坐标。它还会计算投影矩阵，将世界坐标转换为范围从 [-1,-1] 到 [+1,+1] 的归一化渲染坐标。在 2D 游戏中，通常无需区分这两个矩阵，只需使用组合变换矩阵即可。例如，可以调用 `spriteBatch.setProjectionMatrix(camera.combined);` 将该矩阵传递给着色器。
 
 ![images/projection.png](/assets/wiki/images/projection.png)
 
-You can have multiple camera's or viewports and likewise, you can also have multiple world coordinate systems. A typical game has at least two of those, namely:
+你可以拥有多个 Camera 或 Viewport，同样也可以拥有多个世界坐标系。典型游戏至少有两个世界坐标系，即：
 
-### GUI/HUD coordinates
-These are buttons, labels and such which are stationary and always visible on the screen. Often they involve rendering text. For example in Super Mario the clock is always visible in the upper right corner of the screen and does not move when mario moves in the game world.
+### GUI/HUD 坐标
+这些是固定不动且始终显示在屏幕上的按钮、标签等元素，通常还包括文本渲染。例如在 Super Mario 中，时钟始终显示在屏幕右上角，不会随着 Mario 在游戏世界中的移动而移动。
 
-Most commonly [scene2d](/wiki/graphics/2d/scene2d/scene2d) is used for the HUD, which means that you'd use a [Viewport](/wiki/graphics/viewports) to define the coordinate system. This coordinates system is typically in a range that is close to the device resolution, to give the best results when rendering the font. These coordinates are called [banana units](https://xoppa.github.io/blog/pixels/). This camera is practically never moved or rotated, it sits stationary at a location so that the world coordinate (0, 0) is located at the bottom left corner of the screen.
+HUD 最常使用 [scene2d](/wiki/graphics/2d/scene2d/scene2d) 实现，这意味着使用 [Viewport](/wiki/graphics/viewports) 定义坐标系。为在渲染字体时获得最佳效果，此坐标系的范围通常接近设备分辨率。这些坐标称为 [banana units](https://xoppa.github.io/blog/pixels/)。此 Camera 几乎不会移动或旋转，而是固定在某个位置，使世界坐标 (0, 0) 位于屏幕左下角。
 
-### Game coordinates
-This is what suits best for your game and is used to implement game logic. It is good practice to keep the values around one for the best floating point precision. For example, your main character is 1.8 meter in height, the tree is 10 meter in height, etc. If you are making a galactic game where units and distance are very high, you might want to use e.g. kilometers instead.
+### 游戏坐标
+这是最适合你的游戏、用于实现游戏逻辑的坐标系。为了获得最佳浮点精度，通常建议让数值保持在 1 附近。例如，主角身高 1.8 米，树高 10 米等。如果制作的是单位和距离都非常大的星际游戏，也可以改用千米等单位。
 
-The camera is used to look into your game world, just like it would when you use a video camera in the real world. The camera can be moved, rotated and scaled to display another portion of the world on the screen.
+Camera 用于观察游戏世界，就像现实中使用摄像机一样。Camera 可以移动、旋转和缩放，以在屏幕上显示世界的其他区域。

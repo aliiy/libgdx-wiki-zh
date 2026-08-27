@@ -1,102 +1,102 @@
 ---
-title: GDX Particle Editor
+title: GDX 粒子编辑器
 ---
-GDX Particle Editor is the new tool for creating particle effects. This replaces the classic editor which is now deprecated. See the video and documentation below.
+GDX 粒子编辑器是用于创建粒子效果的新工具，取代了现已弃用的经典编辑器。请参阅下面的视频和文档。
 
 ![gdx-particle-editor](https://github.com/libgdx/libgdx.github.io/assets/12948924/b6cb2667-4049-4756-9701-fbae5535287c)
 
-## Running GDX Particle Editor
+## 运行 GDX 粒子编辑器
 
-Download the JAR release of GDX Particle Editor [here](https://github.com/libgdx/gdx-particle-editor/releases)
+可以[在此处](https://github.com/libgdx/gdx-particle-editor/releases)下载 GDX 粒子编辑器的 JAR 版本。
 
-Consult the [GDX Particle Editor wiki](https://github.com/libgdx/gdx-particle-editor/releases) on how to run the JAR file if you are having difficulty. This may be important for M1 Mac users who have security restrictions that block the editor from opening files.
+如果运行 JAR 文件时遇到困难，请参阅 [GDX 粒子编辑器 wiki](https://github.com/libgdx/gdx-particle-editor/releases)。这对受到安全限制、无法让编辑器打开文件的 M1 Mac 用户尤其重要。
 
-## Using the Particle Editor
+## 使用粒子编辑器
 
-See [GDX Particle Editor](https://youtu.be/OlPg6C6O-Cg) on YouTube:
+请在 YouTube 上观看 [GDX 粒子编辑器](https://youtu.be/OlPg6C6O-Cg)：
 
 <a href="https://youtu.be/OlPg6C6O-Cg" target="_blank"><img src="https://github.com/libgdx/libgdx.github.io/assets/12948924/0493773a-9a6c-4a18-8498-560e2b08d2fe" alt="GDX Particle Editor" width="384" height="216" border="10" /></a>
 
-The [in-depth documentation](https://github.com/libgdx/gdx-particle-editor/wiki/In%E2%80%90Depth-Guide) is also available in text on the wiki as well.
+Wiki 上也提供了[详细文档](https://github.com/libgdx/gdx-particle-editor/wiki/In%E2%80%90Depth-Guide)的文本版本。
 
-Briefly, a particle effect consists of some images that are moved around. The images usually use additive blending and some pretty stunning results can be produced with only a few images. Particle effects are good for fire, explosions, smoke, etc. Each particle has many properties that control how it behaves: life, velocity, rotation, scale, etc. The particle editor allows you to manipulate these properties and observe the result in real time. You can also create effects programmatically, but it is much more difficult and time consuming to create great effects.
+简单来说，粒子效果由一些移动中的图像组成。这些图像通常使用加法混合，只需少量图像就能产生相当惊艳的效果。粒子效果适合用于火焰、爆炸、烟雾等。每个粒子都有许多控制其行为的属性：生命周期、速度、旋转、缩放等。粒子编辑器可以调整这些属性并实时观察结果。也可以通过编程创建效果，但要制作出优秀效果会困难得多，也更耗时。
 
-The first step to creating an effect is to choose an image. The default image is just a simple round gradient. Experiment with different images to create a wide variety of effects. Images will often combine for some surprising and sometimes very cool looking results.
+创建效果的第一步是选择图像。默认图像只是一个简单的圆形渐变。尝试不同图像可以创建各种效果。图像组合后经常会产生出人意料、甚至非常酷的结果。
 
-When you are configuring properties, you are actually configuring the particle emitter that will create and manage the particles. In code, the emitter is represented by the ParticleEmitter class. A particle effect is made up of one or more emitters, which is managed in the lower left of the particle editor. In code, the effect is represented by the ParticleEffect class, which has a list of ParticleEmitters.
+配置属性时，实际上是在配置用于创建和管理粒子的粒子发射器。在代码中，发射器由 ParticleEmitter 类表示。粒子效果由一个或多个发射器组成，这些发射器在粒子编辑器左下角进行管理。在代码中，效果由 ParticleEffect 类表示，其中包含一个 ParticleEmitter 列表。
 
-### Properties Panel Elements
+### 属性面板元素
 
-There are some common elements that appear in several of the properties panels.
+一些常用元素会出现在多个属性面板中。
 
-#### Active button
+#### Active 按钮
 
-Properties with an "Active" toggle button can be turned off, which can minimize some of the work that needs to be done at run-time.
+带有“Active”切换按钮的属性可以关闭，从而减少运行时需要执行的工作。
 
-#### Number / number range
+#### 数值/数值范围
 
-Some of the number fields have a `>` button beside them. Clicking this button changes the number into a number range, where at runtime, a random value is selected from between the two specified values, every time the number is referenced. For example, if a range of 1-2 is selected for the Life property, each new particle will have some random length life between 1 and 2 seconds.
+有些数字字段旁边有一个 `>` 按钮。点击该按钮会将数字变为数值范围；运行时每次引用该数值时，都会从两个指定值之间随机选择一个值。例如，如果 Life 属性选择 1-2 的范围，每个新粒子的生命周期都会在 1 到 2 秒之间随机取值。
 
-#### Graph
+#### Graph（图表）
 
-A graph is used to control the value of a property over time. The word "Duration" or "Life" in the middle of the graph indicates whether the horizontal timeline of the graph is relative to the duration of the emitter, or the lifetime of each single particle.
+图表用于控制属性值随时间的变化。图表中央的“Duration”或“Life”表示图表的水平时间轴是相对于发射器持续时间，还是相对于单个粒子的生命周期。
 
-The "High" and "Low" number fields indicate the values that correspond with the top and bottom of the graph. Like other number fields, they can be expanded into a range with the `>` button. The random number in the range is chosen when the effect starts for a “Duration” graph, and when a particle is spawned for a “Life” graph.
+“High”和“Low”数字字段表示图表顶部和底部对应的值。与其他数字字段一样，可以使用 `>` 按钮将它们扩展为范围。对于“Duration”图表，范围中的随机数在效果开始时选择；对于“Life”图表，则在生成粒子时选择。
 
-Within the graph itself:
-* To add nodes, click anywhere in the graph.
-* To move nodes, click and drag an existing node.
-* To delete a node, right-click or double-click it.
+在图表中：
+* 要添加节点，请点击图表中的任意位置。
+* 要移动节点，请点击并拖动已有节点。
+* 要删除节点，请右键点击或双击节点。
 
-The `+` button expands the graph for fine-tuning.
+`+` 按钮会展开图表，以便进行精细调整。
 
-The “Relative” checkbox. When unchecked, the value at any one point in time for the property will be what the graph shows. When checked, the value shown on the graph is added to the initial value of the property. Why? Imagine you have rotation set to start at 0 and go to 360 degrees over the life of a particle. This is nice, but all the particles start at the same zero rotation, so you change the “Low” value to start between 0 and 360. Now your particles will start between 0 and 360, and rotate to exactly 360 degrees. If a particle spawns at 330 degrees, it will only rotate 30 degrees. Now, if you check “Relative”, a particle that spawns at 330 degrees will rotate to 330 + 360 degrees, which is probably what you want in this case.
+“Relative”复选框：未勾选时，属性在任意时刻的值就是图表显示的值；勾选后，图表显示的值会加到属性初始值上。为什么？假设将旋转设置为粒子生命周期内从 0 旋转到 360 度，这很不错，但所有粒子都会从相同的零旋转开始，因此将“Low”值改为在 0 到 360 之间开始。现在粒子会在 0 到 360 度之间开始，并旋转到正好 360 度。如果粒子生成时为 330 度，它只会旋转 30 度。此时勾选“Relative”，从 330 度生成的粒子会旋转到 330 + 360 度，这通常才是想要的效果。
 
-Finally, the "Independent" checkbox. Some properties allow switching how the graph controls the property over time from emitter to single/independent particle. Let's imagine that we have a graph with ranged values defined on the "Life" property. By default the graph affects the emitter as a whole. Each time the emitter generates particles, a random value within the appropriate range for that time will be chosen and all emited particles will have that value set as life. On the other hand, if "Independent" is checked, a new random value will be calculated per emitted particle and set as life to each of them independently.
+最后是“Independent”复选框。某些属性允许将图表随时间控制属性的对象从发射器切换为单个/独立粒子。假设在“Life”属性上定义了一个范围图表。默认情况下，图表作用于整个发射器。每次发射器生成粒子时，都会根据当时的范围选择一个随机值，并将所有生成粒子的 life 设为该值。另一方面，如果勾选“Independent”，则会为每个生成的粒子计算新的随机值，并分别将其设为各自的 life。
 
-### Properties
+### 属性
 
-**Delay:** When an effect starts, this emitter will do nothing for this many milliseconds. This can be used to synchronize multiple emitters.
+**Delay：**效果开始时，此发射器会在指定毫秒数内不执行任何操作。可用于同步多个发射器。
 
-**Duration:** How long the emitter will emit particles. Note this is not the same as how long particles will live.
+**Duration：**发射器发射粒子的持续时间。注意，这不等于粒子的生命周期。
 
-**Count:** Controls the minimum number of particles that must always exist, and the maximum number of particles that can possibly exist. The minimum is nice for making sure particles are always visible, and the maximum lets the emitter know how much memory to allocate.
+**Count：**控制始终存在的最少粒子数，以及可能存在的最大粒子数。最小值有助于确保粒子始终可见，最大值让发射器知道需要分配多少内存。
 
-**Emission:** How many particles will be emitted per second.
+**Emission：**每秒发射的粒子数。
 
-**Life:** How long a single particle will live.
+**Life：**单个粒子的生命周期。
 
-**Life Offset:** How much life is used up when a particle spawns. The particle is still moved/rotated/etc for the portion of its life that is used up. This allows particles to spawn, eg, halfway through their life.
+**Life Offset：**粒子生成时已经消耗的生命周期。粒子仍会按照已消耗的那部分生命周期进行移动、旋转等操作，因此可以让粒子在生命周期中途生成。
 
-**X Offset and Y Offset:** The amount in pixels to offset where particles spawn.
+**X Offset 和 Y Offset：**粒子生成位置偏移的像素数。
 
-**Spawn:** The shape used to spawn particles: point, line, square, or ellipse. Ellipse has additional settings.
+**Spawn：**用于生成粒子的形状：点、线、正方形或椭圆。椭圆还有额外设置。
 
-**Spawn Width and Spawn Height:** Controls the size of the spawn shape.
+**Spawn Width 和 Spawn Height：**控制生成形状的大小。
 
-**Size:** The size of the particle.
+**Size：**粒子的大小。
 
-**Velocity:** The speed of the particle.
+**Velocity：**粒子的速度。
 
-**Angle:** The direction the particle travels. Not very useful if velocity is not active.
+**Angle：**粒子的移动方向。如果未启用速度，则用处不大。
 
-**Rotation:** The rotation of the particle.
+**Rotation：**粒子的旋转角度。
 
-**Wind and Gravity:** The x-axis or y-axis force to apply to particles, in pixels per second.
+**Wind 和 Gravity：**施加于粒子的 x 轴或 y 轴方向作用力，单位为像素/秒。
 
-**Tint:** The particle color. Click the little triangle and then use the sliders to change the color. Click in the bar above the triangle to add more triangles. This allows you to make particles change to any number of colors over their lifetime. Click and drag to move a triangle (if it isn’t at the start or end). Double-click to delete.
+**Tint：**粒子颜色。点击小三角形，然后使用滑块改变颜色。点击三角形上方的条带可添加更多三角形，从而让粒子在生命周期内变换任意数量的颜色。点击并拖动三角形可移动它（起点或终点处的三角形除外），双击可删除。
 
-**Transparency:** Controls the alpha of the particle. This graph is different than the others because you cannot modify its vertical range. It is always from 0 to 1.
+**Transparency：**控制粒子的 Alpha。此图表不同于其他图表，因为不能修改其垂直范围，始终为 0 到 1。
 
-**Options**
- - **Additive:** For additive blending.
- - **Pre-multiplied alpha:** For pre-multiplied alpha blending, which enables a mixture of alpha and additive blending. If this is selected, the Additive option is ignored.
- - **Attached:** Means existing particles will move when the emitter moves.
- - **Continuous:** Means the emitter restarts as soon as its duration expires. Note that this means an effect will never end, so other emitters in the effect that are not continuous will never restart.
- - **Aligned:** The angle of a particle is added to the rotation. This allows you to align the particle image to the direction of travel.
+**选项**
+ - **Additive：**使用加法混合。
+ - **Pre-multiplied alpha：**使用预乘 Alpha 混合，从而混合 Alpha 混合和加法混合。选中后会忽略 Additive 选项。
+ - **Attached：**发射器移动时，已有粒子也会随之移动。
+ - **Continuous：**发射器持续时间结束后立即重新启动。注意，这意味着效果永远不会结束，因此效果中其他未设置为 Continuous 的发射器也不会重新启动。
+ - **Aligned：**将粒子的角度加到旋转角度上，从而可以让粒子图像与移动方向对齐。
 
-You can activate the statistics label by clicking the settings button in the preview area and choosing "Statistics enabled". “Count” shows how many particles exist for the currently selected emitter. “Max” shows how many particles exist for all emitters over the past few seconds. Below that is a percentage that represents the duration percent of the currently selected emitter.
+可以点击预览区域中的设置按钮并选择 “Statistics enabled” 来启用统计标签。“Count”显示当前选中发射器存在的粒子数，“Max”显示过去几秒内所有发射器存在过的最大粒子数。下方的百分比表示当前选中发射器的持续时间百分比。
 
-Effect settings saved with the particle editor are written to a text file, which can be loaded into a ParticleEffect instance in your game. The ParticleEffect can load images from a directory, or a TextureAtlas. Of course, a TextureAtlas is recommended and can easily be made with the TexturePacker.
+粒子编辑器保存的效果设置会写入文本文件，可以在游戏中加载到 ParticleEffect 实例。ParticleEffect 可以从目录或 TextureAtlas 加载图像。当然推荐使用 TextureAtlas，它可以通过 TexturePacker 轻松创建。
 
-Most effects can be simplified to use just a few images. Most complex effects that use 4 or more emitters typically only need 15 or so total particles alive at once. See ParticleEmitterTest in gdx-tests if you'd like to test how many particles your device can handle. However, the performance varies greatly with the particle image size.
+大多数效果都可以简化为只使用少量图像。使用 4 个或更多发射器的复杂效果通常同时只需存活约 15 个粒子。如果想测试设备能够处理多少粒子，请参阅 gdx-tests 中的 ParticleEmitterTest。不过，性能会随着粒子图像大小发生很大变化。

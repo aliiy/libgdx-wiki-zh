@@ -1,54 +1,54 @@
 ---
-title: Using libGDX with Kotlin
+title: 使用 Kotlin 编写 libGDX
 ---
-[Kotlin](https://kotlinlang.org) is a modern statically typed JVM language from [JetBrains](https://www.jetbrains.com), the creators of [IntelliJ IDEA](https://www.jetbrains.com/idea/) (Kotlin supports Eclipse too). If you’re a C# user or appreciate its features, you will feel more at home as Kotlin has many features C# has.
+[Kotlin](https://kotlinlang.org) 是由 [JetBrains](https://www.jetbrains.com)（[IntelliJ IDEA](https://www.jetbrains.com/idea/) 的创建者）推出的现代静态类型 JVM 语言（Kotlin 也支持 Eclipse）。如果你使用过 C# 或喜欢它的特性，会因为 Kotlin 拥有许多 C# 特性而感到熟悉。
 
-Due to how GWT works, you will not be able to use the HTML5 target with Kotlin. [TeaVM](https://github.com/konsoletyper/teavm) is a replacement for GWT that allows for Kotlin source files. [libGDX support](https://github.com/xpenatan/gdx-teavm) is a work-in-progress, however it builds and can make functional games for the web. You can enable it through the platforms menu in Gdx-Liftoff.
+由于 GWT 的工作方式，Kotlin 无法使用 HTML5 目标。[TeaVM](https://github.com/konsoletyper/teavm) 是 GWT 的替代方案，支持 Kotlin 源文件。[libGDX 支持](https://github.com/xpenatan/gdx-teavm)仍在开发中，但已经可以构建并制作可在网页上运行的游戏。你可以在 Gdx-Liftoff 的平台菜单中启用它。
 
-# About the Kotlin language
+# Kotlin 语言简介
 
-Notable features:
+主要特性：
 
-* Null-safe types (more compile-time errors instead of always runtime ones)
-* Higher-order functions
-* Lambdas that work well (closures, which Java doesn’t really have)
-* Cleaner syntax than Java (semi-colons are optional; `new` keyword isn't there, because it’s unnecessary)
-* Extension functions (like C# has), so you can extend with static methods and create e.g. `"a string".myCustomFunction()`
-* String interpolation: `println("size is ${list.size} out of $maxElements")`
-* Operator overloading
-* Target Java 6 transparently, without the same loss of features like you get in Java. This makes it especially attractive for Android.
-* 100% interoperable with your Java libraries, and even other Java source files in your project. Seamlessly. Has a button to convert existing Java code to Kotlin too.
-* Properties - no need to write boilerplate getters and setters
-* Ranges and range operator: `if (x in 0..10) println("in range!")`
-* Inlined methods, which make it possible to reduce method counts, as well as optimize methods using lambdas
-* And more - see language reference docs.
+* null 安全类型（更多错误在编译期发现，而不是总在运行时发现）
+* 高阶函数
+* 运行良好的 Lambda（Java 实际上并没有闭包）
+* 比 Java 更简洁的语法（分号可选；不需要 `new` 关键字）
+* 扩展函数（类似 C#），可以通过静态方法扩展功能，例如创建 `"a string".myCustomFunction()`
+* 字符串插值：`println("size is ${list.size} out of $maxElements")`
+* 运算符重载
+* 透明地面向 Java 6，不会像 Java 那样损失同等的语言特性，因此特别适合 Android。
+* 与 Java 库以及项目中的其他 Java 源文件 100% 互操作，而且非常顺畅。还提供将现有 Java 代码转换为 Kotlin 的按钮。
+* 属性：无需编写样板式 getter 和 setter
+* 区间和区间运算符：`if (x in 0..10) println("in range!")`
+* 内联方法，可以减少方法数量，也能优化使用 Lambda 的方法
+* 以及更多特性，请参阅语言参考文档。
 
-It also does not force much of anything upon you like some other languages. That is, you can create Kotlin code that is much like the same Java code (without lambdas, no higher order functions, same class/OOP design, etc). It’s a more pragmatic language, rather than academic/forceful.
+Kotlin 也不像其他一些语言那样强迫你采用特定写法。也就是说，你可以编写与 Java 非常相似的 Kotlin 代码（不使用 Lambda、不使用高阶函数、采用相同的类和面向对象设计等）。它是一种更务实的语言，而不是学术化或强制性的语言。
 
-See the [Kotlin Language Reference Docs](https://kotlinlang.org/docs/reference/) for deciding on and learning the language. You can also read the [Kotlin comparison to Java](https://kotlinlang.org/docs/reference/comparison-to-java.html).
+决定是否使用 Kotlin 以及学习这门语言时，请参阅 [Kotlin 语言参考文档](https://kotlinlang.org/docs/reference/)。也可以阅读 [Kotlin 与 Java 的比较](https://kotlinlang.org/docs/reference/comparison-to-java.html)。
 
-# Migrating an existing project to Kotlin
+# 将现有项目迁移到 Kotlin
 
-This guide describes how to migrate an existing libGDX project to Kotlin. You can also start with a [fresh application](https://libgdx.com/dev/project-generation/).
+本指南介绍如何将现有 libGDX 项目迁移到 Kotlin。你也可以从[全新应用](https://libgdx.com/dev/project-generation/)开始。
 
-* [Configure Gradle](#configure-gradle)
-  * [Setup the Kotlin Gradle plugin](#set-up-the-kotlin-gradle-plugin)
-  * [Apply the Kotlin Gradle Plugin](#apply-the-kotlin-gradle-plugin)
-  * [Configuring Dependencies](#configuring-dependencies)
-* [Convert Your Code From Java to Kotlin](#convert-your-code-from-java-to-kotlin)
-* [Build and Run](#build-and-run)
-* [Examples of libGDX projects using Kotlin](#examples-of-libgdx-projects-using-kotlin)
+* [配置 Gradle](#configure-gradle)
+  * [设置 Kotlin Gradle 插件](#set-up-the-kotlin-gradle-plugin)
+  * [应用 Kotlin Gradle 插件](#apply-the-kotlin-gradle-plugin)
+  * [配置依赖](#configuring-dependencies)
+* [将代码从 Java 转换为 Kotlin](#convert-your-code-from-java-to-kotlin)
+* [构建并运行](#build-and-run)
+* [使用 Kotlin 的 libGDX 项目示例](#examples-of-libgdx-projects-using-kotlin)
 
-## Configure Gradle
+## 配置 Gradle
 
-UPDATE: Gdx-Liftoff has an option to enable Kotlin support in new projects and will handle most of the configuration for you. These instructions remain for posterity.
+更新：Gdx-Liftoff 提供了在新项目中启用 Kotlin 支持的选项，并会为你处理大部分配置。以下说明仅为保留历史参考。
 {: .notice--warning}
 
-This step basically includes following the [instructions from the official Kotlin manual](https://kotlinlang.org/docs/reference/using-gradle.html).
+这一步主要是遵循 [Kotlin 官方手册中的说明](https://kotlinlang.org/docs/reference/using-gradle.html)。
 
-### Set up the kotlin-gradle plugin
+### 设置 kotlin-gradle 插件
 
-Add the following to your parent project’s `build.gradle`:
+将以下内容添加到父项目的 `build.gradle` 中：
 
 ```gradle
 buildscript {
@@ -60,17 +60,17 @@ buildscript {
 }
 ```
 
-Since most likely you already got the `buildscript` block in your Gradle config, make sure to only add the sub-items accordingly.
+由于 Gradle 配置中很可能已经存在 `buildscript` 块，请只按需添加其中的子项。
 
-### Apply the kotlin-gradle plugin
+### 应用 kotlin-gradle 插件
 
-Replace all occurrences of `apply plugin: "java"` with `apply plugin: "kotlin"`. Check your parent project's `build.gradle` as well as your sub-projects (core, desktop, ios, android).
+将所有 `apply plugin: "java"` 替换为 `apply plugin: "kotlin"`。检查父项目的 `build.gradle` 以及各个子项目（core、desktop、ios、android）。
 
-In the android sub-project, add `apply plugin: "kotlin-android"` after the `apply plugin: "android"` line.
+在 android 子项目中，将 `apply plugin: "kotlin-android"` 添加到 `apply plugin: "android"` 行之后。
 
-### Configuring Dependencies
+### 配置依赖
 
-Add Kotlin’s stdlib to your core project's dependencies list:
+将 Kotlin 的 stdlib 添加到 core 项目的依赖列表中：
 
 ```gradle
 dependencies {
@@ -78,7 +78,7 @@ dependencies {
 }
 ```
 
-If you intend to use Kotlin’s reflection capabilities as well, add the respective library too:
+如果还打算使用 Kotlin 的反射功能，也请添加相应的库：
 
 ```Kotlin
 dependencies {
@@ -86,9 +86,9 @@ dependencies {
 }
 ```
 
-#### Note for IntelliJ IDEA users
+#### IntelliJ IDEA 用户注意事项
 
-If you made IntelliJ IDEA automatically configure `build.gradle` for you, and chose Kotlin 1.1 or higher version, it might add this dependency:
+如果让 IntelliJ IDEA 自动配置 `build.gradle`，并选择了 Kotlin 1.1 或更高版本，它可能会添加以下依赖：
 
 ```Kotlin
 dependencies {
@@ -96,34 +96,34 @@ dependencies {
 }
 ```
 
-If you're targeting platforms that don't support Java 8 library, such as most Android phones, it won't compile. You may need to replace it with `kotlin-stdlib` library.
+如果目标平台不支持 Java 8 库（例如大多数 Android 手机），项目将无法编译。你可能需要将其替换为 `kotlin-stdlib` 库。
 
-## Convert your code from Java to Kotlin
+## 将代码从 Java 转换为 Kotlin
 
-You do not need to migrate all or any of your Java code right away. Both languages are fully interoperable with each other.
+不需要立即迁移全部或任何 Java 代码，两种语言可以完全互操作。
 
-However, if you decide to migrate your Java code to Kotlin, IntelliJ IDEA has a handy function for that.
+不过，如果决定将 Java 代码迁移到 Kotlin，IntelliJ IDEA 提供了方便的转换功能。
 
-Open any Java file, e.g. your `DesktopLauncher` and select *Code → Convert Java File to Kotlin File* from the menu. Repeat this process for every file you want to migrate. While it is still in its infancy so it won't be error proof, but it will help you come up with more idiomatic ways of coding your project. There will be some errors, specifically with some `Class<>` usage, and Java code that it could not deduce null safety (because that information is lacking from Java).
+打开任意 Java 文件，例如 `DesktopLauncher`，然后从菜单中选择 *Code → Convert Java File to Kotlin File*。对所有想迁移的文件重复此过程。该功能仍处于早期阶段，无法保证完全没有错误，但能帮助你找到更符合 Kotlin 习惯的项目编写方式。转换后可能出现一些错误，尤其是某些 `Class<>` 的用法，以及无法推断空安全性的 Java 代码（因为 Java 缺少这类信息）。
 
-## Build and run
+## 构建并运行
 
-That’s it. You successfully enabled Kotlin in your libGDX application. Build and run your project to verify that everything works.
+至此，你已经成功在 libGDX 应用中启用了 Kotlin。构建并运行项目，确认一切正常。
 
-## Kotlin libGDX extensions
+## Kotlin libGDX 扩展
 
-- [KTX](https://github.com/libktx/ktx) is a set of libraries that aim to make most aspects of libGDX more Kotlin-friendly thanks to extension functions, utility classes and so on. It includes utilities for assets management, LibGDX custom collections, Box2D, coroutines, math-related classes, actors, i18n, dependency injection, GUI type-safe building and more.
+- [KTX](https://github.com/libktx/ktx) 是一组库，通过扩展函数、工具类等功能，让 libGDX 的大多数方面更符合 Kotlin 的使用习惯。它包含资源管理、libGDX 自定义集合、Box2D、协程、数学相关类、Actor、国际化、依赖注入、类型安全的 GUI 构建等工具。
 
-# Examples of libGDX projects using Kotlin
+# 使用 Kotlin 的 libGDX 项目示例
 
-These are some examples of projects that are using Kotlin, to help give you ideas on how to structure, take advantage of language features, as well as simple stuff such as build system.
+下面是一些使用 Kotlin 的项目示例，可以帮助你了解项目结构、语言特性的利用方式以及构建系统等基础内容。
 
-* [Ore Infinium](https://github.com/sreich/ore-infinium) (desktop, moderate size, uses artemis-odb, kryonet, ktx, protobuf)
-* [HitKlack](https://github.com/TobseF/hitklack) (desktop & android, small size, code examples to explain Kotlin's features)
-* [SplinterSweets](https://github.com/reime005/splintersweets) (desktop, android, iOS (Multi-OS Engine), Google Play Games and Admob integration, small sized and simple)
-* [Herring.io](https://github.com/czyzby/egu2016), [Neighbourhood Watch](https://github.com/czyzby/egu-2016) (desktop, made by a single team in under 30 hours using [KTX](https://github.com/libktx/ktx) on _EGU Jam 2016_)
-* [Horde!](https://github.com/czyzby/bialjam17) (desktop, made in under 40 hours, won BialJam 2017) 
-* [BlockBunny](https://github.com/haxpor/blockbunny) (desktop (with controller support), android, iOS (Multi-OS Engine) / with optimization, changes and improvement from original ForeignGuyMike's tutorial video)
-* [OMO](https://github.com/haxpor/omo) (PC, Android, and iOS (Multi-OS Engine) / with changes and improvements on top of ForeignGuyMike's original project)
-* [Asteroids](https://github.com/haxpor/asteroids) (PC, Android, and iOS (Multi-OS Engine) / gamepad support, with changes and improvements on top of ForeignGuyMike's original project)
-* [Unciv](https://github.com/yairm210/Unciv) (PC, Android / Open-source Android/Desktop remake of Civ V)
+* [Ore Infinium](https://github.com/sreich/ore-infinium)（桌面端，中等规模，使用 artemis-odb、kryonet、ktx、protobuf）
+* [HitKlack](https://github.com/TobseF/hitklack)（桌面端和 Android，小型项目，包含用于说明 Kotlin 特性的代码示例）
+* [SplinterSweets](https://github.com/reime005/splintersweets)（桌面端、Android、iOS（Multi-OS Engine），集成 Google Play Games 和 Admob，规模较小且简单）
+* [Herring.io](https://github.com/czyzby/egu2016)、[Neighbourhood Watch](https://github.com/czyzby/egu-2016)（桌面端，由一个团队在 _EGU Jam 2016_ 中使用 [KTX](https://github.com/libktx/ktx) 于不到 30 小时内完成）
+* [Horde!](https://github.com/czyzby/bialjam17)（桌面端，在不到 40 小时内制作，赢得 BialJam 2017）
+* [BlockBunny](https://github.com/haxpor/blockbunny)（桌面端（支持控制器）、Android、iOS（Multi-OS Engine）；在 ForeignGuyMike 原始教程视频的基础上进行了优化、修改和改进）
+* [OMO](https://github.com/haxpor/omo)（PC、Android 和 iOS（Multi-OS Engine）；在 ForeignGuyMike 原始项目的基础上进行了修改和改进）
+* [Asteroids](https://github.com/haxpor/asteroids)（PC、Android 和 iOS（Multi-OS Engine）；支持游戏手柄，在 ForeignGuyMike 原始项目的基础上进行了修改和改进）
+* [Unciv](https://github.com/yairm210/Unciv)（PC、Android；开源的《文明 V》Android/桌面端重制版）

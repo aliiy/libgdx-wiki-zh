@@ -1,26 +1,26 @@
 ---
 title: Masking
 ---
-Masking is the technique of hiding portions of an image using the pixel information of another to decide whether a pixel of the original should or should not be shown. There’s more than one way to achieve this effect in libGDX.
+遮罩是一种利用另一张图像的像素信息，决定原图中的像素是否显示，从而隐藏图像部分区域的技术。在 libGDX 中有多种实现这种效果的方法。
 
-**Warning:** If you are targeting **Android**, set the `AndroidApplicationConfiguration`'s alpha channel bits to 8 (default is 0) via `configuration.a = 8` to ensure that all of these techniques work.
+**警告：** 如果目标平台是 **Android**，请通过 `configuration.a = 8` 将 `AndroidApplicationConfiguration` 的 alpha 通道位数设为 8（默认值为 0），以确保这些技术都能正常工作。
 {: .notice--warning}
 
-## Table of Contents
-1. [Masking using glScissor](/wiki/graphics/2d/masking#1-masking-using-glscissor-rectangle)
-2. [Masking using the ScissorStack](/wiki/graphics/2d/masking#2-masking-using-the-scissorstack-rectangles)
-3. [Masking using the Depth Buffer](/wiki/graphics/2d/masking#3-masking-using-the-depth-buffer-shapes)
-4. [Masking using Blending Function](/wiki/graphics/2d/masking#4-masking-using-blending-function-shapes-or-textures)
-5. [Masking using Pixmaps](/wiki/graphics/2d/masking#5-masking-using-pixmaps-shapes-or-textures)
-6. [Masking using Shaders](/wiki/graphics/2d/masking#6-masking-using-shaders-textures)
-7. [Masking using the BlendFuncSeparate](/wiki/graphics/2d/masking#7-masking-using-blendfuncseparate-removal)
-8. [Masking using Blending Function (Tinting)](/wiki/graphics/2d/masking#8-masking-using-blending-function-tinting)
+## 目录
+1. [使用 glScissor 进行遮罩](/wiki/graphics/2d/masking#1-masking-using-glscissor-rectangle)
+2. [使用 ScissorStack 进行遮罩](/wiki/graphics/2d/masking#2-masking-using-the-scissorstack-rectangles)
+3. [使用深度缓冲进行遮罩](/wiki/graphics/2d/masking#3-masking-using-the-depth-buffer-shapes)
+4. [使用混合函数进行遮罩](/wiki/graphics/2d/masking#4-masking-using-blending-function-shapes-or-textures)
+5. [使用 Pixmap 进行遮罩](/wiki/graphics/2d/masking#5-masking-using-pixmaps-shapes-or-textures)
+6. [使用着色器进行遮罩](/wiki/graphics/2d/masking#6-masking-using-shaders-textures)
+7. [使用 BlendFuncSeparate 进行遮罩](/wiki/graphics/2d/masking#7-masking-using-blendfuncseparate-removal)
+8. [使用混合函数进行遮罩（着色）](/wiki/graphics/2d/masking#8-masking-using-blending-function-tinting)
 
-## 1. Masking using glScissor (Rectangle)
+## 1. 使用 glScissor 进行遮罩（矩形）
 
-For the simplest of masking needs here’s a technique that allows us to create and apply a single rectangular mask using OpenGL's Scissor Test. The Scissor Test is a Per-Sample Processing operation that discards Fragments that fall outside of a certain rectangular portion of the screen.
+对于最简单的遮罩需求，可以使用 OpenGL 的 Scissor Test 创建并应用单个矩形遮罩。Scissor Test 是一种逐样本处理操作，会丢弃落在屏幕指定矩形区域之外的片段。
 
-### Step 1 - Preparations
+### 步骤 1 - 准备
 
 ```java
 private ShapeRenderer shapeRenderer;
@@ -36,7 +36,7 @@ public void create() {
 }
 ```
 
-### Step 2 - Drawing our masked elements
+### 步骤 2 - 绘制被遮罩元素
 
 ```java
 private void drawMasked() {
@@ -62,7 +62,7 @@ private void drawMasked() {
 }
 ```
 
-### Step 3 - Drawing the contours for debugging purposes
+### 步骤 3 - 绘制轮廓以便调试
 
 ```java
 private void drawContours() {
@@ -78,7 +78,7 @@ private void drawContours() {
 }
 ```
 
-### Result
+### 结果
 
 ```java
 @Override
@@ -92,13 +92,13 @@ public void render() {
 }
 ```
 
-![Circle masked by a rectangle](/assets/wiki/images/masking1.png)
+![被矩形遮罩的圆形](/assets/wiki/images/masking1.png)
 
-## 2. Masking using the ScissorStack (Rectangles)
+## 2. 使用 ScissorStack 进行遮罩（矩形）
 
-A single rectangle could easily not be enough, here’s a technique that allows us to create and apply multiple rectangular masks using libGDX’s ScissorStack.
+单个矩形可能无法满足需求，此技术使用 libGDX 的 ScissorStack 创建并应用多个矩形遮罩。
 
-### Step 1 - Preparations
+### 步骤 1 - 准备
 
 ```java
 /* Some attributes we're gonna need. */
@@ -131,7 +131,7 @@ public void create() {
 }
 ```
 
-### Step 2 - Drawing our masked elements
+### 步骤 2 - 绘制被遮罩元素
 
 ```java
 private void drawMasked() {
@@ -158,11 +158,11 @@ private void drawMasked() {
 }
 ```
 
-_It is also possible to push multiple rectangles. Only the pixels of the sprites or shapes that are within <b>all</b> of the rectangles will be rendered._
+_也可以压入多个矩形。只有位于<b>所有</b>矩形内部的精灵或形状像素才会被绘制。_
 
-_Also, if your camera moves, you'll need to recalculate the scissor area afterwards._
+_此外，如果相机发生移动，之后需要重新计算 scissor 区域。_
 
-### Step 3 - Drawing the contours for debugging purposes
+### 步骤 3 - 绘制轮廓以便调试
 
 ```java
 private void drawContours() {
@@ -179,7 +179,7 @@ private void drawContours() {
 }
 ```
 
-### Result
+### 结果
 
 ```java
 @Override
@@ -195,13 +195,13 @@ public void render() {
 }
 ```
 
-![Circle masked by 2 rectangles](/assets/wiki/images/masking2.png)
+![被两个矩形遮罩的圆形](/assets/wiki/images/masking2.png)
 
-## 3. Masking using the Depth Buffer (Shapes)
+## 3. 使用深度缓冲进行遮罩（形状）
 
-Alright rectangles are great but our needs are greater what now. This upcoming technique allows us to create more diversely shaped masks using libGDX’s ShapeRenderer. You can use a SpriteBatch, but because the masks are built from the geometry of what you're drawing it will not work as you expect. Texture regions will render as rectangles no matter what the image looks like.
+矩形很好用，但如果需求更复杂该怎么办？下面的技术使用 libGDX 的 ShapeRenderer 创建形状更加多样的遮罩。虽然也可以使用 SpriteBatch，但由于遮罩由所绘制内容的几何体构成，结果不会如预期那样。无论图像看起来是什么形状，纹理区域都会以矩形绘制。
 
-### Step 1 - Preparations
+### 步骤 1 - 准备
 
 ```java
 private ShapeRenderer shapeRenderer;
@@ -217,7 +217,7 @@ public void create() {
 }
 ```
 
-### Step 2 - Draw the mask elements to the depth buffer
+### 步骤 2 - 将遮罩元素绘制到深度缓冲
 
 ```java
 private void drawMasks() {
@@ -241,9 +241,9 @@ private void drawMasks() {
 }
 ```
 
-When using a SpriteBatch write this line right after `SpriteBatch.begin()` : `Gdx.gl.glDepthMask(true);`
+使用 SpriteBatch 时，请在 `SpriteBatch.begin()` 后立即写入这一行：`Gdx.gl.glDepthMask(true);`
 
-### Step 3 - Draw the masked elements
+### 步骤 3 - 绘制被遮罩元素
 
 ```java
 private void drawMasked() {
@@ -260,7 +260,7 @@ private void drawMasked() {
 }
 ```
 
-### Step 4 - Draw the contours for debugging purposes
+### 步骤 4 - 绘制轮廓以便调试
 
 ```java
 private void drawContours() {
@@ -280,7 +280,7 @@ private void drawContours() {
 }
 ```
 
-### Result
+### 结果
 
 ```java
 @Override
@@ -297,23 +297,23 @@ public void render() {
 }
 ```
 
-![Circle masked by another circle and a triangle](/assets/wiki/images/masking3.png)
+![被另一个圆形和三角形遮罩的圆形](/assets/wiki/images/masking3.png)
 
-## 4. Masking using Blending Function (Shapes or Textures)
+## 4. 使用混合函数进行遮罩（形状或纹理）
 
-For the demanding GDXer with complex masking needs, this technique allows us to have any mask imaginable and take the alpha channel into account for the first time! For this we’ll be using libGDX’s SpriteBatch.
+对于有复杂遮罩需求的 GDXer，此技术可以实现任意想象中的遮罩，并首次将 alpha 通道纳入考虑！这里将使用 libGDX 的 SpriteBatch。
 
-### Step 1 - Preparations
+### 步骤 1 - 准备
 
-These are the images we're gonna use:
+下面是将要使用的图像：
 
-| [The mask](/assets/wiki/images/masking4.png) | [The sprite to mask](/assets/wiki/images/masking5.png) |
+| [遮罩](/assets/wiki/images/masking4.png) | [要遮罩的精灵](/assets/wiki/images/masking5.png) |
 |:--------------------------------------------:|:------------------------------------------------------:|
 |    ![](/assets/wiki/images/masking6.png)     |         ![](/assets/wiki/images/masking7.png)          |
 
-The images in a black background for clarity:
+为便于查看，将图像显示在黑色背景上：
 
-|               The mask                |          The sprite to mask           |
+|               遮罩                |          要遮罩的精灵           |
 |:-------------------------------------:|:-------------------------------------:|
 | ![](/assets/wiki/images/masking8.png) | ![](/assets/wiki/images/masking9.png) |
 
@@ -335,7 +335,7 @@ public void create() {
 }
 ```
 
-### Step 2 - Draw the mask elements to the frame buffer
+### 步骤 2 - 将遮罩元素绘制到帧缓冲
 
 ```java
 private void drawMasks() {
@@ -359,7 +359,7 @@ private void drawMasks() {
 }
 ```
 
-### Step 3 - Draw the masked elements
+### 步骤 3 - 绘制被遮罩元素
 
 ```java
 private void drawMasked() {
@@ -377,7 +377,7 @@ private void drawMasked() {
 }
 ```
 
-### Step 4 - Draw the original sprites for debugging purposes
+### 步骤 4 - 绘制原始精灵以便调试
 
 ```java
 private void drawOriginals() {
@@ -390,7 +390,7 @@ private void drawOriginals() {
 }
 ```
 
-### Result
+### 结果
 
 ```java
 @Override
@@ -407,15 +407,15 @@ public void render() {
 }
 ```
 
-![Masked sprite and original sprites](/assets/wiki/images/masking10.png)
+![被遮罩的精灵和原始精灵](/assets/wiki/images/masking10.png)
 
-This example renders directly to the screen buffer, but it's recommended that you render to a [FrameBuffer  object](/wiki/graphics/opengl-utils/frame-buffer-objects) if you intend to draw anything underneath your masked elements.
+此示例直接渲染到屏幕缓冲；但如果打算在被遮罩元素下方绘制内容，建议渲染到 [FrameBuffer 对象](/wiki/graphics/opengl-utils/frame-buffer-objects)。
 
-## 5. Masking using Pixmaps (Shapes or Textures)
+## 5. 使用 Pixmap 进行遮罩（形状或纹理）
 
-This technique allows the mask to be any image or shape and takes the alpha channel into account. This time we'll be using the libGDX’s Pixmap class.
+此技术允许遮罩使用任意图像或形状，并会考虑 alpha 通道。这次将使用 libGDX 的 Pixmap 类。
 
-### Step 1 - Preparations
+### 步骤 1 - 准备
 
 ```java
 private ShapeRenderer shapeRenderer;
@@ -450,7 +450,7 @@ public void create() {
 }
 ```
 
-### Step 2 - Applying the mask
+### 步骤 2 - 应用遮罩
 
 ```java
 private Pixmap applyMask(Pixmap source) {
@@ -487,7 +487,7 @@ private Pixmap applyMask(Pixmap source) {
 }
 ```
 
-### Step 3 - Drawing the original and masked images
+### 步骤 3 - 绘制原图和遮罩图像
 
 ```java
 private void drawImages() {
@@ -501,7 +501,7 @@ private void drawImages() {
 }
 ```
 
-### Step 4 - Drawing the contours of the mask for debugging purposes
+### 步骤 4 - 绘制遮罩轮廓以便调试
 
 ```java
 private void drawContours() {
@@ -512,7 +512,7 @@ private void drawContours() {
 }
 ```
 
-### Result
+### 结果
 
 ```java
 @Override
@@ -529,13 +529,13 @@ public void render() {
 }
 ```
 
-![Original and masked images + contours](/assets/wiki/images/masking11.png)
+![原图、遮罩图像和轮廓](/assets/wiki/images/masking11.png)
 
-## 6. Masking using Shaders (Textures)
+## 6. 使用着色器进行遮罩（纹理）
 
-This technique allows the mask to be any image or shape and takes alpha channel into account. This time we'll be using the libGDX’s ShaderProgram class in conjunction with the Texture class.
+此技术允许遮罩使用任意图像或形状，并会考虑 alpha 通道。这次将结合 Texture 类使用 libGDX 的 ShaderProgram 类。
 
-### Step 1 - Preparations
+### 步骤 1 - 准备
 
 ```java
 private final int size = 300;
@@ -565,7 +565,7 @@ public void create() {
 }
 ```
 
-### Step 2 - Defining our mask
+### 步骤 2 - 定义遮罩
 
 ```java
 private void defineMask() {
@@ -603,7 +603,7 @@ private void defineMask() {
 }
 ```
 
-### Step 3 - Setting up the shader
+### 步骤 3 - 设置着色器
 
 ```java
 private void setupShader() {
@@ -638,7 +638,7 @@ private void setupShader() {
 }
 ```
 
-**The vertex.glsl shader file:**
+**vertex.glsl 着色器文件：**
 
 ```glsl
 uniform mat4 u_projTrans;
@@ -658,7 +658,7 @@ void main()
 }
 ```
 
-**The fragment.glsl shader file:**
+**fragment.glsl 着色器文件：**
 
 ```glsl
 #ifdef GL_ES
@@ -680,7 +680,7 @@ void main()
 }
 ```
 
-### Step 4 - Drawing the contours of the mask for debugging purposes
+### 步骤 4 - 绘制遮罩轮廓以便调试
 
 ```java
 private void drawContours() {
@@ -691,7 +691,7 @@ private void drawContours() {
 }
 ```
 
-### Result
+### 结果
 
 ```java
 @Override
@@ -715,13 +715,13 @@ public void render() {
 }
 ```
 
-![Masked sprite and original sprites](/assets/wiki/images/masking12.png)
+![被遮罩的精灵和原始精灵](/assets/wiki/images/masking12.png)
 
-## 7. Masking using BlendFuncSeparate (Removal)
+## 7. 使用 BlendFuncSeparate 进行遮罩（移除）
 
-Ideal if you wanna use the mask to hide portions of the masked elements.
+适用于使用遮罩隐藏被遮罩元素部分区域的情况。
 
-### Step 1 - Preparations
+### 步骤 1 - 准备
 
 ```java
 private ShapeRenderer shapeRenderer;
@@ -740,7 +740,7 @@ public void create() {
 }
 ```
 
-### Step 2 - Drawing the masked elements and the mask elements
+### 步骤 2 - 绘制被遮罩元素和遮罩元素
 
 ```java
 private void drawCircles() {
@@ -769,7 +769,7 @@ private void drawCircles() {
 }
 ```
 
-### Step 3 - Drawing the contours for debugging purposes
+### 步骤 3 - 绘制轮廓以便调试
 
 ```java
 private void drawContours() {
@@ -786,7 +786,7 @@ private void drawContours() {
 }
 ```
 
-### Result
+### 结果
 
 ```java
 @Override
@@ -810,13 +810,13 @@ public void render() {
 }
 ```
 
-![Masked sprite and original sprites](/assets/wiki/images/masking13.png)
+![被遮罩的精灵和原始精灵](/assets/wiki/images/masking13.png)
 
-## 8. Masking using Blending Function (Tinting)
+## 8. 使用混合函数进行遮罩（着色）
 
-Ideal if you wanna use the mask to tint or texture portions of the masked elements.
+适用于使用遮罩为被遮罩元素的部分区域着色或添加纹理的情况。
 
-### Step 1 - Preparations
+### 步骤 1 - 准备
 
 ```java
 private ShapeRenderer shapeRenderer;
@@ -850,7 +850,7 @@ public void create() {
 }
 ```
 
-### Step 2 - Drawing the mask and masked elements
+### 步骤 2 - 绘制遮罩和被遮罩元素
 
 ```java
 private void draw() {
@@ -872,7 +872,7 @@ private void draw() {
 }
 ```
 
-### Result
+### 结果
 
 ```java
 @Override
@@ -893,4 +893,4 @@ public void render() {
 }
 ```
 
-![Masked sprite and original sprites](/assets/wiki/images/masking14.png)
+![被遮罩的精灵和原始精灵](/assets/wiki/images/masking14.png)

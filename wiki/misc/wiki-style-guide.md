@@ -1,98 +1,97 @@
 ---
-title: Wiki Style Guide
+title: Wiki 风格指南
 # Not listed in ToC
 ---
-This page gives some information on how to edit libGDX wiki pages. **Please read this before contributing to the libGDX wiki!** If you have any (additional) questions, please do not hesitate to ask! See our [Discord](/community/) for more information.
+本页介绍如何编辑 libGDX wiki 页面。**为 libGDX wiki 做贡献前请先阅读本文！**如有任何（额外）问题，请随时提问！更多信息请参阅我们的 [Discord](/community/)。
 
-## How to?
-Every wiki page has an "Edit on GitHub" button on top which redirects you to the GitHub Web Interface of the wiki repo. Use this for small fixes/typos. If you want to undertake more extensive changes, you should fork [the repo](https://github.com/libgdx/libgdx.github.io). The [wiki of our website repo](https://github.com/libgdx/libgdx.github.io/wiki) also offers some pointers on this.
+## 如何操作？
+每个 wiki 页面顶部都有“Edit on GitHub”按钮，会将你带到 wiki 仓库的 GitHub Web 界面。小型修复或错字修改可使用此方式。如果要进行较大范围的修改，应 fork [仓库](https://github.com/libgdx/libgdx.github.io)。我们网站仓库的 [wiki](https://github.com/libgdx/libgdx.github.io/wiki) 也提供了一些指引。
 
-## First Paragraph
-Generally, each wiki page should start with an introductory paragraph. This improves useability for the wiki and allows the first few sentences to be used in the meta descriptions and the search results.
+## 第一段
+通常，每个 wiki 页面都应以介绍性段落开头。这能提升 wiki 的可用性，并允许将开头几句用于元描述和搜索结果。
 
-## Style
-We use Markdown to format this wiki. To learn your way around this, here is GitHub's very concise [Markdown Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet). As our wiki is hosted via GitHub Pages, you can also use HTML, JS and CSS as well as Jekyll's Liquid Tags. To find out more about your options, take a look [here](https://github.com/libgdx/libgdx.github.io/wiki).
+## 风格
+本 wiki 使用 Markdown 排版。要了解 Markdown 的使用方法，可以查看 GitHub 简明的 [Markdown 速查表](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)。由于 wiki 托管在 GitHub Pages 上，也可以使用 HTML、JS、CSS 以及 Jekyll 的 Liquid 标签。更多可用选项请查看[这里](https://github.com/libgdx/libgdx.github.io/wiki)。
 
-### Notable syntax
+### 重要语法
 
-* Wiki links are made like this:
-   `[link text to networking](/wiki/networking)` renders this: [link text to networking](/wiki/networking)  
+* Wiki 链接的写法如下：
+   `[link text to networking](/wiki/networking)` 会渲染为：[link text to networking](/wiki/networking)
 
-## Linking to code/docs
-Links to code/docs should be done as follows: `[ClassName](link to docs) [(code)](link to code)`. For example:
+## 链接到代码/文档
+代码/文档链接应采用以下形式：`[ClassName](文档链接) [(code)](代码链接)`。例如：
 ```
 [Texture](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/Texture.html)
 [(code)](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/graphics/Texture.java)
 ```
 
-renders the following:
+渲染结果如下：
 
 [Texture](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/Texture.html)
 [(code)](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/graphics/Texture.java)
 
-Don't use non-alphabetic characters in Wiki page names, because not all operating systems can handle
-them when cloning Wiki as Git repository (for example, Windows doesn't support ":").
+不要在 Wiki 页面名称中使用非字母字符，因为并非所有操作系统在将 Wiki 克隆为 Git 仓库时都能处理它们（例如 Windows 不支持“:”）。
 
 {% capture docs-notice %}
-- Please note that there should be a space in between `ClassName (Code)` style formatting, in order to differentiate the two.
-- Please make the format `ClassName (Code)` with the word `Code`, not `Source` or any derivative of that. Consistency is key!
-- If a link to documentation ends in a right parenthesis `)`, it will mess up the markdown. Take this example:
+- 请注意，`ClassName (Code)` 格式中间应有一个空格，以便区分二者。
+- 请使用包含 `Code` 一词的 `ClassName (Code)` 格式，不要使用 `Source` 或其任何变体。保持一致非常重要！
+- 如果文档链接以右括号 `)` 结尾，就会破坏 Markdown。请看下面的例子：
    ```
    https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/Texture.html#getWidth()
    ```
-   When using the markdown formatting of `[]()` the end parenthesis will mess up the link, so please remember to escape the ending parenthesis (`)`). In the example, it should be:
+   使用 `[]()` Markdown 格式时，末尾的右括号会破坏链接，因此请记得转义末尾的右括号（`)`）。上面的例子应写成：
    ```markdown
    [Link to Texture#getWidth](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/Texture.html#getWidth(\))
    ```
-   Without the escaped parenthesis, a 404 is imminent!
+   如果不转义这个右括号，就很可能得到 404！
 {% endcapture %}
 
 <div class="notice notice--primary">{{ docs-notice | markdownify }}</div>
 
-## The main table of contents
+## 主目录
 
-If you create a new page, you will most likely want it to be displayed on the main libGDX wiki [Table of contents](https://github.com/libgdx/libgdx.github.io/blob/dev/_includes/wiki_index.md) and the [sidebar Table of Contents](https://github.com/libgdx/libgdx.github.io/blob/dev/_includes/wiki_sidebar.md). Therefore, please include the changes to both ToCs with the appropriate positioning of your article in your PR.
+如果创建新页面，你很可能希望它显示在 libGDX wiki 的主[目录](https://github.com/libgdx/libgdx.github.io/blob/dev/_includes/wiki_index.md)和[侧边栏目录](https://github.com/libgdx/libgdx.github.io/blob/dev/_includes/wiki_sidebar.md)中。因此，请在 PR 中同时修改这两个目录，并将文章放在适当的位置。
 
-Some pages are not listed in the ToC, in particular the ones located in the `/wiki/misc` folder. Those pages should contain a comment in the frontmatter, clarifying this: `# Not listed in ToC`.
+有些页面不会列入目录，尤其是位于 `/wiki/misc` 文件夹中的页面。这些页面应在 frontmatter 中包含注释 `# Not listed in ToC`，以明确说明这一点。
 
-## Tables of contents per page
+## 页面目录
 
-Tables of contents have to be manually created on a per-page basis. For an example of how to do so outside of this section, please refer to our [Box2d](/wiki/extensions/physics/box2d) article.
+每个页面的目录都必须手动创建。若要查看本节之外的示例，请参考我们的 [Box2d](/wiki/extensions/physics/box2d) 文章。
 
-When creating headers in markdown, we specify using a number of octothorpes (`#`) that define the header level. When we create a header `## Comments and Questions/Concerns` in an article entitled `Help Me` the corresponding link would be `help-me#comments-and-questionsconcerns`. So when we go to make our table of contents, those page fragment links would be placed in an unordered list.
+在 Markdown 中创建标题时，我们使用若干井号（`#`）来定义标题级别。如果在名为 `Help Me` 的文章中创建标题 `## Comments and Questions/Concerns`，对应的链接就是 `help-me#comments-and-questionsconcerns`。因此，制作目录时，应将这些页面片段链接放入无序列表。
 
-## Adding images
+## 添加图片
 
-Images are stored in the [`assets/wiki/` directory](https://github.com/libgdx/libgdx.github.io/blob/dev/assets/wiki/) of the libGDX wiki. To add an image, you must fork and [clone the repo](https://docs.github.com/en/free-pro-team@latest/github/creating-cloning-and-archiving-repositories/cloning-a-repository). Then add your images to the images folder using the appropriate naming scheme `my-page-name#` where `#` is the order of the picture displayed on the page (this can be ommitted if only one image is used in the page, but recommended). Images are linked to with the following syntax (assuming the image is stored in the `/assets/wiki/images/` directory) `![image name](/assets/wiki/images/flamedemo.gif)` which will display:
+图片存储在 libGDX wiki 的 [`assets/wiki/` 目录](https://github.com/libgdx/libgdx.github.io/blob/dev/assets/wiki/)中。要添加图片，必须先 fork 并[克隆仓库](https://docs.github.com/en/free-pro-team@latest/github/creating-cloning-and-archiving-repositories/cloning-a-repository)。然后按照命名规则 `my-page-name#` 将图片添加到图片文件夹，其中 `#` 表示图片在页面上的显示顺序（如果页面只有一张图片，可以省略，但建议保留）。假设图片存储在 `/assets/wiki/images/` 目录中，可使用以下语法链接图片：`![image name](/assets/wiki/images/flamedemo.gif)`，渲染结果如下：
 
 ![image name](/assets/wiki/images/flamedemo.gif){: style="width: 300px;" }
 
-If you want to style the image, use something like this: `![image name](/assets/wiki/images/flamedemo.gif){: style="width: 300px;" }` 
+如果要设置图片样式，可以使用类似这样的写法：`![image name](/assets/wiki/images/flamedemo.gif){: style="width: 300px;" }`
 
-## Videos
+## 视频
 
-Videos can be included like this:
+可以按如下方式嵌入视频：
 
 ```markdown
 {% raw %}{% include video id="3kPK_O6Q4wA" provider="youtube" %}{% endraw %}
 ```
 
-## Adding GWT examples
+## 添加 GWT 示例
 
-Actual libGDX examples can be embedded via GWT as iframes. To do this, use the `embed-gwt` element on a wiki page:
+实际的 libGDX 示例可以通过 GWT 以 iframe 的形式嵌入。要实现这一点，请在 wiki 页面中使用 `embed-gwt` 元素：
 ```yml
 {% raw %}{% include embed-gwt.html dir='viewport-example' width="800" height="500" %}{% endraw %}
 ```
 
-`dir` refers to the directory in the [libgdx-wiki-examples](https://github.com/libgdx/libgdx-wiki-examples) repo, where the source code of the examples is located. In particular, it denotes the path to the root folder of the example's Gradle project (without leading and trailing slashes; in this case, `viewport-example` refers to the  `/viewport-example/` folder which contains `/html/build.gradle`). The examples are automatically built via GH Actions (by calling `./gradlew html:dist`) and then deployed through GH Pages.
+`dir` 指向 [libgdx-wiki-examples](https://github.com/libgdx/libgdx-wiki-examples) repo 中存放示例源代码的目录。更具体地说，它表示示例 Gradle 项目根目录的路径（不带开头和结尾的斜杠；在本例中，`viewport-example` 指向包含 `/html/build.gradle` 的 `/viewport-example/` 文件夹）。示例会通过 GH Actions（调用 `./gradlew html:dist`）自动构建，然后通过 GH Pages 部署。
 
-If `width` and `height` are **both** set they are used for the container dimensions. They represent the dimensions in pixels and must be given as raw numbers without units.
+如果同时设置了 `width` 和 `height`，它们会用作容器尺寸。二者表示像素尺寸，必须以不带单位的纯数字填写。
 
-To style the embedded content, use the `containerstyle` and `iframestyle` attributes.
+要设置嵌入内容的样式，请使用 `containerstyle` 和 `iframestyle` 属性。
 
-## Renaming pages
+## 重命名页面
 
-If you are moving/renaming pages and want to preserve their old links, use `redirect_from` in the frontmatter:
+如果要移动或重命名页面，并希望保留旧链接，请在 frontmatter 中使用 `redirect_from`：
 ```yml
 redirect_from:
   - /dev/setup/ # this page is now available via https://libgdx.com/dev/setup/ as well

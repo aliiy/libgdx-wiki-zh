@@ -1,19 +1,19 @@
 ---
-title: Playing PCM audio
+title: 播放 PCM 音频
 ---
-The audio module can provide you direct access to the audio hardware for writing [PCM samples](https://en.wikipedia.org/wiki/Pulse-code_modulation) to it.
+音频模块可以让你直接访问音频硬件，向其写入 [PCM 采样](https://en.wikipedia.org/wiki/Pulse-code_modulation)。
 
-The audio hardware is abstracted via the [AudioDevice](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/audio/AudioDevice.html) [(source)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/audio/AudioDevice.java) interface.
+音频硬件通过 [AudioDevice](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/audio/AudioDevice.html) [(源代码)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/audio/AudioDevice.java) 接口进行抽象。
 
-To create a new `AudioDevice` instance we do the following:
+创建新的 `AudioDevice` 实例的方式如下：
 
 ```java
 AudioDevice device = Gdx.audio.newAudioDevice(44100, true);
 ```
 
-This creates a new `AudioDevice` that has a sampling frequency of 44.1khz and outputs mono. If the device couldn't be created, a `GdxRuntimeException` will be thrown.
+这会创建一个采样频率为 44.1 kHz、输出为单声道的 `AudioDevice`。如果无法创建设备，则会抛出 `GdxRuntimeException`。
 
-We can write either 16-bit signed PCM or 32-bit float PCM data to the device:
+我们可以向设备写入 16 位有符号 PCM 或 32 位浮点 PCM 数据：
 
 ```java
 float[] floatPCM = ... generated from a sine for example ...
@@ -23,22 +23,22 @@ short[] shortPCM = ... generated from a decoder ...
 device.writeSamples(shortPCM, 0, shortPCM.length);
 ```
 
-If stereo is used, left and right channel samples are interleaved as usual (first float/short -> left, second float/short -> right).
+如果使用立体声，左右声道采样按通常方式交错排列（第一个 float/short -> 左声道，第二个 float/short -> 右声道）。
 
-The latency in milliseconds can be queried like this:
+可以这样查询毫秒级延迟：
 
 ```java
 int latencyInSamples = device.getLatency();
 ```
 
-This will return the size of the audio buffer in samples and thus give you a good indicator about the latency. The bigger the return value, the longer it takes for the audio to arrive at the recipient after it was written.
+这会返回音频缓冲区的采样数大小，从而很好地反映延迟。返回值越大，写入后音频到达接收端所需的时间越长。
 
-Note that latency on almost all Android phones is ridiculously high. Real-time audio applications have a hard time to get in the useful 10-30ms range. Usually you can achieve 100ms latency, many phones will have up to 400ms latency. Sadly, this is a driver/OS related problem and can't be worked around.
+请注意，几乎所有 Android 手机的延迟都高得离谱。实时音频应用很难达到实用的 10～30 ms 范围，通常只能达到 100 ms 延迟，许多手机甚至会达到 400 ms。这是驱动程序/操作系统相关的问题，很遗憾无法绕过。
 
-An `AudioDevice` is a native resource and needs to be disposed of when no longer used:
+`AudioDevice` 是一种本机资源，不再使用时必须释放：
 
 ```java
 device.dispose();
 ```
 
-Direct PCM output is not supported in the JavaScript/WebGL backend.
+JavaScript/WebGL 后端不支持直接 PCM 输出。

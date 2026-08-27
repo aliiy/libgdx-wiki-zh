@@ -1,45 +1,43 @@
 ---
-title: Gdx freetype
+title: Gdx freetype 扩展
 ---
-## Introduction
+## 简介
 
-If you want to draw text in your game, you usually use a [BitmapFont](/wiki/graphics/2d/fonts/bitmap-fonts).
-However, there is a downside:
+如果想在游戏中绘制文本，通常会使用 [BitmapFont](/wiki/graphics/2d/fonts/bitmap-fonts)。
+但它存在一个缺点：
 
-* **BitmapFonts rely on an image, so you have to scale them if you want a different size, which may look ugly.**
+* **BitmapFont 依赖图像，因此如果需要不同大小就必须缩放，效果可能很难看。**
 
-You could just save a BitmapFont of the biggest size needed in your game then and you never have to scale up, just down, right?
-Well, that's true, but downscaling by large amounts can either look aliased or slightly blurry, depending if mipmapping is used.
-[Distance field fonts](https://libgdx.com/wiki/graphics/2d/fonts/distance-field-fonts) aim to solve this, but that's not what this page is about!
+你也可以保存游戏所需最大尺寸的 BitmapFont，这样就不必放大，只需缩小，对吧？确实如此，但大幅缩小时，根据是否使用 mipmap，结果可能出现锯齿或略微模糊。[距离场字体](https://libgdx.com/wiki/graphics/2d/fonts/distance-field-fonts)旨在解决这个问题，但本文不讨论它！
 
-A BitmapFont can also take up more storage space than the corresponding TrueType Font (.ttf), though whether these fonts would require more space than gdx-freetype itself depends on your game and target platform.
+BitmapFont 占用的存储空间也可能比对应的 TrueType 字体（.ttf）更多，不过这些字体是否比 gdx-freetype 本身占用更多空间，取决于你的游戏和目标平台。
 
-The solution to your problem is the `gdx-freetype` extension:
-  * ship only lightweight .ttf files with your game
-  * generate a BitmapFont of your desired size on the fly
-  * user might put their own fonts into your game
+解决方案是使用 `gdx-freetype` 扩展：
+  * 游戏只需携带轻量的 .ttf 文件
+  * 在运行时生成所需大小的 BitmapFont
+  * 允许用户将自己的字体放入游戏
 
-Tutorial available on [https://libgdxinfo.wordpress.com](https://libgdxinfo.wordpress.com/basic-label/)
+教程见 [https://libgdxinfo.wordpress.com](https://libgdxinfo.wordpress.com/basic-label/)。
 
-## Details
+## 详细信息
 
-Since this is an extension, it is not included in your libGDX project by default. How you add the extension differs based on the setup of your project.
+由于这是一个扩展，默认不会包含在 libGDX 项目中。添加扩展的方式取决于项目的设置方式。
 
-### How to put gdx-freetype in your project
+### 如何将 gdx-freetype 加入项目
 
-#### For projects using Gradle
+#### 对于使用 Gradle 的项目
 
-For new projects, simply select the Freetype option under extensions in the [setup UI](https://libgdx.com/dev/project-generation/).
+对于新项目，只需在[设置界面](https://libgdx.com/dev/project-generation/)的扩展选项中选择 Freetype。
 
-To add to an existing Gradle project, see [Dependency management with Gradle](/wiki/articles/dependency-management-with-gradle#freetypefont-gradle).
+要添加到现有 Gradle 项目，请参阅 [使用 Gradle 管理依赖](/wiki/articles/dependency-management-with-gradle#freetypefont-gradle)。
 
 #### HTML5
 
-gdx-freetype is not compatible with HTML5. However, you may use the [gdx-freetype-gwt](https://github.com/intrigus/gdx-freetype-gwt) library by Intrigus to enable HTML5 functionality. Version 1.9.10.1 remains compatible with newer versions of libGDX, including 1.10.0.
+gdx-freetype 与 HTML5 不兼容。不过，可以使用 Intrigus 提供的 [gdx-freetype-gwt](https://github.com/intrigus/gdx-freetype-gwt) 库来启用 HTML5 功能。1.9.10.1 版本仍与包括 1.10.0 在内的较新 libGDX 版本兼容。
 
-### How to use gdx-freetype in code
+### 如何在代码中使用 gdx-freetype
 
-Using the gdx-freetype extension in your code is really simple.
+在代码中使用 gdx-freetype 扩展非常简单。
 
 ```java
 FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/myfont.ttf"));
@@ -48,9 +46,9 @@ parameter.size = 12;
 BitmapFont font12 = generator.generateFont(parameter); // font size 12 pixels
 generator.dispose(); // don't forget to dispose to avoid memory leaks!
 ```
-A much simpler way to display your font is by placing your font file in project's assets folder. You will have to modify the first line of the above code and mention just your font file name in the parameters.
+显示字体的更简单方法是将字体文件放入项目的 assets 文件夹。你只需修改上面代码的第一行，并在参数中写入字体文件名。
 
-The defaults for the [FreeTypeFontParameter](https://github.com/libgdx/libgdx/blob/master/extensions/gdx-freetype/src/com/badlogic/gdx/graphics/g2d/freetype/FreeTypeFontGenerator.java):
+[FreeTypeFontParameter](https://github.com/libgdx/libgdx/blob/master/extensions/gdx-freetype/src/com/badlogic/gdx/graphics/g2d/freetype/FreeTypeFontGenerator.java) 的默认值：
 ```java
 /** The size in pixels */
 public int size = 16;
@@ -84,11 +82,11 @@ public TextureFilter minFilter = TextureFilter.Nearest;
 public TextureFilter magFilter = TextureFilter.Nearest;
 ```
 
-If rendering large fonts, the default PixmapPacker page size may be too small. You can provide your own PixmapPacker or use `FreeTypeFontGenerator.setMaxTextureSize` to set the default page size.
+如果要渲染大字体，默认的 PixmapPacker 页面尺寸可能太小。你可以提供自己的 PixmapPacker，或使用 `FreeTypeFontGenerator.setMaxTextureSize` 设置默认页面尺寸。
 
-You may want to generate your font in your game's `resize ()` event to handle different window resolutions without scaling, being sure to dispose of old BitmapFonts. Your font size should be limited to what your page size can handle, especially on gdx-freetype-gwt, to avoid glitched fonts and crashes.
+你可能希望在游戏的 `resize ()` 事件中生成字体，以便在不缩放的情况下适应不同窗口分辨率，同时记得销毁旧的 BitmapFont。字体大小应限制在页面尺寸能够容纳的范围内，尤其是在 gdx-freetype-gwt 上，以避免字体出现异常和程序崩溃。
 
-### Examples
+### 示例
 
 ```java
 parameter.borderColor = Color.BLACK;
@@ -103,15 +101,15 @@ parameter.shadowOffsetY = 3;
 ```
 ![images/shadow.png](/assets/wiki/images/shadow.png)
 
-You can also load `BitmapFont`s generated via the FreeType extension using AssetManager. See [FreeTypeFontLoaderTest](https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests/src/com/badlogic/gdx/tests/extensions/FreeTypeFontLoaderTest.java)
+你也可以使用 AssetManager 加载通过 FreeType 扩展生成的 `BitmapFont`。参见 [FreeTypeFontLoaderTest](https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests/src/com/badlogic/gdx/tests/extensions/FreeTypeFontLoaderTest.java)。
 
-### Caveats
+### 注意事项
 
-Quoting from [https://web.archive.org/web/20201128081723/https://www.badlogicgames.com/wordpress/?p=2300](https://web.archive.org/web/20201128081723/https://www.badlogicgames.com/wordpress/?p=2300):
-  * Asian scripts “might” work, see caveat above though. They contain just too many glyphs. I’m thinking about ways to fix this.
-  * Right-to-left scripts like Arabic are a no-go. The layout “algorithms” in BitmapFont and BitmapFontCache have no idea how to handle that.
-  * Throwing just any font at FreeType is not a super awesome idea. Some fonts in the wild are just terrible, with bad or no hinting information and will look like poopoo.
+引用自 [https://web.archive.org/web/20201128081723/https://www.badlogicgames.com/wordpress/?p=2300](https://web.archive.org/web/20201128081723/https://www.badlogicgames.com/wordpress/?p=2300)：
+  * 亚洲文字“可能”可以使用，但仍请注意上面的限制。它们包含的字形太多了，我正在考虑解决方法。
+  * 阿拉伯语等从右向左书写的文字不可用。BitmapFont 和 BitmapFontCache 的布局“算法”完全不知道如何处理这种文字。
+  * 随便将字体交给 FreeType 并不是好主意。实际存在的一些字体质量很差，字距调整信息不完善甚至没有，渲染效果会非常糟糕。
 
 ----
 
-Download an [example](https://hg.sr.ht/~dermetfan/somelibgdxtests)
+下载一个[示例](https://hg.sr.ht/~dermetfan/somelibgdxtests)

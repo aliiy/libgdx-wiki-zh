@@ -1,33 +1,33 @@
 ---
-title: Integrating libgdx and the device camera
+title: 集成 libGDX 与设备相机
 ---
-This article shows how to integrate the Android device camera with your libGDX application.
-This functionality can be used in order to let the user see what going on behind the device while playing and walking on the street, or even have some interaction between  the game and the real world (FPS game using the face detection mechanism?)
+本文介绍如何将 Android 设备相机集成到 libGDX 应用中。
+此功能可以让用户在游戏过程中、甚至行走在街上时看到设备后方的景象，也可以实现游戏与现实世界之间的交互（例如使用人脸检测机制的 FPS 游戏）。
 
 
-# A Quick Outline
-  * Create the libGDX view with alpha channel (this is not the default), so that the camera preview will be shown behind it.
-  * Create the DeviceCameraController object responsible for the Camera surface where the preview is drawn.
-  * Interact with the DeviceCameraController from your application code, most of the camera functionality is called asynchronously according to: [https://code.google.com/p/libgdx-users/wiki/IntegratingAndroidNativeUiElements3TierProjectSetup](https://code.google.com/p/libgdx-users/wiki/IntegratingAndroidNativeUiElements3TierProjectSetup)
-  * Take a picture
-    * For taking a picture the Camera has a specific state machine that should be followed.
-    * After getting the picture date from the camera, merge it with the libGDX screen-shot and write the result, this process is quite slow and can be done in a separate thread.
-  * Continue with the preview (The picture taken is frozen on the screen until the preview is explicitly restarted) or hide the CameraSurface all together.
+# 简要概述
+  * 创建带 alpha 通道的 libGDX 视图（默认不带），使相机预览显示在其后方。
+  * 创建负责相机预览绘制表面的 DeviceCameraController 对象。
+  * 在应用代码中与 DeviceCameraController 交互，大多数相机功能会按照[此处](https://code.google.com/p/libgdx-users/wiki/IntegratingAndroidNativeUiElements3TierProjectSetup)的方式异步调用。
+  * 拍照
+    * Camera 拍照时有必须遵循的特定状态机。
+    * 获取相机图像数据后，将其与 libGDX 屏幕截图合并并写入结果；这个过程较慢，可以放到单独线程中执行。
+  * 继续预览（拍摄的图像会冻结在屏幕上，直到显式重启预览），或完全隐藏 CameraSurface。
 
-The sample application does the following:
-  * draws a cube with the libGDX splash screen as its faces' texture
-  * upon the user touching the screen the Camera preview is started and drawn behind the cube
-  * when the user untouch the screen:
-    * the Camera starts auto-focusing ;
-    * take a picture if succeeded to focus ;
-    * take a screen-shot of the libGDX scene according to: [https://libgdx.com/wiki/graphics/taking-a-screenshot](https://libgdx.com/wiki/graphics/taking-a-screenshot) ;
-    * saves the merged picture to the storage ;
-    * and remove the Preview.
+示例应用执行以下操作：
+   * 使用 libGDX 启动画面作为各个面的纹理绘制一个立方体
+   * 用户触摸屏幕后启动 Camera 预览，并将其绘制在立方体后方
+   * 用户松开屏幕后：
+     * Camera 开始自动对焦；
+     * 对焦成功后拍照；
+     * 按照[此处](https://libgdx.com/wiki/graphics/taking-a-screenshot)的方式截取 libGDX 场景；
+     * 将合并后的图像保存到存储中；
+     * 移除预览。
 
-# The Gory Details
+# 详细实现
 
-## Creating the libGDX application
-Initialize your Application in the !MainActivity class in the Android project, but modify the AndroidApplicationConfiguration object before passing it to the initialize method:
+## 创建 libGDX 应用
+在 Android 项目的 !MainActivity 类中初始化 Application，但在将 AndroidApplicationConfiguration 对象传给 initialize 方法之前先对其进行修改：
 ```java
         AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
         cfg.useGL20 = false;
@@ -38,7 +38,7 @@ Initialize your Application in the !MainActivity class in the Android project, b
         cfg.b = 8;
         cfg.a = 8;
 ```
-After the initialization make sure the OpenGL surface format is defined as TRANSLUCENT
+初始化后，确保将 OpenGL 表面格式定义为 TRANSLUCENT。
 ```java
         if (graphics.getView() instanceof SurfaceView) {
         	SurfaceView glView = (SurfaceView) graphics.getView();
@@ -47,30 +47,30 @@ After the initialization make sure the OpenGL surface format is defined as TRANS
 		}
 	}
 ```
-We also create a new method in the !MainActivity class to help us call asynchronous functions:
+我们还在 !MainActivity 类中创建一个新方法，以便调用异步函数：
 ```java
 	public void post(Runnable r) {
 		handler.post(r);
 	}
 ```
 
-## Draw frame in the render() method
-The important thing in this part is to clear the screen using the `glClearColor()` with a color with its alpha channel set to 0 when you want the Camera preview to be shown behind your scene.
+## 在 render() 方法中绘制帧
+这里的关键是在希望 Camera 预览显示于场景后方时，使用 alpha 通道为 0 的颜色调用 `glClearColor()` 清除屏幕。
 ```java	
 	Gdx.gl10.glClearColor(0.0f, 0.0f, 0.0f, 0.0f); 
 ```
-After clearing the screen you can draw everything else as usual. note that object drawn with a transparent color will show through to the Camera preview (even if there is an object behind it that has a non transparent color, but is not drawn due to the objects Z-order).
+清除屏幕后即可像往常一样绘制其他内容。注意，使用透明颜色绘制的对象会透出 Camera 预览（即使其后方有不透明对象，只是由于 Z 顺序没有被绘制）。
 
-## Camera State Machine
-The android camera has a specific state machine that must be followed. This state machine can be managed by the application using callbacks. This state machine is managed by the AndroidDeviceCameraController (This class implements an abstract interface defined in the base project, In the Desktop application this interface is implemented by an empty class just for compilation compatibility).
+## Camera 状态机
+Android 相机有必须遵循的特定状态机。应用可以通过回调管理该状态机。状态机由 AndroidDeviceCameraController 管理（该类实现了基础项目中定义的抽象接口；桌面应用中则使用空类实现该接口，仅用于保证编译兼容性）。
 
-The Camera State machine is:
+Camera 状态机如下：
 Ready -> Preview -> autoFocusing -> ShutterCalled -> Raw PictureData -> Postview PictureData -> Jpeg PictureData -> Ready
 
-From this state machine the sample code only implements:
+示例代码只实现了其中的以下路径：
 Ready -> Preview -> autoFocusing -> Jpeg PictureData -> Ready
 
-So The AndroidDeviceCameraController implements the additional two Camera interfaces: Camera.PictureCallback & Camera.AutoFocusCallback
+因此，AndroidDeviceCameraController 还实现了两个 Camera 接口：Camera.PictureCallback 和 Camera.AutoFocusCallback。
 ```
 public class AndroidDeviceCameraController implements DeviceCameraControl, Camera.PictureCallback, Camera.AutoFocusCallback {
 .
@@ -79,8 +79,8 @@ public class AndroidDeviceCameraController implements DeviceCameraControl, Camer
 }
 ```
 
-## Preparing the Camera
-We create a CameraSurface object which holds the Camera object and manages the Surface on which the Camera draws the preview images
+## 准备 Camera
+我们创建 CameraSurface 对象来持有 Camera 对象，并管理 Camera 绘制预览图像的 Surface。
 ```java
 	public class CameraSurface extends SurfaceView implements SurfaceHolder.Callback {
 		private Camera camera;
@@ -129,13 +129,12 @@ We create a CameraSurface object which holds the Camera object and manages the S
 	}
 ```
 
-The camera object is only created by calling the static Camera.open() method after the `surfaceCreated()` callback is being called.
-Until then the camera is not ready and cannot be used.
+只有在调用 `surfaceCreated()` 回调后，通过静态 Camera.open() 方法才能创建相机对象。在此之前相机尚未就绪，不能使用。
 
-## Showing the Camera preview
-When the `surfaceChanged()` callback is called, we set the camera preview size and sets our CameraSurface object as the Camera preview display.
+## 显示 Camera 预览
+调用 `surfaceChanged()` 回调时，我们设置相机预览尺寸，并将 CameraSurface 对象设为 Camera 的预览显示表面。
 
-Now back to the AndroidDeviceCameraController Class. In the next method we prepare the Camera by creating the CameraSurface object (only if needed) and add it as !ContentView to the activity:
+回到 AndroidDeviceCameraController 类。下面的方法通过创建 CameraSurface 对象（仅在需要时创建）并将其作为 !ContentView 添加到 activity 中来准备 Camera：
 ```java
 	@Override
 	public void prepareCamera() {
@@ -145,7 +144,7 @@ Now back to the AndroidDeviceCameraController Class. In the next method we prepa
 		activity.addContentView( cameraSurface, new LayoutParams( LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT ) );
 	}
 ```
-This method should be called asynchronous from the libGDX rendering thread so we actually call the `prepareCameraAsync()` method
+该方法应从 libGDX 渲染线程异步调用，因此实际调用 `prepareCameraAsync()` 方法。
 ```java
 	@Override
 	public void prepareCameraAsync() {
@@ -158,7 +157,7 @@ This method should be called asynchronous from the libGDX rendering thread so we
 	}
 ```
 
-We know that we can pass from the prepare state to the preview state, when the !CameraSurface and the camera objects are ready (by checking that the !CameraSurface & Camera objects exists):
+当 !CameraSurface 和 camera 对象准备就绪时（通过检查 !CameraSurface 和 Camera 对象是否存在），就可以从准备状态进入预览状态：
 ```java
 	@Override
 	public boolean isReady() {
@@ -169,7 +168,7 @@ We know that we can pass from the prepare state to the preview state, when the !
 	}
 ```
 
-We do this by calling startPreview method via its Async sibling
+通过调用 startPreview 方法对应的异步版本来完成：
 ```java
 	@Override
 	public synchronized void startPreviewAsync() {
@@ -190,10 +189,10 @@ We do this by calling startPreview method via its Async sibling
 	}
 ```
 
-In this state the user should see the Camera preview screen (assuming that we cleared the screen with a color having its alpha component sets to 0).
+在此状态下，用户应该能看到 Camera 预览画面（前提是使用 alpha 分量为 0 的颜色清除了屏幕）。
 
-## Taking a picture
-When we would like to take the picture, we set the suitable Camera parameters (we can do it in any stage before actually taking the picture)
+## 拍照
+需要拍照时，先设置合适的 Camera 参数（可以在实际拍照前的任意阶段设置）：
 ```java
 	public void setCameraParametersForPicture(Camera camera) {
 		// Before we take the picture - we make sure all camera parameters are as we like them
@@ -214,7 +213,7 @@ When we would like to take the picture, we set the suitable Camera parameters (w
 	}
 ```
 
-In this example we take a picture with the Camera maximal available resolution, and sets the focus mode to AutoFocus. After setting the camera parameters we call the camera autoFocus method, with the proper callback. this callback will be called when the camera is Focused, or after a timeout.
+本例使用 Camera 可用的最大分辨率拍照，并将对焦模式设为 AutoFocus。设置相机参数后，调用 camera 的 autoFocus 方法并传入适当的回调。当相机完成对焦或超时后，会调用此回调。
 ```java
 	@Override
 	public synchronized void takePicture() {
@@ -223,7 +222,7 @@ In this example we take a picture with the Camera maximal available resolution, 
 	    	cameraSurface.getCamera().autoFocus(this);
 	}
 ```
-When reaching a Focus, we call the actual Camera takePicture() method, with only onJpegPicture callback set.
+完成对焦后，调用实际的 Camera takePicture() 方法，并只设置 onJpegPicture 回调。
 ```java
 	@Override
 	public synchronized void onAutoFocus(boolean success, Camera camera) {
@@ -243,14 +242,14 @@ When reaching a Focus, we call the actual Camera takePicture() method, with only
 	}
 ```
 
-## Taking the libGDX screenshot
-In the render() method we wait until the pictureData object contains the Jpeg image and then create a Pixmap object out of this data:
+## 截取 libGDX 屏幕截图
+在 render() 方法中，等待 pictureData 对象包含 Jpeg 图像后，再根据数据创建 Pixmap 对象：
 ```java
 	if (deviceCameraControl.getPictureData() != null) { // camera picture was actually taken
 		Pixmap cameraPixmap = new Pixmap(deviceCameraControl.getPictureData(), 0, deviceCameraControl.getPictureData().length);
 	}
 ```
-and take the screenshot:
+然后截取屏幕截图：
 ```java
 	public Pixmap getScreenshot(int x, int y, int w, int h, boolean flipY) {
 		Gdx.gl.glPixelStorei(GL10.GL_PACK_ALIGNMENT, 1);
@@ -278,10 +277,10 @@ and take the screenshot:
 	}
 ```
 
-The next two operations are CPU and time consuming tasks so they should probably done in a separate thread with some kind of progress bar. In the code sample they are done directly in the rendering thread, so the screen is frozen during this processing.
+接下来的两个操作会占用 CPU 且耗时，因此最好放到单独线程中，并配合某种进度条。示例代码直接在渲染线程中执行它们，所以处理期间屏幕会冻结。
 
-## Merging the screenshot and the Camera picture together
-We now have to merge the two Pixmap object. The libGDX Pixmap object can do this for us, but since the camera picture may have different aspect ratio we first need to fix it manually.
+## 合并屏幕截图与 Camera 图像
+现在需要合并两个 Pixmap 对象。libGDX 的 Pixmap 可以完成此操作，但由于相机图像的宽高比可能不同，首先需要手动修正。
 ```java
 	private void merge2Pixmaps(Pixmap mainPixmap, Pixmap overlayedPixmap) {
 		// merge to data and Gdx screen shot - but fix Aspect Ratio issues between the screen and the camera
@@ -316,10 +315,10 @@ We now have to merge the two Pixmap object. The libGDX Pixmap object can do this
 	}
 ```
 
-## Saving the resulting image as a Jpeg
-In order to save the resulting image we can save it to the storage using the PixmapIO class. however, the CIM format is not interoperable, and the PNG format will probably result in huge files.
-One way is to save the resulting image as a Jpeg using the Android Bitmap class. This function is implemented inside the AndroidDeviceCameraController, since it is Android specific.
-However, the libGDX pixel format is RGBA and the Bitmap pixel format is ARGB so we need to shuffle some bits around to get the colors right.
+## 将结果图像保存为 Jpeg
+要保存结果图像，可以使用 PixmapIO 类将其写入存储。但 CIM 格式不具备互操作性，而 PNG 格式可能生成非常大的文件。
+一种方法是使用 Android Bitmap 类将结果图像保存为 Jpeg。由于这是 Android 专用功能，该方法在 AndroidDeviceCameraController 中实现。
+不过，libGDX 的像素格式是 RGBA，而 Bitmap 的像素格式是 ARGB，因此需要调整一些位才能得到正确颜色。
 ```java
 	@Override
 	public void saveAsJpeg(FileHandle jpgfile, Pixmap pixmap) {
@@ -354,8 +353,8 @@ However, the libGDX pixel format is RGBA and the Bitmap pixel format is ARGB so 
 	}
 ```
 
-## Stoping the preview
-After finishing to save the picture, we stop the preview and remove the !CameraSurface from the Activity views, and we also stop the camera from sending the preview to the camera surface. Again we need to do this asynchronously.
+## 停止预览
+保存图像后，停止预览并从 Activity 视图中移除 !CameraSurface，同时停止相机向相机表面发送预览。同样，这些操作需要异步执行。
 ```java
 	@Override
 	public synchronized void stopPreviewAsync() {
@@ -383,11 +382,11 @@ After finishing to save the picture, we stop the preview and remove the !CameraS
 	}
 ```
 
-## Fixing Screen and Camera resolution discrepancies
-There is still one problem in our Pixmaps merging process. The resolution of the Camera and our screenshot maybe very different (e.g. in my test on Sumsung Galaxy Ace, I was streaching a 480x320 screenshot to a 2560x1920 picture). one way around it is to enlarge the libGDX view size to a larger size than the actual physical device screen size.
-This is done using the setFixedSize() function. The actual screen size that can be defined depends on the memory allocated to the GPU and again your mileage may vary.
-I found that if I do it once during the initialization I can set the virtual screen size to 1920x1280, but this will results with a slower rendering.
-Other way to do it is to call the setFixedSize() function only during the takingPicture procedure and returning it to its orignal afterwards. However, in this case I managed to set the virtual screen size to 960x640 (probably because some of the GPU memory is already allocated for the screen with the original size)
+## 修正屏幕与 Camera 分辨率差异
+Pixmaps 合并过程仍有一个问题：Camera 和屏幕截图的分辨率可能差异很大（例如我在 Samsung Galaxy Ace 上测试时，将 480x320 的截图拉伸到了 2560x1920 的图像）。一种解决方法是将 libGDX 视图尺寸扩大到大于设备实际物理屏幕尺寸。
+这可以通过 setFixedSize() 函数完成。实际可设置的屏幕尺寸取决于分配给 GPU 的内存，具体效果也会因设备而异。
+我发现，如果在初始化期间执行一次，就可以将虚拟屏幕尺寸设为 1920x1280，但这样会导致渲染变慢。
+另一种方法是仅在 takingPicture 过程中调用 setFixedSize() 函数，之后再恢复原尺寸。不过在这种情况下，我只能将虚拟屏幕尺寸设为 960x640（可能是因为部分 GPU 内存已经分配给原尺寸的屏幕）。
 
 ```java
 	public void setFixedSize(int width, int height) {
@@ -407,22 +406,22 @@ Other way to do it is to call the setFixedSize() function only during the taking
 	}
 ```
 
-## Some Notes
+## 说明
 
-### Note
-This code is Android specific, and will not work with the generic cross platform code, but I guess one can provide similar functionality, at least for the desktop application.
+### 注意
+此代码专用于 Android，无法与通用跨平台代码一起工作；不过至少对于桌面应用，应该可以提供类似功能。
 
-### Another note
-The process of merging and writing the merge image to the storage, takes quite a lot of time due to the format mismatch between libGDX color scheme (RGBA) and the Bitmap class used here (ARGB), if someone find a quicker way, I'd be happy to hear about it.
+### 另一条说明
+由于 libGDX 颜色方案（RGBA）与此处使用的 Bitmap 类（ARGB）格式不匹配，合并图像并写入存储的过程相当耗时。如果有人找到更快的方法，我很乐意听到。
 
-### Last note
-I tested this only with a handful of Android devices, and experienced different behaviors probably due to the different GPU implementations. The Samsung GSIII even managed to XOR white elements with the camera image instead of simply overlaying them (Other colors didn't showed this effects). So your mileage may vary depending on the actual phone used.
+### 最后一条说明
+我只在少数 Android 设备上测试过，可能由于 GPU 实现不同而遇到了不同表现。Samsung GSIII 甚至会将白色元素与相机图像执行 XOR，而不是简单叠加（其他颜色没有出现这种现象）。因此，实际效果可能因所用手机而异。
 
-# The Code
+# 代码
 
-Here's the full code for the projects' classes: 
+下面是项目中各类的完整代码：
 
-## Android Project 
+## Android 项目
 
 MainActivity.java:
 ```java
@@ -794,7 +793,7 @@ public class AndroidDeviceCameraController implements DeviceCameraControl, Camer
 }
 ```
 
-## Base Project
+## 基础项目
 DeviceCameraControl.java
 ```java
 /*

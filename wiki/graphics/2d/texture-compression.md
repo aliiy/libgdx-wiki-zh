@@ -1,46 +1,46 @@
 ---
-title: Texture Compression
+title: 纹理压缩
 ---
-If you need texture compression, offline mipmap generation, or cubemaps, the default texture formats like PNG won't be sufficient. Luckily libGDX provides 2 options for this ETC1 files and KTX/ZKTX textures.
+如果需要纹理压缩、离线生成 mipmap 或立方体贴图，PNG 等默认纹理格式就不够用了。幸运的是，libGDX 提供了两种方案：ETC1 文件和 KTX/ZKTX 纹理。
 
-Note that for the **GWT** backend ETC1 and KTX/ZKTX is currently **not supported**.
+注意，**GWT** 后端目前**不支持** ETC1 和 KTX/ZKTX。
 
-Before going into details, there are 2 types of compression to be aware of ;
-- compression used to store the texture on disk (zip, png, jpg,...), which is useful to reduce the size of your package,
-- compression used to store the texture in memory (ETC1, ETC2, S3TC,...), which improves your game performance and minimizes the memory footprint of your application at runtime (hence reducing the risk that Android performs an App restart on resume).
+在详细介绍之前，需要区分两种压缩：
+- 用于将纹理存储在磁盘上的压缩（zip、png、jpg 等），有助于减小程序包大小；
+- 用于将纹理存储在内存中的压缩（ETC1、ETC2、S3TC 等），可以提高游戏性能，并减小应用运行时的内存占用（从而降低 Android 恢复时重启应用的风险）。
 
-OpenGL ES 2.0 has only one mandatory texture compression format on Android: ETC1 (this format is not available on iOS). It allows to decrease the size of any RGB8 image by a 6x factor. The main drawback is that it is a lossy compression format. The other is that it is limited to RGB8. To support alpha channel, you have to to store alpha separately :
-- either in another texture which can be ETC1 compressed as well,
-- or in the same texture, putting the color part of your image in the top, and the alpha part in the bottom.
+在 Android 上，OpenGL ES 2.0 只有一种必需的纹理压缩格式：ETC1（iOS 不提供此格式）。它可以将任意 RGB8 图像的大小缩小 6 倍。主要缺点是它属于有损压缩，而且仅限于 RGB8。若要支持 alpha 通道，必须单独存储 alpha：
+- 存储在另一张同样可以使用 ETC1 压缩的纹理中；
+- 或存储在同一张纹理中，将图像的颜色部分放在上方、alpha 部分放在下方。
 
-The video memory savings will then drops from 6x to 4x, but are still worth the effort. An example is given in [KTXTest](https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests/src/com/badlogic/gdx/tests/KTXTest.java).
+这样显存节省会从 6 倍降至 4 倍，但仍然值得。示例见 [KTXTest](https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests/src/com/badlogic/gdx/tests/KTXTest.java)。
 
-## ETC1 File Format
+## ETC1 文件格式
 
-ETC1 file format is a very simple format specific to libGDX (see [this blog post](https://web.archive.org/web/20200924172136/https://www.badlogicgames.com/wordpress/?p=2104)). It gives a straight forward way to support 2D texture ETC1 compressed. The drawback is that it won't give you the ability to use mipmaps or cubemaps.
+ETC1 文件格式是 libGDX 专用的非常简单的格式（参见[这篇博客文章](https://web.archive.org/web/20200924172136/https://www.badlogicgames.com/wordpress/?p=2104)）。它提供了支持 ETC1 压缩 2D 纹理的直接方式。缺点是无法使用 mipmap 或立方体贴图。
 
-### Compression
-Compressing a Pixmap loaded from a file and writing it to our custom ETC1 file format is pretty simple:
+### 压缩
+压缩从文件加载的 Pixmap，并将其写入自定义 ETC1 文件格式非常简单：
 ```java
 Pixmap pixmap = new Pixmap(Gdx.files.absolute("image.png"));
 ETC1.encodeImagePKM(pixmap).write(Gdx.files.absolute("image.etc1"));
 ```    
-You can also use the ETC1Compressor tool in the gdx-tools project which can convert entire directory hierarchies.
+也可以使用 gdx-tools 项目中的 ETC1Compressor 工具转换整个目录层级。
 
-### Loading
-Once you have your ETC1 compressed image in a file, you can easily load it like any other image file:
+### 加载
+将 ETC1 压缩图像保存到文件后，可以像加载其他图像文件一样轻松加载它：
 ```java
 Texture texture = new Texture(Gdx.files.internal("image.etc1"));
 ```    
 
-## KTX/ZKTX Format
+## KTX/ZKTX 格式
 
-KTX file format is a [standard](https://www.khronos.org/registry/KTX/specs/1.0/ktxspec_v1.html) dedicated to storing OpenGL textures. Its main advantage is that it supports most features of OpenGL Textures (all compression formats, with or without mipmaps, cubemaps, texture arrays,...).
+KTX 文件格式是专门用于存储 OpenGL 纹理的[标准](https://www.khronos.org/registry/KTX/specs/1.0/ktxspec_v1.html)。其主要优势是支持 OpenGL 纹理的大多数功能（所有压缩格式、带或不带 mipmap、立方体贴图、纹理数组等）。
 
-The ZKTX format is just a zipped KTX to limit the size of the file on disk.
+ZKTX 格式只是经过 zip 压缩的 KTX，用于限制文件在磁盘上的大小。
 
-### Preparing your file
-The KTXProcessor tool in the gdx-tools project provides a simple way to prepare your textures:
+### 准备文件
+gdx-tools 项目中的 KTXProcessor 工具提供了准备纹理的简单方式：
 ```
 usage : KTXProcessor input_file output_file [-etc1|-etc1a] [-mipmaps]
   input_file  is the texture file to include in the output KTX or ZKTX file.
@@ -60,12 +60,12 @@ usage : KTXProcessor input_file output_file [-etc1|-etc1a] [-mipmaps]
     KTXProcessor in.ktx out.zktx                                       Convert a KTX file to a Zipped KTX file
 ```
 
-There are also lots of third party tools to prepare KTX texture files:
-- [The OpenGL SDK](https://www.khronos.org/opengles/sdk/tools/KTX/) provides tools to create KTX file,
-- [The Mali SDK](https://developer.arm.com/products/software-development-tools/graphics-development-tools/mali-texture-compression-tool) provides tools to create KTX file including alpha channel processing.
+此外，还有许多用于准备 KTX 纹理文件的第三方工具：
+- [OpenGL SDK](https://www.khronos.org/opengles/sdk/tools/KTX/) 提供创建 KTX 文件的工具；
+- [Mali SDK](https://developer.arm.com/products/software-development-tools/graphics-development-tools/mali-texture-compression-tool) 提供创建 KTX 文件以及处理 alpha 通道的工具。
 
-### Loading
-Once you have your KTX or ZKTX compressed image in a file, you can easily load it like any other image file:
+### 加载
+将 KTX 或 ZKTX 压缩图像保存到文件后，可以像加载其他图像文件一样轻松加载它：
 
 ```java
 Texture texture = new Texture(Gdx.files.internal("image.zktx"));

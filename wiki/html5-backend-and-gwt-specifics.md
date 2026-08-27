@@ -1,27 +1,27 @@
 ---
-title: HTML5 Backend and GWT Specifics
+title: HTML5 后端和 GWT 特性
 ---
-Welcome to a place of magic and wonder, the World Wide Web! Even though some folks say this Internet thing is "just a fad," and we should keep using usenet and gopher, there's at least one thing the WWW has that those technologies don't:
+欢迎来到充满魔法与奇迹的万维网！尽管有人说互联网“只是一时风潮”，我们应该继续使用 usenet 和 gopher，但 WWW 至少拥有一样那些技术没有的东西：
 
-## libGDX Games
+## libGDX 游戏
 
-That's right! You can make your very own libGDX games that run in an HTML5-capable web browser, which I assume is some advanced form of Netscape Navigator. This is possible by GWT, or Google Web Toolkit! I know what you're thinking, Google? The guys who are trying to let people search the Internet with a form? What are they doing with libGDX? I have no idea either. If you want to make your own libGDX game deploy to the web using GWT, well, just make a project in the latest setup jar and make sure to check the `Html` checkbox. The rest should be straightforward!
+没错！你可以制作自己的 libGDX 游戏，让它运行在支持 HTML5 的 Web 浏览器中，我想那应该是 Netscape Navigator 的某种高级形式。这要归功于 GWT，也就是 Google Web Toolkit！我知道你在想什么：Google？就是那个试图让人们通过表单搜索互联网的公司？他们怎么会参与 libGDX？我也不知道。如果想使用 GWT 将自己的 libGDX 游戏部署到 Web，只需在最新的 setup jar 中创建项目，并确保勾选 `Html` 复选框。其余步骤应该很简单！
 
-**BUT IT SOMETIMES ISN'T, AT FIRST**
+**但一开始有时并不简单**
 
-So there are a few things that are fundamentally different about developing using GWT as opposed to running a desktop project. You'll want to get familiar with two Gradle tasks in particular; you can launch these tasks from your IDE if you aren't comfortable on the command line, but command-line Gradle tends to avoid problems when the IDE isn't working as well as we would like. `gradlew html:superDev` will be your main tool during development; it allows for a much-improved debugging experience and allows quickly reloading changes to the Java code. `gradlew html:dist` produces a fully-functioning web page that can be uploaded to a static web host (such as [itch.io](https://itch.io/developers) or [GitHub Pages](https://pages.github.com/), both free); it also optimizes the web page so the game in it will perform better, which makes `dist` take a little longer than `superDev`.
+使用 GWT 开发与运行桌面项目有一些根本差异。尤其需要熟悉两个 Gradle 任务；如果不习惯命令行，可以从 IDE 启动这些任务，但当 IDE 无法正常工作时，命令行 Gradle 往往能避免问题。开发期间的主要工具是 `gradlew html:superDev`；它能显著改善调试体验，并快速重新加载 Java 代码的更改。`gradlew html:dist` 会生成功能完整的网页，可上传到静态 Web 主机（例如免费的 [itch.io](https://itch.io/developers) 或 [GitHub Pages](https://pages.github.com/)）；它还会优化网页，让其中的游戏运行得更好，因此 `dist` 比 `superDev` 稍慢。
 
 ## superDev
 
-superDev allows you to debug your HTML5 application. This is not necessary in most cases: if there are problems in your core game, you can debug the desktop application. But sometimes, there are bugs only appearing when running on HTML5. You can debug the application with the following steps:
+superDev 允许调试 HTML5 应用程序。大多数情况下不需要这样做：如果核心游戏存在问题，可以调试桌面应用程序。但有时错误只会在 HTML5 上运行时出现。可以按以下步骤调试应用程序：
 
-* Run the `html:superdev` Gradle task. It compiles the game and sets up a local HTTP server. When it is done, it will idle to keep the server running.
-* Your game is available here: [http://localhost:8080/index.html](http://localhost:8080/index.html) (current config) or [http://localhost:8080/html/](http://localhost:8080/html/) (older Gradle configuration with Jetty plugin) - open the page with *Chrome* to debug
-* Hit the big reload button and hit compile. The game will recompile and source maps will be set up.
-* After the game restarted, open Chrome's dev console with F12 and navigate to the sources tab. Hit Ctrl-P and enter the name of the Java file you want to debug. The Java file will open within Chrome's dev console and you can set a break point. You are able to step through the Java code lines. However, debug variables will be generated JS names but you'll be able to make sense of it.
-* When you are done, you can stop the Gradle task with Ctrl-C.
+* 运行 `html:superdev` Gradle 任务。它会编译游戏并设置本地 HTTP 服务器。完成后会保持空闲，以维持服务器运行。
+* 你的游戏位于此处：[http://localhost:8080/index.html](http://localhost:8080/index.html)（当前配置），或 [http://localhost:8080/html/](http://localhost:8080/html/)（使用 Jetty 插件的旧版 Gradle 配置）。请使用 *Chrome* 打开页面进行调试。
+* 点击大的重新加载按钮，然后点击编译。游戏会重新编译并设置源映射。
+* 游戏重启后，按 F12 打开 Chrome 的开发者控制台，并切换到 Sources 选项卡。按 Ctrl-P，输入要调试的 Java 文件名。该 Java 文件会在 Chrome 的开发者控制台中打开，你可以设置断点并逐行执行 Java 代码。不过，调试变量会使用生成的 JS 名称，但仍然可以看懂其含义。
+* 完成后，可以使用 Ctrl-C 停止 Gradle 任务。
 
-If your bug does not show up on Chrome, but only on Firefox or Safari, you are in bad luck. No debugging is available. But you can work with debug logging and, to avoid unreadable stack traces, you can turn off the obfuscation by adding this line to HTML project's `build.gradle`:
+如果错误不出现在 Chrome 中，而只出现在 Firefox 或 Safari 中，那就比较麻烦了，因为无法进行调试。但可以使用调试日志；为了避免堆栈跟踪难以阅读，还可以将以下内容添加到 HTML 项目的 `build.gradle` 中来关闭混淆：
 
 ```
 gwt {
@@ -30,19 +30,19 @@ gwt {
 }
 ```
 
-## dist Information
+## dist 信息
 
-Should be pretty straightforward; the dist is generated in `html/build/dist/`. You can delete the sourcemap files if you feel you won't be debugging the dist; they're usually a few MB in size and are in `html/build/dist/WEB-INF/deploy/html/symbolMaps`.
+这应该很简单；dist 会生成在 `html/build/dist/` 中。如果不打算调试 dist，可以删除源映射文件；它们通常有几 MB，位于 `html/build/dist/WEB-INF/deploy/html/symbolMaps`。
 
-## Fullscreen Functionality
+## 全屏功能
 
-Surprisingly, fullscreen functionality actually works on the HTML backend. To enable fullscreen, call the following method from within your core project:
+令人意外的是，全屏功能确实能在 HTML 后端上工作。要启用全屏，请在核心项目中调用以下方法：
 
 ```java
 Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 ```
 
-The user will be prompted to press "ESC" to exit fullscreen. And it even works on mobile. Great! It does have some caveats though. Turns out you can't activate full screen on iOS. Also, if you choose to use the "Resizable Application" option in the HTML Launcher, you'll need to rewrite the ResizeListener to the following:
+系统会提示用户按“ESC”退出全屏，移动设备上也能工作。不过有一些注意事项：iOS 上无法激活全屏。此外，如果选择 HTML Launcher 中的“Resizable Application”选项，需要将 ResizeListener 改写为如下内容：
 
 ```java
 class ResizeListener implements ResizeHandler {
@@ -62,19 +62,19 @@ class ResizeListener implements ResizeHandler {
 }
 ```
 
-Don't forget to also set the fullscreen orientation for mobile in the getConfig():
+别忘了在 getConfig() 中为移动设备设置全屏方向：
 
 ```java
 cfg.fullscreenOrientation = GwtGraphics.OrientationLockType.LANDSCAPE;
 ```
 
-## Resolution on mobiles
+## 移动设备上的分辨率
 
-On mobile, if your game is run in an iframe, or if you switch to full screen, you will notice that your game looks pixelated. That is because the reported screen size of mobiles is not the real screen size. You can enable using the real screen size with `config.usePhysicalPixels = true;`. This will also affect HDPI and Retina screens on desktop, so maybe you want to use `usePhysicalPixels = GwtApplication.isMobileDevice()`. [Check out this PR](https://github.com/libgdx/libgdx/pull/5691) for detailed information.
+在移动设备上，如果游戏运行在 iframe 中或切换到全屏，会发现画面出现像素化。这是因为移动设备报告的屏幕尺寸并非真实屏幕尺寸。可以通过 `config.usePhysicalPixels = true;` 启用真实屏幕尺寸。它也会影响桌面端的 HDPI 和 Retina 屏幕，因此可能希望使用 `usePhysicalPixels = GwtApplication.isMobileDevice()`。[此 PR](https://github.com/libgdx/libgdx/pull/5691) 提供了详细信息。
 
-## Changing the Load Screen Progress Bar
+## 更改加载屏幕进度条
 
-As much as we love libGDX, the default loading progress bar when preparing the HTML game screams "newbie". Impress your friends and bring honor to your family name by making a custom progress bar! Add the following to your HtmlLauncher class in your HTML project:
+尽管我们都喜欢 libGDX，但准备 HTML 游戏时默认的加载进度条会显得非常“新手”。制作一个自定义进度条来给朋友留下深刻印象，也为家族争光吧！将以下内容添加到 HTML 项目中的 HtmlLauncher 类：
 
 ```java
 @Override
@@ -91,16 +91,16 @@ protected void adjustMeterPanel(Panel meterPanel, Style meterStyle) {
 }
 ```
 
-"preloadlogo.png" is an image you place in the "webapp" folder in the HTML project for DIST builds. Place the image in your "war" folder as well for your SUPERDEV builds. Adjust your color to fit the theme of your game. Enjoy yourself.
+对于 DIST 构建，需要将图片 "preloadlogo.png" 放在 HTML 项目的 "webapp" 文件夹中；对于 SUPERDEV 构建，也要将图片放在 "war" 文件夹中。调整颜色以匹配游戏主题即可。
 
-Please note that you can only use pure GWT facilities to display the loading screen. libGDX APIs will only be available after the preloading is complete.
+请注意，显示加载屏幕时只能使用纯 GWT 功能。预加载完成后才能使用 libGDX API。
 {: .notice--primary}
 
-## Speeding up preload process
+## 加快预加载过程
 
-Speaking of the preloader: The HTML5 preloader is necessary, because usual gdx games rely on all assets being ready to access when needed. It prefetches every file in your asset directory. This may take some time and is not necessary if your game is a game that does not need all assets for presenting the startup screen. Think of all the people out there not having high speed internet connections.
+说到预加载器：HTML5 预加载器是必要的，因为普通的 gdx 游戏依赖所有资源在需要时都已准备就绪。它会预取资源目录中的每个文件。如果游戏启动屏幕不需要所有资源，这个过程可能耗时且没有必要；还要考虑那些没有高速互联网连接的用户。
 
-From 1.9.12 on, you can decrease your preload time a lot if you use asset manager to load your assets later. You can override a predefined `AssetFilter` with your own AssetFilter on GWT and return `false` for all asset files that are not needed before game start. Make sure these files are only loaded via AssetManager, otherwise your game will freeze when using such assets.
+从 1.9.12 开始，如果使用 asset manager 延后加载资源，就能大幅缩短预加载时间。你可以在 GWT 上用自己的 AssetFilter 覆盖预定义的 `AssetFilter`，对于游戏开始前不需要的所有资源文件返回 `false`。请确保这些文件只通过 AssetManager 加载，否则使用这些资源时游戏会冻结。
 
 ```
 public class AssetFilter extends DefaultAssetFilter {
@@ -111,75 +111,75 @@ public class AssetFilter extends DefaultAssetFilter {
 }
 ```
 
-For compile process to pick up this asset filter instead of your own, add the following configuration to your `GdxDefinition.gwt.xml` file:
+要让编译过程使用这个资源过滤器，请将以下配置添加到你的 `GdxDefinition.gwt.xml` 文件中：
 
       <set-configuration-property name="gdx.assetfilterclass" value="your.package.AssetFilter"/>
 
-([See game source commit using the feature](https://github.com/MrStahlfelge/SMC-libgdx/commit/b8d595376fe98a0ac55c1cf63f5f18c83c9afdfe))
+（[查看使用该功能的游戏源码提交](https://github.com/MrStahlfelge/SMC-libgdx/commit/b8d595376fe98a0ac55c1cf63f5f18c83c9afdfe)）
 
-Prior 1.9.12, you can use [an alternative backend](https://github.com/MrStahlfelge/gdx-backends).
+在 1.9.12 之前，可以使用[替代后端](https://github.com/MrStahlfelge/gdx-backends)。
 
-## Preventing Keys From Triggering Scrolling and Other Browser Functions
+## 防止按键触发滚动和其他浏览器功能
 
-On a normal web page, if you press the down arrow on your keyboard, it will scroll the page up. That's nice and all, but maybe you don't want that to happen when players are trying to move the character in your game. To prevent this, you have to set libGDX to prevent the default actions of special keys by catching them:
+在普通网页中，按下键盘上的向下箭头会使页面向上滚动。这通常没什么问题，但玩家操控游戏角色时可能不希望发生这种情况。要阻止这一行为，需要让 libGDX 捕获特殊按键，从而阻止其默认操作：
 
 ```java
 Gdx.input.setCatchKey(Input.Keys.SPACE, true);
 ```
 
-## Preventing Right Click Context Menu
+## 防止右键上下文菜单
 
-Similarly to keyboard keys, the right click context menu can be prevented from interrupting your game. You'll notice that there are already functions to prevent left click from doing anything unexpected. You just need to add an additional line to apply the fix to right click as well. The following must be added to the script block of your index.html in the "html/webapp" folder (dist) and "html/war" folder (superDev):
+与键盘按键类似，也可以阻止右键上下文菜单打断游戏。你会注意到，现有函数已经可以防止左键执行意外操作。只需再添加一行，让右键也应用这项修复。必须将以下内容添加到 "html/webapp" 文件夹（dist）和 "html/war" 文件夹（superDev）中 index.html 的脚本块：
 
 ```javascript
 // prevent right click
 document.getElementById('embed-html').addEventListener('contextmenu', handleMouseDown, false);
 ```
 
-## Sound and Music
+## 声音和音乐
 
-You will probably face some problems with sounds and music, especially on mobile platforms. It is not recommended to play sounds immediately on startup of the game as browsers probably will block this.
+你可能会遇到声音和音乐方面的问题，尤其是在移动平台上。不建议在游戏启动时立即播放声音，因为浏览器很可能会阻止这一行为。
 
-The implementation the official HTML5 backend uses has some other restrictions, too. Pitch will not work and you will experience a lag on playing the sounds the first time. If you want to improve the situation, [check out this PR](https://github.com/libgdx/libgdx/pull/5659)
+官方 HTML5 后端的实现还有一些限制。音调无法生效，声音首次播放时会出现延迟。如果想改善这种情况，可以[查看此 PR](https://github.com/libgdx/libgdx/pull/5659)。
 
-## Differences Between GWT and Desktop Java
+## GWT 与桌面 Java 的差异
 
-### Numbers
+### 数字
 
-* When some number is very important and you want to make sure it is treated identically on desktop/Android and GWT, use a `long`.
-* When you know a number will never be especially large (specifically, that it won't encounter numeric overflow by exceeding roughly 2 billion or negative 2 billion), feel free to use an `int`.
-  * Math with `int`s is much faster than math with `long`s on GWT, because any `int` is represented by a JavaScript Number and web browsers are used to working with Numbers all the time. On the other hand, any `long` is represented by a specific type of JavaScript Object that stores three Numbers to help ensure precision.
-  * A JavaScript Number, so an `int`, is almost the same as a `double` in Java, but it also allows bitwise operations to be used on it.
-    * Because Numbers act like `double`s, they don't overflow, and can go higher than `Integer.MAX_VALUE` (2147483647) and lower than `Integer.MIN_VALUE` (-2147483648). Using any bitwise operation on them will bring any numbers that got too big back into the normal `int` range. If you encounter fishy numeric results that seem way too large for an int, try using this simple trick: `int fishy = Integer.MAX_VALUE * 5; int fixed = (Integer.MAX_VALUE * 5) | 0;` On desktop, adding `| 0` won't change anything, but it can correct numbers that got weird on GWT. Or, you can use a `long`.
-* The problem with `long` values on GWT is that they aren't visible to reflection, so libGDX's Json class won't automatically write them or read them. You can work around this with Json's handy custom serializer behavior, so it isn't a huge issue.
-* Floats can have more equality check problems than usual. Make sure you make all equality checks for floats by using `MathUtils.isEqual()`.
+* 当某个数字非常重要，需要确保它在桌面端/Android 和 GWT 上的处理完全一致时，请使用 `long`。
+* 如果确定某个数字不会特别大（具体来说，不会因超过约 20 亿或低于负 20 亿而发生数值溢出），可以放心使用 `int`。
+  * 在 GWT 上，使用 `int` 的运算比使用 `long` 快得多，因为每个 `int` 都表示为 JavaScript Number，而 Web 浏览器一直都擅长处理 Number。另一方面，每个 `long` 都表示为一种特殊的 JavaScript Object，其中存储三个 Number 以确保精度。
+  * JavaScript Number，也就是 `int`，与 Java 中的 `double` 几乎相同，但还支持对其执行位运算。
+    * 由于 Number 的行为类似 `double`，不会溢出，可以大于 `Integer.MAX_VALUE`（2147483647）或小于 `Integer.MIN_VALUE`（-2147483648）。对它们执行任何位运算，都会将过大的数字带回正常的 `int` 范围。如果遇到看起来远大于 int 范围的可疑数值，可以尝试这个简单技巧：`int fishy = Integer.MAX_VALUE * 5; int fixed = (Integer.MAX_VALUE * 5) | 0;` 在桌面端，添加 `| 0` 不会改变任何结果，但可以修正 GWT 上变得异常的数字。也可以使用 `long`。
+* GWT 上的 `long` 值存在的问题是反射无法看到它们，因此 libGDX 的 Json 类不会自动读写它们。可以使用 Json 提供的自定义序列化器功能解决这个问题，所以影响并不大。
+* 浮点数可能比平常更容易出现相等性检查问题。请始终使用 `MathUtils.isEqual()` 检查浮点数是否相等。
 
-### Other Known Limitations
+### 其他已知限制
 
-* Some java classes/features that are not supported:
+* 不支持的 Java 类或功能：
   * System.nanoTime
-  * Java reflection. You must only use libGDX reflection utils, see [this wiki page](/wiki/utils/reflection#gwt) for more details.
-  * Multithreading is not supported.
-* Audio:
-  * Sound pitch is not implemented prior 1.9.12. You can use [an alternative backend](https://github.com/MrStahlfelge/gdx-backends) which is based on WebAudioAPI and supports it.
-  * Your game needs a user interaction (eg. click on a button) before playing any music or sounds. This is a limitation for any games played in a browser.
-* TiledMaps should be saved with Base64 encoding.
+  * Java 反射。只能使用 libGDX 反射工具，详情请参阅[此 wiki 页面](/wiki/utils/reflection#gwt)。
+* 不支持多线程。
+* 音频：
+  * 1.9.12 之前未实现声音音调。可以使用基于 WebAudioAPI 且支持音调的[替代后端](https://github.com/MrStahlfelge/gdx-backends)。
+  * 播放音乐或声音前，游戏需要先获得用户交互（例如点击按钮）。这是浏览器中运行的所有游戏都会受到的限制。
+* TiledMaps 应使用 Base64 编码保存。
 * Pixmap
-  * Some Pixmap methods are not supported (eg. loading from binary data).
-  * Some drawings (eg. lines) are antialiased which is not always wanted. If you need non-antialiased lines, you can [draw it pixel by pixel](https://github.com/libgdx/libgdx/issues/6019#issuecomment-702916344) or use FrameBuffer with a ShapeRenderer to achieve it.
-* WebGL 1.0 is used and has its own limitations compared with OpenGL or GLES, among them:
-  * NPOT (non power of two) textures are not supported with MipMap filters and/or Repeat wrapping.
-  * Gdx.graphics.supportsExtension(...) should be called for each extension prior to enabling it in shaders.
-* Some libGDX extensions are not supported or require additional libraries:
+  * 不支持某些 Pixmap 方法（例如从二进制数据加载）。
+  * 某些绘制内容（例如线条）会进行抗锯齿，这并不总是符合需求。如果需要非抗锯齿线条，可以[逐像素绘制](https://github.com/libgdx/libgdx/issues/6019#issuecomment-702916344)，或使用 FrameBuffer 和 ShapeRenderer 实现。
+* 使用的是 WebGL 1.0，与 OpenGL 或 GLES 相比有其自身的限制，包括：
+  * NPOT（非二次幂）纹理不支持 MipMap 过滤器和/或 Repeat 环绕。
+  * 在着色器中启用扩展前，应针对每个扩展调用 Gdx.graphics.supportsExtension(...)。
+* 某些 libGDX 扩展不受支持，或需要额外的库：
   * Bullet
-  * Freetype requires [gdx-freetype-gwt](https://github.com/intrigus/gdx-freetype-gwt)
+  * Freetype 需要 [gdx-freetype-gwt](https://github.com/intrigus/gdx-freetype-gwt)
 
-## Further Reading
+## 延伸阅读
 
-[The original Super Dev Instructions from Mario](https://web.archive.org/web/20201028180932/https://www.badlogicgames.com/wordpress/?p=3073)
+[Mario 编写的原始 Super Dev 指南](https://web.archive.org/web/20201028180932/https://www.badlogicgames.com/wordpress/?p=3073)
 
-[How to speed up GWT compilation](https://www.gamefromscratch.com/post/2013/10/07/Speeding-up-GWT-compilation-speeds-in-a-LibGDX-project.aspx)
+[如何加快 GWT 编译](https://www.gamefromscratch.com/post/2013/10/07/Speeding-up-GWT-compilation-speeds-in-a-LibGDX-project.aspx)
 
-[Contributing to libGDX and adding new files to gdx.gwt.xml](/dev/contributing/#considerations-for-gwt-compatibility)
+[为 libGDX 做贡献并向 gdx.gwt.xml 添加新文件](/dev/contributing/#considerations-for-gwt-compatibility)
 
-[HTML5 - GWT Explained on YouTube](https://www.youtube.com/watch?v=I_85usDvJvQ)
+[YouTube 上的 HTML5 - GWT 介绍](https://www.youtube.com/watch?v=I_85usDvJvQ)

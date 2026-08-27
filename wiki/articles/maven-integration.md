@@ -1,14 +1,14 @@
 ---
-title: Maven integration
+title: Maven 集成
 ---
 
-Setting up your project with Maven is possible, but crossplatform support is heavily limited, and only desktop is known to work. It has not been further tested or used by the libGDX community, and there is no official support if any issues should arise.
+可以使用 Maven 设置项目，但跨平台支持受到很大限制，目前已知只有桌面端可用。libGDX 社区尚未进一步测试或使用此方案，出现问题时也没有官方支持。
 {: .notice--warning}
 
 
-## Introduction
+## 简介
 
-The current automated LibGDX setup tool sets up a Gradle project, so to set up a Maven one for Desktop only, simply add the following dependencies to your project's pom.xml:
+当前自动化 LibGDX 设置工具会创建 Gradle 项目。如果只想为桌面端设置 Maven 项目，只需将以下依赖添加到项目的 pom.xml：
 
 ```xml
   <dependency>
@@ -29,28 +29,28 @@ The current automated LibGDX setup tool sets up a Gradle project, so to set up a
       </dependency>
 ```
 
-And you got all you need to start up an Lwjgl3Application providing your own implementation of an ApplicationAdapter.
+这样就具备了启动 Lwjgl3Application 所需的一切，只需提供自己的 ApplicationAdapter 实现。
 
-Alternatively, an older method described below may provide some crossplatform capability, but you may have better luck changing your build system to Gradle at that point.
+下面介绍的旧方法可能提供一些跨平台能力，但此时改用 Gradle 构建系统可能更顺利。
 
-## Using The Archetype
+## 使用 Archetype
 
-Setting up libGDX in general is non-trivial as it
+通常，设置 libGDX 并不简单，因为它：
 
-  * contains native libraries
-  * deploys to GWT
-  * deploys to Android
+   * 包含原生库
+   * 部署到 GWT
+   * 部署到 Android
 
-To handle these issues, libGDX relies on the following Maven plugins:
+为处理这些问题，libGDX 使用以下 Maven 插件：
 
-  * [GWT Maven plugin, version 2.5.0](https://gwt-maven-plugin.github.io/gwt-maven-plugin/), to compile and package the GWT project.
-  * [Maven native dependencies plugin](https://code.google.com/p/mavennatives/), to copy the native libraries to the appropriate place
-  * [Maven Android plugin](https://code.google.com/p/maven-android-plugin/), to compile and package the Android project.
+  * [GWT Maven plugin，版本 2.5.0](https://gwt-maven-plugin.github.io/gwt-maven-plugin/)，用于编译和打包 GWT 项目。
+  * [Maven native dependencies plugin](https://code.google.com/p/mavennatives/)，用于将原生库复制到适当位置。
+  * [Maven Android plugin](https://code.google.com/p/maven-android-plugin/)，用于编译和打包 Android 项目。
 
-To ease all of this, we supply a Maven archetype that will generate a multi-module Maven project.
+为简化这些工作，我们提供了一个 Maven archetype，用于生成多模块 Maven 项目。
 
 ## Maven Archetype
-The Maven archetype is currently not found in any repository. You can get it at [https://github.com/libgdx/libgdx-maven-archetype](https://github.com/libgdx/libgdx-maven-archetype) and compile and install it yourself to your local Maven repository like this from your shell:
+目前任何仓库中都找不到该 Maven archetype。你可以从 [https://github.com/libgdx/libgdx-maven-archetype](https://github.com/libgdx/libgdx-maven-archetype) 获取，然后在 shell 中自行编译并安装到本地 Maven 仓库：
 
 ```
 git clone git://github.com/libgdx/libgdx-maven-archetype.git
@@ -58,119 +58,119 @@ cd libgdx-maven-archetype
 mvn install
 ```
 
-To invoke the archetype, do the following:
+要调用 archetype，请执行：
 
 ```
 mvn archetype:generate -DarchetypeGroupId=com.badlogic.gdx -DarchetypeArtifactId=gdx-archetype -DarchetypeVersion=1.2.0 -DgroupId=com.badlogic.test -DartifactId=test -Dversion=1.0-SNAPSHOT -Dpackage=com.badlogic.test -DJavaGameClassName=Test
 ```
 
-The first three parameters specify the archetype, which has group id com.badlogic.gdx, artifact id gdx-archetype and a version (currently 1.0-SNAPSHOT).
+前三个参数指定 archetype，包括 group id com.badlogic.gdx、artifact id gdx-archetype 和版本（当前为 1.0-SNAPSHOT）。
 
-The next parameters specify attributes of your project.
+接下来的参数指定项目属性。
 
-  * groupId: your project's group id
-  * artifactId: your project's artifact id
-  * version: your project's version
-  * package: your project's main package
-  * JavaGameClassName: the name of your ApplicationListener class, and the prefix for platform starter classes, e.g. MyClassDesktop, MyClassAndroid etc.
+   * groupId：项目的 group id
+   * artifactId：项目的 artifact id
+   * version：项目的版本
+   * package：项目的主 package
+  * JavaGameClassName：ApplicationListener 类的名称，也是各平台启动类的前缀，例如 MyClassDesktop、MyClassAndroid 等。
 
-For the parameters given above, you will end up with the following project structure (we'll use this example in subsequent sections)
+使用上述参数后，会得到以下项目结构（后续章节将使用此示例）：
 
 ```
-test/       <-- the base directory
-   core/    <-- contains the apps core
-   desktop/ <-- desktop starter & assets
-   android/ <-- android starter
-   html/    <-- HTML starter
-   ios/     <- stub, not working at the moment
+    test/       <-- 基础目录
+       core/    <-- 包含应用核心代码
+       desktop/ <-- 桌面启动类和 assets
+       android/ <-- Android 启动类
+       html/    <-- HTML 启动类
+       ios/     <- 存根，目前无法工作
 ```
 
-The core project contains your application code. The desktop project contains the assets folder which is shared across all other projects and the desktop starter class. The Android project contains the start-up code for Android and depends on the core project. The same is true for the HTML project. The iOS project is currently a stub and does not work yet.
+core 项目包含应用代码。desktop 项目包含所有其他项目共享的 assets 文件夹以及桌面启动类。Android 项目包含 Android 启动代码，并依赖 core 项目。HTML 项目也是如此。iOS 项目目前只是存根，尚不能工作。
 
-## Building & Deploying
-Using Maven to build and deploy your application for the various backends is simple.
+## 构建与部署
+使用 Maven 为各种后端构建和部署应用很简单。
 
-### Desktop
-To create a runnable jar file for the desktop, run:
+### 桌面端
+要为桌面端创建可运行的 jar 文件，请运行：
 
 ```
 mvn -Pdesktop package
 ```
 
-This will create a file called test-desktop-1.0-SNAPSHOT-jar-with-dependencies.jar in the test/desktop/target folder. It contains all the necessary dependencies, the assets and a manifest file specifying the main class. You can run this file via:
+这会在 test/desktop/target 文件夹中创建名为 test-desktop-1.0-SNAPSHOT-jar-with-dependencies.jar 的文件，其中包含所有必要的依赖、资源以及指定主类的 manifest 文件。可以通过以下命令运行该文件：
 
 ```
 java -jar test-desktop-1.0-SNAPSHOT-jar-with-dependencies.jar
 ```
 
 ### Android
-To create an unsigned APK for Android, run:
+要为 Android 创建未签名 APK，请运行：
 
 ```
 mvn -Pandroid package
 ```
 
-This will create a file called test-android-1.0-SNAPSHOT.apk in the test/android/target folder. To install the apk to a connected device or emulator, run
+这会在 test/android/target 文件夹中创建名为 test-android-1.0-SNAPSHOT.apk 的文件。要将 apk 安装到已连接的设备或模拟器，请运行：
 
 ```
 mvn -Pandroid install
 ```
 
-For more information on Android goals, see the [Maven Android plugin](https://code.google.com/p/maven-android-plugin/)
+有关 Android goal 的更多信息，请参阅 [Maven Android plugin](https://code.google.com/p/maven-android-plugin/)。
 
 ### HTML5/GWT
-To compile the HTML5 project to JavaScript, run:
+要将 HTML5 项目编译为 JavaScript，请运行：
 
 ```
 mvn -Phtml package
 ```
 
-The end result is located in the target/ folder. You can either use the .war file that was generated and deploy that to Jetty/Tomcat, or copy the contents of the HTML/target/test-html-1.0-SNAPSHOT/ folder to a location your web server can server(or even better, create a sym-link if you are on an appropriate OS). The war/folder contains all the compiled JavaScript code, the index HTML file and the assets.
+最终结果位于 target/ 文件夹中。你可以使用生成的 .war 文件并将其部署到 Jetty/Tomcat，也可以将 HTML/target/test-html-1.0-SNAPSHOT/ 文件夹的内容复制到 Web 服务器可提供服务的位置（如果操作系统支持，创建符号链接会更好）。war 文件或文件夹包含所有编译后的 JavaScript 代码、index HTML 文件和资源。
 
-To run and test the HTML5 project, run:
+要运行和测试 HTML5 项目，请运行：
 ```
 mvn -Phtml install
 ```
 
-And browse to [http://127.0.0.1:8080/index.html](http://127.0.0.1:8080/index.html)
+然后在浏览器中打开 [http://127.0.0.1:8080/index.html](http://127.0.0.1:8080/index.html)。
 
-## IDE Integration
-Eclipse, IntelliJ IDEA and NetBeans all support Maven projects in some form. The archetype goes to great lengths to make your libGDX project usable within Eclipse and IntelliJ IDEA. NetBeans is unsupported at the time of writing.
+## IDE 集成
+Eclipse、IntelliJ IDEA 和 NetBeans 都以某种形式支持 Maven 项目。该 archetype 做了大量工作，让 libGDX 项目可以在 Eclipse 和 IntelliJ IDEA 中使用。本文撰写时尚不支持 NetBeans。
 
-While Maven is IDE agnostic, the plugins for GWT and Android are not. Plugins for Eclipse differ in how the interpret the Maven configuration for GWT and Android projects from those in IntelliJ IDEA. The following sections describe how to import a project into both IDE's after creating it using the libGDX archetype.
+Maven 与 IDE 无关，但 GWT 和 Android 插件并非如此。Eclipse 插件解释 GWT 和 Android 项目 Maven 配置的方式不同于 IntelliJ IDEA。以下章节介绍如何使用 libGDX archetype 创建项目后，将项目导入这两种 IDE。
 
 ### Eclipse
-Before you can import your project, you need to install the following Eclipse plugins:
+导入项目之前，需要安装以下 Eclipse 插件：
 
-  * [m2e](https://www.eclipse.org/m2e/), this should already available in a clean Eclipse installation (Java and Java EE editions). It provides the basic Maven support within Eclipse.
-  * [m2e-android](https://rgladwell.github.io/m2e-android/) provides Maven integration for Android projects in Eclipse.
-  * [Google Web Toolkit](https://developers.google.com/web-toolkit/), the Eclipse plugin that allows you to develop GWT projects.
+   * [m2e](https://www.eclipse.org/m2e/)，在全新安装的 Eclipse（Java 和 Java EE 版本）中通常已经提供。它为 Eclipse 提供基本的 Maven 支持。
+   * [m2e-android](https://rgladwell.github.io/m2e-android/) 为 Eclipse 中的 Android 项目提供 Maven 集成。
+   * [Google Web Toolkit](https://developers.google.com/web-toolkit)，允许你开发 GWT 项目的 Eclipse 插件。
 
-Once the plugins are installed, you can import your Maven libGDX projects by going to *File -> Import... -> Maven -> Existing Maven Projects*. This will import the parent pom as project along with the core, desktop, android and html project.
+安装插件后，可以通过 *File -> Import... -> Maven -> Existing Maven Projects* 导入 Maven libGDX 项目。这会将父 pom 以及 core、desktop、android 和 html 项目作为项目导入。
 
-*Note* that the HTML project might not be recognized as a GWT project by Eclipse. To fix this, right click the project, go to *Properties -> Google -> Web Toolkit*. Check "Use Google Web Toolkit". Then go to *Properties -> Google -> Web Application*, check "This project has a WAR directory", specify `target/webapp` and finally check "Launch and deploy from this directory".
+*注意*，Eclipse 可能无法将 HTML 项目识别为 GWT 项目。要修复此问题，请右键点击项目，进入 *Properties -> Google -> Web Toolkit*，勾选“Use Google Web Toolkit”。然后进入 *Properties -> Google -> Web Application*，勾选“This project has a WAR directory”，指定 `target/webapp`，最后勾选“Launch and deploy from this directory”。
 
-From there on you can run & debug just as you'd do if you setup your projects via the gdx-setup-ui.
+从此以后，就可以像通过 gdx-setup-ui 设置项目那样运行和调试。
 
-If you change anything in the assets, you need to run "mvn -Phtml package" again and refresh the html project in Eclipse.
+如果修改了 assets 中的任何内容，需要再次运行 "mvn -Phtml package"，并在 Eclipse 中刷新 html 项目。
 
 ### IntelliJ IDEA
-Before you start, you should make sure IntelliJ IDEA knows where your Maven installation is located. Go to *File -> Settings*, and in the tree in the dialog chose Maven. Specify the directory where your Maven installation lives.
+开始前，请确保 IntelliJ IDEA 知道 Maven 的安装位置。转到 *File -> Settings*，在对话框的树形菜单中选择 Maven，并指定 Maven 安装目录。
 
-Once you created your project via the archetype you can import it into IntelliJ IDEA. Go to *File -> Open Project*, then navigate to the root directory of the project.
+通过 archetype 创建项目后，可以将其导入 IntelliJ IDEA。转到 *File -> Open Project*，然后导航到项目根目录。
 
-Once the project is loaded, you have to enable the profiles. Open the Maven Project view and check the three profiles, desktop, android and HTML.
+项目加载后，需要启用配置文件。打开 Maven Project 视图并勾选 desktop、android 和 HTML 这三个配置文件。
 
 ![images/maven1.png](/assets/wiki/images/maven1.png)
 
-To run the desktop project, create a new configuration via *Run -> Edit Configurations*. Create a new configuration by clicking the + button in the top left, and select Application. Set the Main class to the desktop starter class, and select the desktop module.
+要运行桌面项目，请通过 *Run -> Edit Configurations* 创建新配置。点击左上角的 + 按钮创建配置并选择 Application，将 Main class 设为桌面启动类，并选择 desktop 模块。
 
 ![images/maven2.png](/assets/wiki/images/maven2.png)
 
-Launch this configuration to run your app on the desktop.
+启动此配置即可在桌面端运行应用。
 
-To run the android project, create a new configuration, this time selecting Android Application when creating the configuration. Select the Android module, then check *Run Maven Goal* and click on the *...* button to the right. In the dialog, select the Android project, then Lifecycle, and from the list of goals *package*. You can also set *Target Device* to *Show chooser dialog* so you get prompted whether to deploy to a device or an emulator.
+要运行 android 项目，请创建新配置，这次在创建配置时选择 Android Application。选择 Android 模块，勾选 *Run Maven Goal*，然后点击右侧的 *...* 按钮。在对话框中选择 Android 项目，再选择 Lifecycle，并从 goal 列表中选择 *package*。还可以将 *Target Device* 设为 *Show chooser dialog*，这样系统会询问你要部署到设备还是模拟器。
 
 ![images/maven3.png](/assets/wiki/images/maven3.png)
 
-Launch this configuration to run your app on your Android device or emulator.
+启动此配置即可在 Android 设备或模拟器上运行应用。

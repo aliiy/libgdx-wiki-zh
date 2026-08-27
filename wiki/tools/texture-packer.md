@@ -1,35 +1,35 @@
 ---
-title: Texture packer
+title: TexturePacker
 redirect_from:
   - /wiki/graphics/2d/packing-atlases-offline
   - /wiki/graphics/2d/using-textureatlases
 ---
  * [TexturePacker](#texturepacker)
-   * [Running TexturePacker](#running-texturepacker)
-   * [Directory structure](#directory-structure)
-   * [Configuration](#configuration)
-   * [Settings](#settings)
-   * [Texture filter options](#texture-filter-options)
-   * [NinePatches](#ninepatches)
-   * [Indexes](#image-indexes)
-   * [Packing](#packing)
-   * [Automatic packing](#automatic-packing)
+  * [运行 TexturePacker](#running-texturepacker)
+  * [目录结构](#directory-structure)
+  * [配置](#configuration)
+  * [设置](#settings)
+  * [纹理过滤选项](#texture-filter-options)
+  * [NinePatch](#ninepatches)
+  * [图像索引](#image-indexes)
+  * [打包](#packing)
+  * [自动打包](#automatic-packing)
  * [TextureAtlas](#textureatlas)
 
 # TexturePacker
 
-In OpenGL, a texture is bound, some drawing is done, another texture is bound, more drawing is done, etc. Binding the texture is relatively expensive, so it is ideal to store many smaller images on a larger image, bind the larger texture once, then draw portions of it many times. libGDX has a `TexturePacker` class which is a command line application that packs many smaller images on to larger images. It stores the locations of the smaller images so they are easily referenced by name in your application using the `TextureAtlas` class.
+在 OpenGL 中，需要绑定纹理、执行绘制，再绑定另一张纹理并继续绘制。绑定纹理的开销相对较高，因此最好将许多小图像存储到一张大图像中，只绑定一次大纹理，然后多次绘制其中的区域。libGDX 提供了 `TexturePacker` 类，这是一个将许多小图像打包到大图像中的命令行应用。它会保存小图像的位置，应用即可通过 `TextureAtlas` 类按名称方便地引用它们。
 
-TexturePacker uses multiple packing algorithms but the most important is based on [the maximal rectangles algorithm](https://web.archive.org/web/20180913014826/http://clb.demon.fi/projects/even-more-rectangle-bin-packing). It also uses brute force, packing with numerous heuristics at various sizes and then choosing the most efficient result.
+TexturePacker 使用多种打包算法，其中最重要的算法基于[最大矩形算法](https://web.archive.org/web/20180913014826/http://clb.demon.fi/projects/even-more-rectangle-bin-packing)。它还会使用蛮力算法，根据各种启发式规则和尺寸进行多次打包，然后选择效率最高的结果。
 
-## Running TexturePacker
+## 运行 TexturePacker
 
-### GUIs
+### 图形界面
 
-If you prefer to pack your textures using a GUI, you can use [Texture Packer GUI](https://github.com/crashinvaders/gdx-texture-packer-gui). If you are using Scene2d Skins, you probably already use [Skin Composer](https://github.com/raeleus/skin-composer) and can use its user-friendly interface to add your textures to the Skin's atlas.
+如果希望使用 GUI 打包纹理，可以使用 [Texture Packer GUI](https://github.com/crashinvaders/gdx-texture-packer-gui)。如果使用 Scene2d Skin，可能已经在使用 [Skin Composer](https://github.com/raeleus/skin-composer)，也可以通过其友好的界面将纹理添加到 Skin 的图集中。
 
-### From source
-The `TexturePacker` class is in the gdx-tools project. It can be run from source via Eclipse:
+### 从源代码运行
+`TexturePacker` 类位于 gdx-tools 项目中，可以通过 Eclipse 从源代码运行：
 
 ```java
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
@@ -40,10 +40,10 @@ public class MyPacker {
 }
 ```
 
-If you use gradle and the `TexturePacker` class is not found, add gdx-tools to your [build.gradle](/wiki/articles/dependency-management-with-gradle#tools-gradle) file.
+如果使用 Gradle 时找不到 `TexturePacker` 类，请将 gdx-tools 添加到 [build.gradle](/wiki/articles/dependency-management-with-gradle#tools-gradle) 文件。
 
 
-You can also run `texturePacker` as a gradle task if you make the following updates to your gradle files. First, you will need to update your 'main' build.gradle:
+如果按以下方式更新 Gradle 文件，也可以将 `texturePacker` 作为 Gradle 任务运行。首先更新“main”build.gradle：
 
 ```gradle
 buildscript {
@@ -54,7 +54,7 @@ buildscript {
 }
 ```
 
-If you want to use specific version, just replace the $gdxVersion variable with the version of your choice
+如果要使用特定版本，只需将 $gdxVersion 变量替换为所需版本。
 
 ```gradle
 // Store the parameters you want to pass the texturePacker here...
@@ -74,10 +74,10 @@ task texturePacker {
 }
 ```
 
-In this way, running `./gradlew texturePacker lwjgl3:run` will perform the texture packing before the lwjgl3:run task is started. And if the textures have not changed, then all one has to do is omit the texturePacker argument.
+这样，运行 `./gradlew texturePacker lwjgl3:run` 会在启动 lwjgl3:run 任务前执行纹理打包。如果纹理没有变化，只需省略 texturePacker 参数即可。
 
 
-TexturePacker can also be run from the [standalone nightly](https://libgdx-nightlies.s3.amazonaws.com/libgdx-runnables/runnable-texturepacker.jar):
+也可以从[独立 nightly](https://libgdx-nightlies.s3.amazonaws.com/libgdx-runnables/runnable-texturepacker.jar)运行 TexturePacker：
 
 ```
 // OS X / Linux
@@ -87,25 +87,25 @@ java -cp runnable-texturepacker.jar com.badlogic.gdx.tools.texturepacker.Texture
 java -cp runnable-texturepacker.jar com.badlogic.gdx.tools.texturepacker.TexturePacker inputDir [outputDir] [packFileName]
 ```
 
-Note that TexturePacker runs significantly faster with Java 1.7+, especially when packing hundreds of input images.
+注意，TexturePacker 使用 Java 1.7 或更高版本时运行速度会明显更快，尤其是在打包数百张输入图像时。
 
-## Directory structure
+## 目录结构
 
-TexturePacker can pack all images for an application in one shot. Given a directory, it recursively scans for image files. For each directory of images TexturePacker encounters, it packs the images on to a larger texture, called a page. If the images in a directory don't fit on the max size of a single page, multiple pages will be used.
+TexturePacker 可以一次性打包应用的所有图像。给定一个目录后，它会递归扫描图像文件。对于遇到的每个图像目录，TexturePacker 会将图像打包到称为 page 的大纹理中。如果目录中的图像无法放入单个页面的最大尺寸，就会使用多个页面。
 
-Images in the same directory go on the same set of pages. If all images fit on a single page, no subdirectories should be used because with one page the app will only ever perform one texture bind. Otherwise, subdirectories can be used to segregate related images to minimize texture binds. Eg, an application may want to place all the "game" images in a separate directory from the "pause menu" images, since these two sets of images are drawn serially: all the game images are drawn (one bind), then the pause menu is drawn on top (another bind). If the images were in a single directory that resulted in more than one page, each page could contain a mix of game and pause menu images. This would cause multiple texture binds to render the game and pause menu instead of just one each.
+同一目录中的图像会放到同一组页面中。如果所有图像都能放入单个页面，就不应使用子目录，因为只有一个页面时，应用只需绑定一次纹理。否则可以使用子目录隔离相关图像，以减少纹理绑定。例如，可以将所有“游戏”图像与“暂停菜单”图像放在不同目录中，因为这两组图像按顺序绘制：先绘制所有游戏图像（一次绑定），再在上层绘制暂停菜单（另一次绑定）。如果图像放在同一目录并产生多个页面，每个页面可能混合游戏和暂停菜单图像，从而需要多次纹理绑定，而不是各绑定一次。
 
-Subdirectories are also useful to group images with related texture settings. Settings like runtime memory format (RGBA, RGB, etc) and filtering (nearest, linear, etc) are per texture. Images that need different per texture settings need to go on separate pages, so should be placed in separate subdirectories.
+子目录也适合分组使用相关纹理设置的图像。运行时内存格式（RGBA、RGB 等）和过滤方式（nearest、linear 等）等设置是针对每张纹理的。需要不同纹理设置的图像必须放在不同页面中，因此应置于不同子目录。
 
-To use subdirectories for organization without TexturePacker outputting a set of pages for each subdirectory, see the `combineSubdirectories` setting.
+如果希望使用子目录进行组织，但不希望 TexturePacker 为每个子目录输出一组页面，请参阅 `combineSubdirectories` 设置。
 
-To avoid subdirectory paths being used in image names in the atlas file, see the `flattenPaths` setting.
+如果不希望图集文件中的图像名称包含子目录路径，请参阅 `flattenPaths` 设置。
 
-## Configuration
+## 配置
 
-Each directory may contain a "pack.json" file, which is a JSON representation of the TexturePacker.Settings class. Each subdirectory inherits all the settings from its parent directory. Any settings set in the subdirectory override those set in the parent directory.
+每个目录都可以包含一个 “pack.json” 文件，它是 TexturePacker.Settings 类的 JSON 表示。每个子目录都会继承父目录的所有设置。子目录中设置的值会覆盖父目录中的对应设置。
 
-Below is a JSON example with every available setting and the default value for each. All settings do not need to be specified, any or all may be omitted. If a setting is not specified for a directory or any parent directory, the default value is used.
+下面是包含所有可用设置及其默认值的 JSON 示例。无需指定全部设置，可以省略任意设置。如果目录及其所有父目录都未指定某个设置，则使用默认值。
 
 ```
 {
@@ -151,74 +151,74 @@ Below is a JSON example with every available setting and the default value for e
 }
 ```
 
-Note that this is libgdx's "minimal" JSON format, so double quotes are optional in most cases.
+注意，这是 libGDX 的“minimal”JSON 格式，因此大多数情况下可以省略双引号。
 
-## Settings
+## 设置
 
-| *Field* | *Description* | *Default* |
+| *字段* | *描述* | *默认值* |
 |:-------:|:------------- |:---------:|
-| `pot` | If true, output pages will have power of two dimensions. | true |
-| `paddingX` | The number of pixels between packed images on the x-axis. | 2 |
-| `paddingY` | The number of pixels between packed images on the y-axis. | 2 |
-| `bleed` | If true, RGB values for transparent pixels are set based on the RGB values of the nearest non-transparent pixels. This prevents filtering artifacts when RGB values are sampled for transparent pixels. | true |
-| `bleedIterations` | The amount of bleed iterations that should be performed. Use greater values such as 4 or 8 if you're having artifacts when downscaling your textures. | 2 |
-| `edgePadding` | If true, half of the `paddingX` and `paddingY` will be used around the edges of the packed texture. | true |
-| `duplicatePadding` | If true, edge pixels are copied into the padding. `paddingX/Y` should be >= 2. | false |
-| `rotation` | If true, TexturePacker will attempt more efficient packing by rotating images 90 degrees. Applications must take special care to draw these regions properly. | false |
-| `minWidth` | The minimum width of output pages. | 16 |
-| `minHeight` | The minimum height of output pages. | 16 |
-| `maxWidth` | The maximum width of output pages. 1024 is safe for all devices. Extremely old devices may have degraded performance over 512. | 1024 |
-| `maxHeight` | The maximum height of output pages. 1024 is safe for all devices. Extremely old devices may have degraded performance over 512. | 1024 |
-| `square` | If true, output pages are forced to have the same width and height. | false |
-| `stripWhitespaceX` | If true, blank pixels on the left and right edges of input images will be removed. Applications must take special care to draw these regions properly. | false |
-| `stripWhitespaceY` | If true, blank pixels on the top and bottom edges of input images will be removed. Applications must take special care to draw these regions properly. | false |
-| `alphaThreshold` | From 0 to 255. Alpha values below this are treated as zero when whitespace is stripped. | 0 |
-| `filterMin` | The minification filter for the texture. | Nearest |
-| `filterMag` | The magnification filter for the texture. | Nearest |
-| `wrapX` | The wrap setting in the x direction for the texture. | ClampToEdge |
-| `wrapY` | The wrap setting in the y direction for the texture. | ClampToEdge |
-| `format` | The format the texture will use in-memory. | RGBA8888 |
-| `alias` | If true, two images that are pixel for pixel the same will only be packed once. | true |
-| `outputFormat` | The image type for output pages, "png" or "jpg". | png |
-| `jpegQuality` | From 0 to 1. The quality setting if `outputFormat` is "jpg". | 0.9 |
-| `ignoreBlankImages` | If true, texture packer won't add regions for completely blank images. | true |
-| `fast` | If true, the texture packer will not pack as efficiently but will execute much faster. | false |
-| `debug` | If true, lines are drawn on the output pages to show the packed image bounds. | false |
-| `combineSubdirectories` | If true, the directory containing the settings file and all subdirectories are packed as if they were in the same directory. Any settings files in the subdirectories are ignored. | false |
-| `flattenPaths` | If true, subdirectory prefixes are stripped from image file names. Image file names should be unique. | false |
-| `premultiplyAlpha` | If true, the RGB will be multiplied by the alpha. See [here](https://web.archive.org/web/20160311211957/http://blogs.msdn.com/b/shawnhar/archive/2009/11/06/premultiplied-alpha.aspx) for more information. | false |
-| `useIndexes` | If false, image names are used without stripping any image index suffix. | true |
-| `limitMemory` | If true, only one image is in memory at any given time, but each image will be read twice. If false, all images are kept in memory during packing but are only read once. | true |
-| `grid` | If true, images are packed in a uniform grid, in order. | false |
-| `scale` | For each scale, the images are scaled and an entire atlas is output. | `[ 1 ]` |
-| `scaleSuffix` | For each scale, the suffix to use for the output files. If omitted, files for multiple scales will be output with the same name to a subdirectory for each scale. | `[ "" ]` |
-| `scaleResampling` | For each scale, the type of interpolation used for resampling the source to the scaled size. One of `nearest`, `bilinear` or `bicubic`. | `[ bicubic ]` |
-| `atlasExtension` | The file extension to be appended to the atlas filename. | .atlas |
-| `prettyPrint` | If true, removes all whitespace except newlines. | true |
-| `legacyOutput` | If true, the atlas uses a less efficient output format. Exists for backwards-compatibility reasons. | true |
+| `pot` | 为 true 时，输出页面的尺寸为 2 的幂。 | true |
+| `paddingX` | 打包图像在 x 轴方向之间的像素数。 | 2 |
+| `paddingY` | 打包图像在 y 轴方向之间的像素数。 | 2 |
+| `bleed` | 为 true 时，根据最近非透明像素的 RGB 值设置透明像素的 RGB 值，防止采样透明像素 RGB 值时出现过滤伪影。 | true |
+| `bleedIterations` | 执行 bleed 的迭代次数。纹理缩小时出现伪影时，可以使用 4 或 8 等更大的值。 | 2 |
+| `edgePadding` | 为 true 时，打包纹理边缘使用 `paddingX` 和 `paddingY` 的一半作为边距。 | true |
+| `duplicatePadding` | 为 true 时，将边缘像素复制到边距中。`paddingX/Y` 应大于等于 2。 | false |
+| `rotation` | 为 true 时，TexturePacker 会尝试将图像旋转 90 度以提高打包效率。应用必须特别注意正确绘制这些区域。 | false |
+| `minWidth` | 输出页面的最小宽度。 | 16 |
+| `minHeight` | 输出页面的最小高度。 | 16 |
+| `maxWidth` | 输出页面的最大宽度。1024 对所有设备都安全，极老设备在超过 512 时性能可能下降。 | 1024 |
+| `maxHeight` | 输出页面的最大高度。1024 对所有设备都安全，极老设备在超过 512 时性能可能下降。 | 1024 |
+| `square` | 为 true 时，强制输出页面的宽度和高度相同。 | false |
+| `stripWhitespaceX` | 为 true 时，移除输入图像左右边缘的空白像素。应用必须特别注意正确绘制这些区域。 | false |
+| `stripWhitespaceY` | 为 true 时，移除输入图像上下边缘的空白像素。应用必须特别注意正确绘制这些区域。 | false |
+| `alphaThreshold` | 范围为 0 到 255。剔除空白时，低于该值的 Alpha 会被视为零。 | 0 |
+| `filterMin` | 纹理的缩小过滤器。 | Nearest |
+| `filterMag` | 纹理的放大过滤器。 | Nearest |
+| `wrapX` | 纹理 x 方向的环绕设置。 | ClampToEdge |
+| `wrapY` | 纹理 y 方向的环绕设置。 | ClampToEdge |
+| `format` | 纹理在内存中使用的格式。 | RGBA8888 |
+| `alias` | 为 true 时，逐像素相同的两张图像只会打包一次。 | true |
+| `outputFormat` | 输出页面的图像类型，“png” 或 “jpg”。 | png |
+| `jpegQuality` | 范围为 0 到 1。当 `outputFormat` 为 “jpg” 时使用的质量设置。 | 0.9 |
+| `ignoreBlankImages` | 为 true 时，纹理打包器不会为完全空白的图像添加区域。 | true |
+| `fast` | 为 true 时，打包效率较低，但执行速度更快。 | false |
+| `debug` | 为 true 时，在输出页面上绘制线条显示打包图像边界。 | false |
+| `combineSubdirectories` | 为 true 时，将包含设置文件的目录及所有子目录视为同一目录进行打包。子目录中的设置文件会被忽略。 | false |
+| `flattenPaths` | 为 true 时，从图像文件名中移除子目录前缀。图像文件名应保持唯一。 | false |
+| `premultiplyAlpha` | 为 true 时，RGB 会乘以 Alpha。更多信息参见[这里](https://web.archive.org/web/20160311211957/http://blogs.msdn.com/b/shawnhar/archive/2009/11/06/premultiplied-alpha.aspx)。 | false |
+| `useIndexes` | 为 false 时，图像名称不会移除图像索引后缀。 | true |
+| `limitMemory` | 为 true 时，任意时刻内存中只有一张图像，但每张图像会读取两次；为 false 时，打包期间所有图像都保留在内存中，但每张只读取一次。 | true |
+| `grid` | 为 true 时，图像按顺序打包到均匀网格中。 | false |
+| `scale` | 对每个缩放比例缩放图像，并输出完整图集。 | `[ 1 ]` |
+| `scaleSuffix` | 对每个缩放比例用于输出文件的后缀。如果省略，多种缩放比例的文件会使用相同名称，输出到各自的子目录。 | `[ "" ]` |
+| `scaleResampling` | 对每个缩放比例，将源图像重采样到缩放尺寸时使用的插值类型。可选 `nearest`、`bilinear` 或 `bicubic`。 | `[ bicubic ]` |
+| `atlasExtension` | 附加到图集文件名的文件扩展名。 | .atlas |
+| `prettyPrint` | 为 true 时，移除除换行外的所有空白。 | true |
+| `legacyOutput` | 为 true 时，图集使用效率较低的输出格式。保留它是为了向后兼容。 | true |
 
-## Texture filter options
+## 纹理过滤选项
 
-Texture packer use the filters specified in the [Texture.TextureFilter](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/Texture.TextureFilter.html) enum. The options for filterMin and filterMag are as following:<br/>
-Nearest: no filtering, no mipmaps<br/>
-Linear: filtering, no mipmaps<br/>
-MipMap & MipMapLinearLinear: filtering, smooth transition between mipmaps<br/>
-MipMapNearestNearest: no filtering, sharp switching between mipmaps<br/>
-MipMapLinearNearest: filtering, sharp switching between mipmaps<br/>
-MipMapNearestLinear: no filtering, smooth transition between mipmaps<br/>
+纹理打包器使用 [Texture.TextureFilter](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/Texture.TextureFilter.html) 枚举中指定的过滤器。filterMin 和 filterMag 的选项如下：<br/>
+Nearest：不进行过滤，不使用 mipmap<br/>
+Linear：进行过滤，不使用 mipmap<br/>
+MipMap 和 MipMapLinearLinear：进行过滤，在 mipmap 之间平滑过渡<br/>
+MipMapNearestNearest：不进行过滤，在 mipmap 之间清晰切换<br/>
+MipMapLinearNearest：进行过滤，在 mipmap 之间清晰切换<br/>
+MipMapNearestLinear：不进行过滤，在 mipmap 之间平滑过渡<br/>
 
 
-## NinePatches
+## NinePatch
 
-If an image file name ends with ".9" just before the file extension, it is considered a ninepatch. See [ninepatches](/wiki/graphics/2d/ninepatches). The image must have a 1px transparent border. The upper and left edge may optionally have one contiguous line of black pixels which denote the split information, ie what part of the ninepatch will stretch. The bottom and right edge may optionally have one contiguous line of black pixels which denote the padding information, ie how content on top of the NinePatch should be inset. When this image is packed, the 1px border is removed and the split and padding information stored in the pack file. `TextureAtlas` allows an instance of NinePatch to created for the region using the split information.
+如果图像文件名在扩展名前以“.9”结尾，就会被视为 ninepatch。参见 [ninepatches](/wiki/graphics/2d/ninepatches)。图像必须有 1px 的透明边框。上边和左边可以有一条连续的黑色像素线，用于表示拉伸区域；下边和右边可以有一条连续的黑色像素线，用于表示内容在 NinePatch 中的内边距。打包图像时会移除 1px 边框，并将分割和内边距信息存入 pack 文件。`TextureAtlas` 可以使用分割信息为该区域创建 NinePatch 实例。
 
-## Image indexes
+## 图像索引
 
-If an image file name ends with underscore and then a number (eg animation_23.png), the number is considered the "index" and is stored separately. The image name is stored without the underscore and index. `TextureAtlas` allows a list of all images with the same name to be retrieved, ordered by index. This makes it easy to pack animations without losing the order of the frames.
+如果图像文件名以下划线加数字结尾（如 animation_23.png），该数字会被视为“索引”并单独存储。图像名称会去掉下划线和索引。`TextureAtlas` 可以按索引顺序获取所有同名图像列表，因此能够轻松打包动画而不丢失帧顺序。
 
-## Packing
+## 打包
 
-The TexturePacker class is in `gdx-tools.jar`, which is in the extensions directory of the nightlies/releases zip files. You only need TexturePacker as a tool to process your image files for your application, you don't need it as a dependency to run your application. To run the packer you need both `gdx.jar` and `gdx-tools.jar`. **Note: gdx.jar must be in the same directory as gdx-tools.jar, for it to run without exceptions**
+TexturePacker 类位于 `gdx-tools.jar` 中，而该文件位于 nightlies/releases 压缩包的 extensions 目录。TexturePacker 只作为处理应用图像文件的工具使用，不需要作为运行应用的依赖。运行打包器需要同时拥有 `gdx.jar` 和 `gdx-tools.jar`。**注意：必须将 gdx.jar 与 gdx-tools.jar 放在同一目录中，否则运行时会抛出异常。**
 
 ```
 //*NIX (OS X/Linux)
@@ -228,17 +228,17 @@ java -cp gdx.jar:gdx-tools.jar com.badlogic.gdx.tools.texturepacker.TexturePacke
 java -cp gdx.jar;gdx-tools.jar com.badlogic.gdx.tools.texturepacker.TexturePacker inputDir outputDir packFileName
 ```
 
-TexturePacker can also be run from the [standalone nightly](https://libgdx-nightlies.s3.amazonaws.com/libgdx-runnables/runnable-texturepacker.jar) without gdx.jar (i.e. without the rest of libGDX at all), just substitute `runnable-texturepacker.jar` for `gdx.jar;gdx-tools.jar` in the above.
+也可以从[独立 nightly](https://libgdx-nightlies.s3.amazonaws.com/libgdx-runnables/runnable-texturepacker.jar)运行 TexturePacker，而无需 gdx.jar（也就是完全不需要 libGDX 的其他部分），只需将上面命令中的 `gdx.jar;gdx-tools.jar` 替换为 `runnable-texturepacker.jar`。
 
-`inputDir` is the root directory containing the images. `outputDir` is the output directory where the packed images will be placed. `packFileName` is the name of the pack file and the prefix used for the output packed image files.
+`inputDir` 是包含图像的根目录。`outputDir` 是放置打包图像的输出目录。`packFileName` 是 pack 文件的名称，也是输出打包图像文件使用的前缀。
 
-If `outputDir` is omitted, files will be placed in a new directory that is a sibling to `inputDir` with the suffix "-packed". If `packFileName` is omitted, "pack" is used.
+如果省略 `outputDir`，文件会放入 `inputDir` 的同级新目录中，目录后缀为 “-packed”。如果省略 `packFileName`，则使用 “pack”。
 
-While texture packing is intended to be a fully automated process, there has also been a nice UI contributed by Obli (though slightly out of date): [TexturePacker GUI](https://code.google.com/p/libgdx-texturepacker-gui/) (check out [its up to date successor](https://github.com/crashinvaders/gdx-texture-packer-gui)). There is also a commercial product at [texturepacker.com](http://www.codeandweb.com/texturepacker) which is completely unrelated to libgdx's texture packer and has a UI, many features and nice documentation.
+虽然纹理打包本意是完全自动化的过程，但 Obli 也贡献了一个不错的界面（略有过时）：[TexturePacker GUI](https://code.google.com/p/libgdx-texturepacker-gui/)（请查看[其最新继任者](https://github.com/crashinvaders/gdx-texture-packer-gui)）。另有一个商业产品 [texturepacker.com](http://www.codeandweb.com/texturepacker)，它与 libGDX 的纹理打包器完全无关，但提供界面、许多功能和完善文档。
 
-## Automatic packing
+## 自动打包
 
-During development it can be convenient to have the desktop application run TexturePacker before starting the game:
+开发期间，可以让桌面应用在启动游戏前运行 TexturePacker，这非常方便：
 
 ```java
 public class DesktopGame {
@@ -253,13 +253,13 @@ public class DesktopGame {
 }
 ```
 
-Each time the game is run, all the images are packed. This can be especially convenient when giving a build to an artist, who can then try out new images without even knowing the game is using packed images. If many images are packed, the `fast` setting can be useful to avoid waiting.
+每次运行游戏时，都会打包所有图像。这在将构建版本交给美术人员时尤其方便，因为他们可以尝试新图像，而无需知道游戏使用的是打包图像。如果图像很多，可以使用 `fast` 设置避免等待。
 
-_Note: When loading files from the classpath, Eclipse usually will not reflect changes to files that are updated externally. The project with the changed files must be manually refreshed in Eclipse. During development files can be loaded through the filesystem instead, where this is not an issue._
+_注意：从类路径加载文件时，Eclipse 通常不会反映外部更新文件的变化。必须在 Eclipse 中手动刷新包含变更文件的项目。开发期间也可以从文件系统加载文件，这样就不会有此问题。_
 
 # TextureAtlas
 
-The TexturePacker output is a directory of page images and a text file that describes all the images packed on the pages. This shows how to use the images in an application:
+TexturePacker 的输出是一个页面图像目录，以及一个描述页面上所有已打包图像的文本文件。下面展示如何在应用中使用这些图像：
 
 ```java
 TextureAtlas atlas;
@@ -269,8 +269,8 @@ Sprite sprite = atlas.createSprite("otherimagename");
 NinePatch patch = atlas.createPatch("patchimagename");
 ```
 
-TextureAtlas reads the pack file and loads all the page images. TextureAtlas.AtlasRegions can be retrieved, which are TextureRegions that provides extra information about the packed image, such as the frame index or any whitespace that was stripped. Sprites and NinePatches can also be created. If whitespace was stripped, the created Sprite will actually be a TextureAtlas.AtlasSprite, which allows the sprite to be used (mostly) as if whitespace was never stripped.
+TextureAtlas 会读取 pack 文件并加载所有页面图像。可以获取 TextureAtlas.AtlasRegions，它们是包含打包图像额外信息的 TextureRegions，例如帧索引或被剔除的空白。也可以创建 Sprite 和 NinePatch。如果剔除了空白，创建的 Sprite 实际上会是 TextureAtlas.AtlasSprite，从而基本可以像未剔除空白时一样使用。
 
-Note that `findRegion` is not very fast, so the value returned should be stored rather than calling this method each frame. Also note that createSprite and createNinePatch allocate a new instance.
+注意，`findRegion` 速度不是很快，因此应保存返回值，而不是每帧调用该方法。另外，createSprite 和 createNinePatch 会分配新实例。
 
-TextureAtlas holds on to all the page textures, disposing the TextureAtlas will dispose all the page textures.
+TextureAtlas 会持有所有页面纹理，销毁 TextureAtlas 时也会销毁所有页面纹理。

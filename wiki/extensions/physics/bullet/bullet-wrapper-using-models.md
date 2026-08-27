@@ -1,11 +1,11 @@
 ---
-title: Bullet Wrapper Using models
+title: Bullet 封装：使用模型
 ---
-## Using models
-[`Model`](/wiki/graphics/3d/models) and `ModelInstance` are typically used for the visual representation of objects. `btCollisionObject` or `btRigidBody` are used for the physical representation of these objects.
+## 使用模型
+[`Model`](/wiki/graphics/3d/models) 和 `ModelInstance` 通常用于表示对象的视觉效果。`btCollisionObject` 或 `btRigidBody` 用于表示这些对象的物理效果。
 
-### Using motion states
-To synchronize the location and orientation between a `ModelInstance` and `btRigidBody`, Bullet provides the `btMotionState` class that you can extend. A very basic example of such synchronization is:
+### 使用运动状态
+为了同步 `ModelInstance` 和 `btRigidBody` 的位置与方向，Bullet 提供了可供扩展的 `btMotionState` 类。下面是一个非常基础的同步示例：
 ```java
 static class MyMotionState extends btMotionState {
     Matrix4 transform;
@@ -19,7 +19,7 @@ static class MyMotionState extends btMotionState {
     }
 }
 ```
-Which you can use as follows:
+用法如下：
 ```java
 btRigidBody body;
 ModelInstance instance;
@@ -29,7 +29,7 @@ motionState = new MyMotionState();
 motionState.transform = instance.transform;
 body.setMotionState(motionState);
 ```
-Now the location and orientation of `ModelInstance` will be updated (by Bullet) whenever the `btRigidBody` moves. This approach is not restricted to `ModelInstance`, it will work for any object that contains a `Matrix4` transformation, like e.g. also `Renderable`. Moreover, it is possible to add simple logic to a motion state, for example:
+现在每当 `btRigidBody` 移动时，`ModelInstance` 的位置和方向都会由 Bullet 更新。这种方法不限于 `ModelInstance`，任何包含 `Matrix4` 变换的对象都可以使用，例如 `Renderable`。此外，还可以在运动状态中加入简单逻辑，例如：
 ```java
 static class PlayerMotionState extends btMotionState {
     final static Vector3 position = new Vector3();
@@ -47,25 +47,24 @@ static class PlayerMotionState extends btMotionState {
     }
 }
 ```
-Note that the transformation (location and rotation) of a `btRigidBody` is typically relative to the center of mass (most commonly the center of the shape). When needed, a `btCompoundShape` can be used to move the center of mass. It is advised to keep the origin of the visual model the same as the origin of the physical object. If this is not possible, then you can modify the transformation in the motion state accordingly.
+注意，`btRigidBody` 的变换（位置和旋转）通常是相对于质心的（最常见的是形状中心）。必要时，可以使用 `btCompoundShape` 移动质心。建议让视觉模型的原点与物理对象的原点保持一致。如果无法做到，可以相应地修改运动状态中的变换。
 
-> Keep in mind that Bullet's transformation only supports translation (location) and rotation (orientation). Any other transformation, like scaling, is not supported.
+> 请记住，Bullet 的变换只支持平移（位置）和旋转（方向），不支持缩放等其他变换。
 
-The motion state has to be disposed when no longer needed: `motionState.dispose();`.
+不再需要运动状态时必须销毁它：`motionState.dispose();`。
 
-### Create a collision object from a model
-A Model boils down to a bunch of triangles with some properties which are rendered with a specific transformation. It is optimized for rendering, not for physics. Therefore a Model is rarely useful for an efficient representation of a physics shape.
+### 从模型创建碰撞对象
+Model 本质上是一组带有属性的三角形，并通过特定变换进行渲染。它针对渲染而非物理进行了优化。因此，Model 很少适合高效表示物理形状。
 
-To understand why this is, consider a simple box model. The physics shape of a box would contain eight corners. The visual model however, will contain 24 corners (vertices). This is because the vertices are specified for each face of the box, where each vertex contains the "normal" of the face. Otherwise visual effects, like lighting, would not be possible. So, instead of a solid box, the visual model is actually made up of six independent rectangles. Theses rectangles (or the triangles it is made up) are infinitely thin, they have no volume. This makes it unsuitable for dynamic physics.
+要理解原因，可以考虑一个简单的盒子模型。盒子的物理形状只需包含八个角，而视觉模型会包含 24 个角（顶点）。这是因为盒子的每个面都要分别指定顶点，并且每个顶点包含该面的“法线”；否则就无法实现光照等视觉效果。因此，视觉模型并不是一个实体盒子，而是由六个相互独立的矩形组成。这些矩形（或组成它们的三角形）无限薄、没有体积，所以不适合动态物理。
 
-There are several more issues, e.g. a model typically contains more detail than would be needed for the physics. In fact, for some shapes it is possible to use a much cheaper collision detection algorithm than using the model's vertices. For example, in case of the box shape, it would be possible to use a single detection against a box, instead of a detection against the 12 triangles it is made of.
+还有其他问题，例如模型通常包含超出物理计算所需的细节。事实上，对于某些形状，使用比模型顶点更廉价的碰撞检测算法是可行的。例如对于盒子形状，可以只进行一次盒子碰撞检测，而不必检测组成它的 12 个三角形。
 
-There are several ways to work around these problems, ranging from approximating a model using primitive shapes to using a dedicated model or sharing vertices between visual model and physics shape. The [Bullet manual](https://github.com/bulletphysics/bullet3/blob/master/docs/Bullet_User_Manual.pdf?raw=true)
-provides a decision chart to help you decide which method you should choose:
+解决这些问题的方法有很多，从使用基本形状近似模型，到使用专用模型，或让视觉模型与物理形状共享顶点。[Bullet 手册](https://github.com/bulletphysics/bullet3/blob/master/docs/Bullet_User_Manual.pdf?raw=true)提供了一张决策图，帮助你选择合适的方法：
 ![images/bullet_shape_decision.png](/assets/wiki/images/bullet_shape_decision.png)
 
-For the case of a static model, the Bullet wrapper provides a convenient method to create a collision shape of it:
+对于静态模型，Bullet 封装提供了一个方便的碰撞形状创建方法：
 ```java
 btCollisionShape shape = Bullet.obtainStaticNodeShape(model.nodes);
 ```
-In this case the collision shape will share the same data (vertices) as the model. This will include [node transformation](/wiki/graphics/3d/models#node-transformation) by using a `btCompoundShape` if needed, but will not include any scaling applied to nodes.
+在这种情况下，碰撞形状会与模型共享相同的数据（顶点）。必要时，它还会通过 `btCompoundShape` 包含[节点变换](/wiki/graphics/3d/models#node-transformation)，但不会包含应用于节点的缩放。

@@ -1,23 +1,23 @@
 ---
-title: Streaming music
+title: 流式音乐
 ---
-For any sound that's longer than a few seconds it is preferable to stream it from disk instead of fully loading it into RAM. libGDX provides a Music interface that lets you do that.
+对于超过几秒的声音，最好从磁盘流式读取，而不是完整加载到 RAM 中。libGDX 提供了实现这一点的 Music 接口。
 
-To load a Music instance we can do the following:
+加载 Music 实例的方式如下：
 
 ```java
 Music music = Gdx.audio.newMusic(Gdx.files.internal("music/mymusic.mp3"));
 ```
 
-This loads an MP3 file called `"mymusic.mp3"` from the internal directory `music`.
+这会从内部目录 `music` 加载名为 `"mymusic.mp3"` 的 MP3 文件。
 
-Playing back the music instance works as follows:
+播放音乐实例的方式如下：
 
 ```java
 music.play();
 ```
 
-Of course you can set various playback attributes of the `Music` instance:
+当然，你可以设置 `Music` 实例的各种播放属性：
 
 ```java
 music.setVolume(0.5f);                 // sets the volume to half the maximum volume
@@ -30,18 +30,18 @@ boolean isLooping = music.isLooping(); // obvious as well :)
 float position = music.getPosition();  // returns the playback position in seconds
 ```
 
-`Music` instances are heavy on some backends (such as Android), you should usually not have more than about 10 loaded and more than 1 or 2 playing at the same time.
+在某些后端（例如 Android）上，`Music` 实例开销较大，通常不应同时加载超过约 10 个，或同时播放超过 1～2 个。
 
-A `Music` instance needs to be disposed if it is no longer needed, to free up resources.
+不再需要 `Music` 实例时必须将其释放，以回收资源。
 
 ```java
 music.dispose();
 ```
 
-## Seamless Music
+## 无缝音乐
 
-If you have music that needs to loop seamlessly be aware that whilst the MP3 format is compatible across all platforms it has technical limitations preventing fully seamless play (see 'Why cant MP3 files be seamlessly spliced together?' at [LAME Technical FAQ](https://lame.sourceforge.io/tech-FAQ.txt)). The approach to solving this will vary depending on the platforms you need to target:
+如果音乐需要无缝循环，请注意 MP3 格式虽然跨平台兼容，但存在阻止完全无缝播放的技术限制（参见 [LAME 技术 FAQ](https://lame.sourceforge.io/tech-FAQ.txt) 中的“为什么 MP3 文件无法无缝拼接？”）。解决方案取决于目标平台：
 
-- For **desktop and web only** the Ogg format may work better as it avoids the gap issue of MP3 and (as a bonus) has higher fidelity for the same bitrates. The format is not supported on iOS however and on Android there will still be some gap due to current limitations of the LibGDX Audio module.
-- If targeting **iOS and Android** look at using a third-party cross-platform audio backend [alternative](https://libgdx.com/wiki/audio/audio#alternatives), in particular [gdx-miniaudio](https://github.com/rednblackgames/gdx-miniaudio).
-- For **web only** you could also consider streaming pre-looped music directly from your server. Do this by excluding the music from the preload filter and not using the AssetManager. This allows you to loop music for as long as needed, without increasing game load times.
+- 对于仅面向**桌面和 Web** 的项目，Ogg 格式可能更合适，因为它能避免 MP3 的间隙问题，而且在相同比特率下保真度更高。iOS 不支持该格式；在 Android 上，由于 LibGDX Audio 模块当前的限制，仍会存在一些间隙。
+- 如果目标平台是 **iOS 和 Android**，可以考虑使用第三方跨平台音频后端[替代方案](https://libgdx.com/wiki/audio/audio#alternatives)，尤其是 [gdx-miniaudio](https://github.com/rednblackgames/gdx-miniaudio)。
+- 对于仅面向 **Web** 的项目，还可以考虑直接从服务器流式播放预先循环的音乐。将音乐排除在预加载过滤器之外，并且不要使用 AssetManager，即可做到这一点。这样可以按需长时间循环音乐，同时不会增加游戏加载时间。

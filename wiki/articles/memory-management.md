@@ -1,9 +1,9 @@
 ---
-title: Memory management
+title: 内存管理
 ---
-Games are resource heavy applications. Images and sound effects in particular can take up a considerable amount of RAM. There are multiple classes in libGDX which represent such resources. They all implement a common [Disposable](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/Disposable.html) interface which indicates that instances of this class need to be disposed of manually at the end of their life-time. This is because most of these resources are managed by native drivers and not by the Java garbage collector. **Failure to dispose resources will lead to severe memory leaks!**
+游戏是资源密集型应用，尤其是图像和音效可能占用大量 RAM。libGDX 中有多个类表示这类资源，它们都实现通用的 [Disposable](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/Disposable.html) 接口，这表示必须在实例生命周期结束时手动释放它们。这是因为大多数资源由本机驱动管理，而不是由 Java 垃圾回收器管理。**不释放资源会导致严重的内存泄漏！**
 
-The following classes need to be disposed of manually (might not be complete, [click here](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/Disposable.html) instead for the full list):
+以下类需要手动释放（列表可能不完整，完整列表请参见[这里](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/Disposable.html)）：
 
   * AssetManager
   * Bitmap
@@ -33,26 +33,26 @@ The following classes need to be disposed of manually (might not be complete, [c
   * com.badlogic.gdx.physics.box2d.World
   * all bullet classes
 
-Resources should be disposed of as soon as they are no longer needed, freeing up memory associated with them. Accessing a disposed resource will result in undefined errors, so make sure to clear out all references you have to a disposed resource.
+资源一旦不再需要就应立即释放，以回收其占用的内存。访问已释放的资源会产生未定义错误，因此务必清除对已释放资源的所有引用。
 
-When in doubt about whether a specific class needs to be disposed of, check if it has a `dispose()` method which implemented from `Disposable` interface of `com.badlogic.gdx.utils`. If it does, you are now working with a native resource.
+如果不确定某个类是否需要释放，请检查它是否具有实现自 `com.badlogic.gdx.utils` 的 `Disposable` 接口的 `dispose()` 方法。如果有，则说明你正在处理本机资源。
 
-### Object pooling
+### 对象池
 
-Object pooling is the principle of reusing inactive or "dead" objects, instead of creating new objects every time. This is achieved by creating an object pool, and when you need a new object, you obtain it from that pool. If the pool has an available (free) object, it is returned. If the pool is empty, or does not contain free objects, a new instance of the object is created and returned. When you no longer need an object, you "free" it, which means it is returned to the pool.
-This way, object allocation memory is reused, and garbage collector is happy.
+对象池的原则是复用未激活或“死亡”的对象，而不是每次都创建新对象。具体做法是创建对象池，需要新对象时从池中获取。如果池中有可用（空闲）对象，就返回该对象；如果池为空或没有空闲对象，则创建并返回新实例。不再需要对象时，将其“释放”，也就是放回对象池。
+这样可以复用对象分配的内存，也能减轻垃圾回收器的压力。
 
-This is vital for memory management in games that have frequent object spawning, like bullets, obstacles, monsters, etc.
+对于频繁生成子弹、障碍物、怪物等对象的游戏，这对内存管理非常重要。
 
-libGDX offers a couple tools for easy pooling.
+libGDX 提供了几个便于使用对象池的工具。
 
-  * [Poolable](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/Pool.Poolable.html) interface
+  * [Poolable](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/Pool.Poolable.html) 接口
   * [Pool](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/Pool.html)
   * [Pools](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/Pools.html)
 
-Implementing the `Poolable` interface means you will have a `reset()` method in your object, which will be automatically called when you free the object.
+实现 `Poolable` 接口意味着对象中会有一个 `reset()` 方法，在释放对象时会自动调用该方法。
 
-Below is a minimal example of pooling a bullet object.
+下面是一个使用对象池管理子弹对象的最小示例。
 
 ```java
 public class Bullet implements Pool.Poolable {
@@ -100,7 +100,7 @@ public class Bullet implements Pool.Poolable {
 }
 ```
 
-In your game world class:
+在你的游戏世界类中：
 ```java
 public class World {
 
@@ -136,23 +136,23 @@ public class World {
 }
 ```
 
-The [Pools](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/Pools.html) class provides static methods for dynamically creating pools of any objects (using [ReflectionPool](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/ReflectionPool.html) and black magic). In the above example, it could be used like this.
+[Pools](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/Pools.html) 类提供了静态方法，可以动态创建任意对象的对象池（使用 [ReflectionPool](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/ReflectionPool.html) 和一些“黑魔法”）。在上面的示例中，可以这样使用：
 ```java
 private final Pool<Bullet> bulletPool = Pools.get(Bullet.class);
 ```
 
-### How to Use Pool
+### 如何使用 Pool
 
-A `Pool<>` manages a single type of object, so it is parameterized by that type. Objects are taken from a specific `Pool` instance by invoking `obtain` and then should be returned to the Pool by invoking `free`. The objects in the pool may optionally implement the [`Pool.Poolable`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/Pool.Poolable.html) interface (which just requires a `reset()` method be present), in which case the `Pool` will automatically reset the objects when they are returned to the pool. By default, objects are initially allocated on demand (so if you never invoke `obtain`, the Pool will contain no objects). It is possible to force the `Pool` to allocate a number of objects by calling `fill()` after instantiation. Initial allocation is useful to have control over when these first time allocations occur.
+`Pool<>` 管理一种对象，因此需要使用该类型进行参数化。通过调用 `obtain` 从指定的 `Pool` 实例中获取对象，然后应通过调用 `free` 将对象归还给 Pool。池中的对象可以选择实现 [`Pool.Poolable`](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/Pool.Poolable.html) 接口（该接口只要求提供 `reset()` 方法）；如果实现了，`Pool` 会在对象归还时自动重置对象。默认情况下，对象按需分配（因此如果从未调用 `obtain`，Pool 中就没有对象）。实例化后调用 `fill()` 可以强制 `Pool` 分配指定数量的对象。预先分配有助于控制首次分配发生的时间。
 
-You must implement your own subclass of `Pool<>` because the `newObject` method is abstract.
+由于 `newObject` 方法是抽象方法，因此必须自行实现 `Pool<>` 的子类。
 
-### Pool Caveats
+### Pool 的注意事项
 
-Beware of leaking references to Pooled objects. Just because you invoke "free" on the Pool does not invalidate any outstanding references. This can lead to subtle bugs if you're not careful. You can also create subtle bugs if the state of your objects is not fully reset when the object is put in the pool.
+注意不要泄漏对池中对象的引用。调用 Pool 的 `free` 并不会使仍然存在的引用失效；如果不小心，就会导致难以发现的 bug。如果对象放回对象池时没有完全重置其状态，也可能产生难以发现的 bug。
 
-### Profiling Memory leaks
+### 分析内存泄漏
 
-If you're encountering memory leaks, tools like [VisualVM](https://visualvm.github.io/) (free) and [JProfiler](https://www.ej-technologies.com/products/jprofiler/overview.html) (trial/paid) prove useful in tracking down the issue. These memory profilers will tell you what type of object is eating up the memory. From there on you can start tracking down the leak.
+如果遇到内存泄漏，[VisualVM](https://visualvm.github.io/)（免费）和 [JProfiler](https://www.ej-technologies.com/products/jprofiler/overview.html)（试用/付费）等工具有助于定位问题。这些内存分析器会告诉你是哪种对象占用了内存，你可以据此继续追踪泄漏来源。
 
-[LeakCanary](https://square.github.io/leakcanary/) is a free tool initially developed to automatically detect leaks in Android applications, but it can be [configured to run on the JVM](https://square.github.io/leakcanary/recipes/#detecting-leaks-in-jvm-applications) as well.
+[LeakCanary](https://square.github.io/leakcanary/) 是一个免费工具，最初用于自动检测 Android 应用中的泄漏，但也可以[配置为在 JVM 上运行](https://square.github.io/leakcanary/recipes/#detecting-leaks-in-jvm-applications)。

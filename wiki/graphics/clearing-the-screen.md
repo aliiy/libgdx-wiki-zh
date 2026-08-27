@@ -1,7 +1,7 @@
 ---
-title: Clearing the screen
+title: 清除屏幕
 ---
-When rendering a new screen, we should clear the old screen first, i.e. dispose the current data held in the color buffer etc. In the following example, we'll clear both the color and depth buffer and set the color buffer to a solid red color (r: `1`, g: `0`, b: `0`, a: `1`). After that, we can start rendering stuff over our red background:
+渲染新屏幕时，应先清除旧屏幕，也就是清除颜色缓冲区等当前保存的数据。下面的示例会同时清除颜色缓冲区和深度缓冲区，并将颜色缓冲区设置为纯红色（r：`1`、g：`0`、b：`0`、a：`1`）。之后就可以在红色背景上开始渲染内容：
 
 ```java
 @Override
@@ -12,4 +12,4 @@ public void render() {
 }
 ```
 
-Simply call `ScreenUtils#clear` with the desired clear color and `clearDepth` true to clear the depth buffer as well. You are then free to render a fresh frame with new scene graphics. Internally, this code calls  `Gdx.gl.glClearColor( 1, 0, 0, 1 )` and `Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT )`. You can fall back to this if you need more granular control over the clearing, for example if you want to clear the stencil buffer (`GL20.GL_STENCIL_BUFFER_BIT`) as well.
+只需将所需的清除颜色传给 `ScreenUtils#clear`，并将 `clearDepth` 设为 `true`，即可同时清除深度缓冲区。然后就可以渲染带有新场景图形的帧。此方法内部会调用 `Gdx.gl.glClearColor( 1, 0, 0, 1 )` 和 `Gdx.gl.glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT )`。如果需要更细粒度的清除控制，例如还要清除模板缓冲区（`GL20.GL_STENCIL_BUFFER_BIT`），可以直接使用这些底层调用。

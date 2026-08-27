@@ -1,37 +1,37 @@
 ---
-title: Using libGDX with Scala
+title: 使用 Scala 编写 libGDX
 ---
 
-Scala is a functional, object-oriented programming language for the JVM that works seamlessly with Java libraries, frameworks, and tools. It has a concise syntax and a REPL, which makes it feel like a scripting language, but it is being used in mission critical server software at companies like Twitter and LinkedIn.
+Scala 是一种运行于 JVM 的函数式、面向对象编程语言，可以与 Java 库、框架和工具无缝协作。它拥有简洁的语法和 REPL，使用体验类似脚本语言，但 Twitter、LinkedIn 等公司的关键任务服务器软件也在使用它。
 
-Scala developers usually choose either Gradle or SBT as their build tool. This tutorial shows how to set up either of them to start using LibGDX. You may choose which one to use according to your own preferences.
+Scala 开发者通常会选择 Gradle 或 SBT 作为构建工具。本教程介绍如何配置这两者以开始使用 LibGDX，你可以根据自己的偏好进行选择。
 
-*Due to how GWT works you will not be able to use the HTML5 target with Scala*
+*由于 GWT 的工作方式，Scala 无法使用 HTML5 目标。*
 
-# Using libGDX and Scala with Gradle
+# 使用 Gradle 编写 libGDX 和 Scala
 
-UPDATE: Gdx-Liftoff has an option to enable Scala support in new projects and will handle most of the configuration for you. These instructions remain for posterity.
+更新：Gdx-Liftoff 提供了在新项目中启用 Scala 支持的选项，并会为你处理大部分配置。以下说明仅为保留历史参考。
 
-The default build created by the gdx-setup.jar tool is the best place to start when going the Gradle route. A repo with the required modifications to the default "blank" gdx project can be found here: [gdx-scala-demo](https://github.com/LOFI/gdx-scala-demo). These changes have been outlined below.
+使用 Gradle 时，gdx-setup.jar 工具创建的默认构建是最好的起点。对默认“空白” gdx 项目所需的修改可参见 [gdx-scala-demo](https://github.com/LOFI/gdx-scala-demo)。下面概述这些修改。
 
-In order to support Scala compilation you need to update the build with a couple of additions:
+要支持 Scala 编译，需要对构建进行以下几项补充：
 
 - <root>/gradle.properties
-    - Increase the heap used by gradle (otherwise you might have trouble compiling for iOS).
+     - 增大 Gradle 使用的堆内存（否则为 iOS 编译时可能遇到问题）。
 - <root>/build.gradle
-    - Add the Scala plugin to the `project(":core")` section: `apply plugin: "scala"`
-    - In the dependencies include the scala library: `compile "org.scala-lang:scala-library:2.11.12"` (Scala 2.12.* requires java 8, but the majority of Android devices don't support it)
+     - 在 `project(":core")` 部分添加 Scala 插件：`apply plugin: "scala"`
+     - 在依赖中加入 Scala 库：`compile "org.scala-lang:scala-library:2.11.12"`（Scala 2.12.* 需要 Java 8，但大多数 Android 设备不支持它）。
 - <root>/core/build.gradle
-    - Apply the scala plugin at the top of this file.
-    - **optional** Set the src directory for scala files: `sourceSets.main.scala.srcDirs = [ "src/" ]`
+     - 在文件顶部应用 Scala 插件。
+     - **可选**设置 Scala 文件的源目录：`sourceSets.main.scala.srcDirs = [ "src/" ]`
 - <root>/android/build.gradle
-    - In the `android` section (top of the file) you need to add the following:
+     - 在 `android` 部分（文件顶部）添加以下内容：
       ```gradle
       lintOptions {
-          abortOnError false // make sure you're paying attention to the linter output!
+           abortOnError false // make sure you're paying attention to the linter output!
       }
 
-      // FIXME: How can we apply this simply for all builds? Copy-pasta makes me sad.
+       // FIXME: How can we apply this simply for all builds? Copy-pasta makes me sad.
       buildTypes {
           release {
               minifyEnabled true
@@ -46,80 +46,80 @@ In order to support Scala compilation you need to update the build with a couple
       }
       ```
 - <root>/android/proguard-project.txt
-    - In order for Proguard to work you need to add the following lines:
+     - 为使 Proguard 正常工作，需要添加以下几行：
 
       ```
       -dontwarn sun.misc.*
       -dontwarn java.lang.management.**
       -dontwarn java.beans.**
       ```
-    - It might also be required to then change the line `-dontwarn com.badlogic.gdx.jnigen.BuildTarget*` to `-dontwarn com.badlogic.gdx.jnigen.*`
+     - 之后可能还需要将 `-dontwarn com.badlogic.gdx.jnigen.BuildTarget*` 修改为 `-dontwarn com.badlogic.gdx.jnigen.*`
 
-With all of these changes in-place you should be able to use Gradle exactly as you would otherwise from the shell or your favorite IDE.
+完成这些修改后，就可以像平时一样从 shell 或常用 IDE 使用 Gradle。
 
-# Using libGDX and Scala with SBT
+# 使用 SBT 编写 libGDX 和 Scala
 
-The standard tooling for working with Scala is quite different than what Java developers will be used to. There is a project, [libgdx-sbt-project](https://github.com/ajhager/libgdx-sbt-project.g8), that provides a simple path for getting started with libGDX and Scala using standard build tools and best practices.
+使用 Scala 的标准工具与 Java 开发者习惯的工具差异很大。[libgdx-sbt-project](https://github.com/ajhager/libgdx-sbt-project.g8) 项目提供了一条简单路径，让你可以使用标准构建工具和最佳实践开始 libGDX 与 Scala 开发。
 
-This tutorial assumes you have installed [sbt](https://github.com/sbt/sbt) 0.13, which are used in the Scala community for generating and interacting with projects.
+本教程假设你已经安装了 [sbt](https://github.com/sbt/sbt) 0.13；Scala 社区使用它来生成项目并与项目交互。
 
-## Setting up a new project
+## 设置新项目
 
-In your favourite shell type:
+在常用 shell 中输入：
 
     $ sbt new ajhager/libgdx-sbt-project.g8
 
-After filling in some information about your project, you can start placing your game's source files and assets in common/src/main/scala and common/src/main/resources, respectively.
+填写项目相关信息后，就可以分别将游戏源文件和资源放入 common/src/main/scala 与 common/src/main/resources。
 
-**NOTICE** The setup above might not be working with iOS build. If you want to use MobiDevelop's fork of RoboVM, then one should use
+**注意**：上述设置可能无法用于 iOS 构建。如果想使用 MobiDevelop fork 的 RoboVM，则应使用：
 
-1. this [fork of sbt-robovm](https://github.com/molikto/sbt-robovm), you need `sbt publish-local` this plugin yourself for now.
-2. this [fork of project template](https://github.com/Darkyenus/libgdx-sbt-project.g8) and use sbt-robovm and RoboVM version 2.3.0. Then it will resolve to the plugin that get `publish-local`ed
+1. 这个 [sbt-robovm fork](https://github.com/molikto/sbt-robovm)，目前需要自行对该插件运行 `sbt publish-local`。
+2. 这个[项目模板 fork](https://github.com/Darkyenus/libgdx-sbt-project.g8)，并使用 sbt-robovm 和 RoboVM 2.3.0 版本。这样它会解析到已执行 `publish-local` 的插件。
 
  
 
-## Managing your project
+## 管理项目
 
-Update to the latest libraries:
+更新到最新库：
 
     $ sbt
     > update 
 
-Run the desktop project:
+运行桌面项目：
 
     > desktop/run
 
-Package the desktop project into single jar:
+将桌面项目打包为单个 jar：
 
     > assembly
 
-Run the android project on a device:
+在设备上运行 Android 项目：
   
     > android/start
 
-Visit [android-plugin](https://github.com/jberkel/android-plugin) for a more in-depth guide to android configuration and usage.
+有关 Android 配置和使用的深入指南，请参阅 [android-plugin](https://github.com/jberkel/android-plugin)。
 
-Run the ios project on a device:
+在设备上运行 iOS 项目：
 
     > ios/device
 
-Visit [sbt-robovm](https://github.com/ajhager/sbt-robovm) for a more in-depth guide to ios configuration and usage.
+有关 iOS 配置和使用的深入指南，请参阅 [sbt-robovm](https://github.com/ajhager/sbt-robovm)。
 
-## Using unit tests
+## 使用单元测试
 
-Run all unit tests from desktop, android and common (subdirectories src/test/scala):
+运行 desktop、android 和 common 中的所有单元测试（子目录 src/test/scala）：
 
     > test
 
-Run specific set of unit tests:
+运行指定的一组单元测试：
 
     > common/test
 
-## Using with popular IDEs
+## 与常用 IDE 一起使用
 
-In most cases you will be able to open and edit each sub-project (like common, android or desktop), but you still need to use SBT to build the project.
+大多数情况下可以打开并编辑各个子项目（如 common、android 或 desktop），但仍需使用 SBT 构建项目。
 
-See [here](https://github.com/ajhager/libgdx-sbt-project.g8/wiki/IDE-Plugins) for details about sbt plugins for each editor.
+各编辑器对应的 sbt 插件详情请参阅[这里](https://github.com/ajhager/libgdx-sbt-project.g8/wiki/IDE-Plugins)。
 
-## Other resources
+## 其他资源
 [Develop Games in Scala with libgdx](https://web.archive.org/web/20140401024419/http://raintomorrow.cc/post/70000607238/develop-games-in-scala-with-libgdx-getting-started)

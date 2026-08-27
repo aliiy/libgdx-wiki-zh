@@ -1,18 +1,18 @@
 ---
-title: Pollfish in libGDX
+title: 在 libGDX 中使用 Pollfish
 ---
-# **Introduction**
+# **简介**
 
-This is a simple tutorial that will help you integrate Pollfish surveys in your libGDX Android app.
+本教程将帮助你把 Pollfish 调查集成到 libGDX Android 应用中。
 
-Integration of Pollfish in an Android application is simple, and is described in detail in the official guide here: [Pollfish Android Documentation](https://www.pollfish.com/docs/android)
+在 Android 应用中集成 Pollfish 很简单，官方指南对此有详细说明：[Pollfish Android 文档](https://www.pollfish.com/docs/android)
 
-## STEPS SUMMARY
+## 步骤摘要
 
-1. [Sign Up](https://www.pollfish.com/login/publisher) as a Publisher at Pollfish website, create a new app and grab its API key from the dashboard
-2. [Download](https://www.pollfish.com/docs/android) Pollfish SDK (either Google Play or Universal) or reference it in your gradle file through jcenter()
-3. Add relevant Pollfish aar or jar file in your project, import relevant classes and add required permissions in your app's manifest as described in the [documentation](https://www.pollfish.com/docs/android)
-4. Call Pollfish init function in your onResume of your AndroidLauncher
+1. 在 Pollfish 网站[注册](https://www.pollfish.com/login/publisher)为 Publisher，创建新应用并从控制面板获取 API key。
+2. [下载](https://www.pollfish.com/docs/android) Pollfish SDK（Google Play 版或 Universal 版），或在 Gradle 文件中通过 jcenter() 引用。
+3. 按[文档](https://www.pollfish.com/docs/android)将相应的 Pollfish aar 或 jar 文件加入项目，导入相关类，并在应用 manifest 中添加所需权限。
+4. 在 AndroidLauncher 的 onResume 中调用 Pollfish 初始化函数。
 
 ```java
 
@@ -46,14 +46,14 @@ public class AndroidLauncher extends AndroidApplication{
 }
 ```
 
-With this simple implementation you should be able to see Pollfish surveys in your app within a few minutes.
+完成这个简单实现后，几分钟内就应该能在应用中看到 Pollfish 调查。
 
-## Optional Steps
+## 可选步骤
 
 
-### 1. Listen to Pollfish listeners (optional)
+### 1. 监听 Pollfish listener（可选）
 
-You can listen to Pollfish listeners by implementing them in your AndroidLauncher, for example:
+例如，可以在 AndroidLauncher 中实现 Pollfish listener 来监听相关事件：
 
 ```java
 import com.pollfish.interfaces.PollfishSurveyCompletedListener;
@@ -71,11 +71,11 @@ public void onPollfishSurveyCompleted(boolean playfulSurveys , int surveyPrice) 
 }
 ```
 
-### 2. Manually show or hide Pollfish (optional)
+### 2. 手动显示或隐藏 Pollfish（可选）
 
-You can manually show or hide Pollfish in your Android App with a simple implementation as the following one:
+可以通过如下简单实现，在 Android 应用中手动显示或隐藏 Pollfish：
 
-In your and in your `AndroidLauncher.java` file: 
+在你的 `AndroidLauncher.java` 文件中：
 
 ```java
 
@@ -129,7 +129,7 @@ public class AndroidLauncher extends AndroidApplication implements MyGdxGame.MyP
 }
 ```
 
-and in your `MyGdxGame.java` file: 
+在你的 `MyGdxGame.java` 文件中：
 
 ```java
 package com.mygdx.game;
@@ -237,9 +237,9 @@ public class MyGdxGame extends ApplicationAdapter {
 }
 ```
 
-### 3. Check if Pollfish survey is still available on your device
+### 3. 检查设备上是否仍有 Pollfish 调查
 
-It happens that time had past since you initialized Pollfish and a survey is received. If you want to check if survey is still avaialble on your device and has not expired you can check by calling:
+初始化 Pollfish 并收到调查后，可能已经过去了一段时间。如果想检查设备上的调查是否仍然可用且尚未过期，可以调用：
 
 ```
 PollFish.isPollfishPresent();

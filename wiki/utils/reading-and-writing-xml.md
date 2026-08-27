@@ -1,9 +1,9 @@
 ---
-title: Reading and writing XML
+title: 读取和写入 XML
 ---
-[XmlReader](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/XmlReader.html)[(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/utils/XmlReader.java) parses XML into a simple DOM. It can also do event based parsing.
+[XmlReader](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/XmlReader.html)[(代码)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/utils/XmlReader.java) 将 XML 解析为简单的 DOM，也可以进行基于事件的解析。
 
 [XmlWriter](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/XmlWriter.html)
-[(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/utils/XmlWriter.java) uses a stack based API to emit XML.
+[(代码)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/utils/XmlWriter.java) 使用基于栈的 API 输出 XML。
 
-[Relevant blog post](https://web.archive.org/web/20201031170506/https://www.badlogicgames.com/wordpress/?p=1712)
+[相关文章](https://web.archive.org/web/20201031170506/https://www.badlogicgames.com/wordpress/?p=1712)

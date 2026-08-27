@@ -1,13 +1,13 @@
 ---
-title: Issue Tracker
-# Not listed in ToC
+title: 问题跟踪器
+# 不列入目录
 ---
-If you have been sent to this page it is because you have posted something on the libGDX issue tracker that is not an issue. We handle thousands of issues and cannot burn our time explaining to each person how an issue tracker works. Instead we send you here, which explains your options.
+如果你被引导到本页，是因为你在 libGDX 问题跟踪器中提交的内容并不是问题。我们要处理数千个问题，无法花时间向每个人解释问题跟踪器的用途。因此我们把你引导到这里，说明你可以采取的做法。
 
-## What do I do now?
+## 现在该怎么办？
 
-If you need help, we have an extensive guide called [Getting Help](/wiki/articles/getting-help). Read it. If you have questions you need to ask, the fastest way to get help is our official [Discord server](/community/discord/).
+如果你需要帮助，请阅读详尽的[获取帮助指南](/wiki/articles/getting-help)。如果有问题需要提问，最快的方式是加入我们的官方 [Discord 服务器](/community/discord/)。
 
-## Why are you doing this to me?
+## 为什么要这样对我？
 
-The issue tracker is for reporting problems with the way libGDX works. It is the wrong place to ask questions of any kind. It is important to reduce clutter on the issue tracker so we can focus on the work that needs to be done to improve libGDX.
+问题跟踪器用于报告 libGDX 的运行问题，不适合提出任何类型的问题。减少问题跟踪器中的无关内容很重要，这样我们才能专注于改进 libGDX 所需的工作。

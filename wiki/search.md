@@ -2,7 +2,7 @@
 title: "Wiki Search"
 
 layout: default_wiki # This page is a modified version of _layouts/wiki.html
-description: "Ask, and it shall be given to you; seek, and you shall find!"
+description: "求，就必得到；找，就必寻见！"
 sitemap: false
 ---
 
@@ -22,7 +22,7 @@ sitemap: false
                 <input id="wiki_ac-toc" name="accordion-toc" type="checkbox" />
                 <label for="wiki_ac-toc">{{ site.data.ui-text[site.locale].menu_label | default: "Toggle Menu" }}</label>
 
-                {% capture sidebar_include %}{% include_cached wiki_sidebar.md %}{% endcapture %}
+                {% capture sidebar_include %}{% include_cached wiki_index_zh.md %}{% endcapture %}
                 <div class="wiki_nav__items">
                   {{ sidebar_include | markdownify }}
                 </div>

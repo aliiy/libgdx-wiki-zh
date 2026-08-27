@@ -1,144 +1,144 @@
 ---
-title: "Importing & Running a Project"
-description: "There are a number of steps involved in importing your libGDX project into the IDE of your choice."
+title: "导入并运行项目"
+description: "将 libGDX 项目导入所选 IDE 需要完成几个步骤。"
 redirect_from:
   - /dev/import-and-running/
   - /dev/import_and_running/
 ---
 
-Next up, you need to import your project into your IDE.
+接下来需要将项目导入 IDE。
 
 {% include setup_flowchart.html current='2' %}
 
 
-# Importing the Project
-If you have just generated the project in gdx-liftoff, you may click the option "Open in IntelliJ Idea" to get started right away. Otherwise, continue with the following steps:
+# 导入项目
+如果刚刚在 gdx-liftoff 中生成项目，可以点击“Open in IntelliJ Idea”立即开始。否则，请继续以下步骤：
 
-1. In **IntelliJ IDEA or Android Studio**, you can choose to open the `build.gradle` file and select "Open as Project" to get started.
+1. 在 **IntelliJ IDEA 或 Android Studio** 中，可以打开 `build.gradle` 文件并选择“Open as Project”开始。
 
-   In **Eclipse**, choose `File -> Import... -> Gradle -> Existing Gradle Project` (make sure that your freshly generated project is not located inside of your workspace AND you don't have another project in your workspace with the same name).
+   在 **Eclipse** 中，选择 `File -> Import... -> Gradle -> Existing Gradle Project`（确保刚生成的项目不在工作区内，且工作区中没有同名项目）。
 
-   In **NetBeans** it is `File -> Open Project`.
+   在 **NetBeans** 中，选择 `File -> Open Project`。
 
-2. You may need to refresh the Gradle project after the initial import if some dependencies weren't downloaded yet.
+2. 初次导入后，如果部分依赖尚未下载，可能需要刷新 Gradle 项目。
 
-   In **IntelliJ IDEA/Android Studio**, the `Reimport all Gradle projects` button is a pair of circling arrows at the top left in the Gradle tool window, which can be opened with `View -> Tool Windows -> Gradle`.
+   在 **IntelliJ IDEA/Android Studio** 中，`Reimport all Gradle projects` 按钮是 Gradle 工具窗口左上角的循环箭头图标；可以通过 `View -> Tool Windows -> Gradle` 打开该窗口。
 
-   In **Eclipse** right-click on your project `Gradle -> Refresh Gradle Project`.
+   在 **Eclipse** 中右键点击项目，选择 `Gradle -> Refresh Gradle Project`。
 
 <br/>
 
-# Getting it Running
-If you want to execute your freshly imported project, you have to follow different steps, depending on your IDE and the platform you are targeting.
-## Desktop
-### In IDEA/Android Studio:
-1. Extend the Gradle tab on the right side of your window.<br/>
-2. Expand the tasks of your project and then select: `lwjgl3 -> Tasks -> application -> run`:<br/>
+# 运行项目
+如果要运行刚导入的项目，需要根据 IDE 和目标平台执行不同步骤。
+## 桌面平台
+### IDEA/Android Studio：
+1. 展开窗口右侧的 Gradle 选项卡。<br/>
+2. 展开项目任务，然后选择：`lwjgl3 -> Tasks -> application -> run`：<br/>
   ![](/assets/images/dev/idea/3.png)
 
-   **In Android Studio 4.2**, tasks are no longer shown by default. Go to `Settings -> Experimental` and check `Configure all Gradle tasks during Gradle Sync`. Then sync the project via `File -> Sync Project with Gradle Files`:<br/>
+    **在 Android Studio 4.2 中**，任务默认不再显示。进入 `Settings -> Experimental`，勾选 `Configure all Gradle tasks during Gradle Sync`，然后通过 `File -> Sync Project with Gradle Files` 同步项目：<br/>
   ![](/assets/images/dev/idea/4.png)
    {: .notice--primary}
 
-<b>Alternatively</b>, you can create a run configuration:
-1. Right-click your Lwjgl3Launcher class
-2. Select 'Run Lwjgl3Launcher.main()'. This should fail with missing assets, because we need to hook up the assets folder first:<br/>
+<b>或者</b>，可以创建运行配置：
+1. 右键点击 Lwjgl3Launcher 类。
+2. 选择“Run Lwjgl3Launcher.main()”。这应该会因缺少资源而失败，因为需要先连接 assets 文件夹：<br/>
   ![](/assets/images/dev/idea/5.png)
-3. Open up Run Configurations:<br/>
+3. 打开 Run Configurations：<br/>
   ![](/assets/images/dev/idea/0.png)
-4. Edit the Run Configuration that was just created by running the lwjgl3 project and set the working directory to point to your `assets` folder:<br/>
+4. 编辑刚才通过运行 lwjgl3 项目创建的 Run Configuration，将工作目录设置为 `assets` 文件夹：<br/>
   ![](/assets/images/dev/idea/1.png)
 
-    On **macOS**, LWJGL3 projects require one extra step: Either, in your Run Configuration, set the VM Options to `-XstartOnFirstThread`. Or, add the following experimental line to the start of your `main()` method: `Lwjgl3ApplicationConfiguration.useGlfwAsync();` Additional information on this can be found [here](/news/2021/07/devlog-7-lwjgl3#do-i-need-to-do-anything-else).
+    在 **macOS** 上，LWJGL3 项目还需要额外执行一步：在 Run Configuration 中将 VM Options 设置为 `-XstartOnFirstThread`，或者在 `main()` 方法开头添加以下实验性代码：`Lwjgl3ApplicationConfiguration.useGlfwAsync();` 更多信息请查看[这里](/news/2021/07/devlog-7-lwjgl3#do-i-need-to-do-anything-else)。
     {: .notice--warning}
-5. Run your application using the run button
+5. 使用运行按钮运行应用程序。
 
-### In Eclipse:
+### Eclipse：
 
-1. Double click the `projectname-lwjgl3 -> application -> run` task under `Gradle Tasks`.
+1. 双击 `Gradle Tasks` 下的 `projectname-lwjgl3 -> application -> run` 任务。
   ![](/assets/images/dev/eclipse/4.png)
 
-    If the window is not visible, show it under `Window -> Show View -> Other -> Gradle -> Gradle Tasks` 
+    如果看不到该窗口，请通过 `Window -> Show View -> Other -> Gradle -> Gradle Tasks` 显示它。
     {: .notice--warning}
 
-<b>Alternatively</b>, you can create a run configuration:
-1. Right-click your lwjgl3 project -> Run as -> Run Configurations...
-2. On the right side, select Java Application: <br/>
+<b>或者</b>，可以创建运行配置：
+1. 右键点击 lwjgl3 项目 -> Run as -> Run Configurations...
+2. 在右侧选择 Java Application：<br/>
   ![](/assets/images/dev/eclipse/3.png)
-3. At the top left, click the icon to create a new run configuration:
+3. 点击左上角图标创建新的运行配置：
   ![](/assets/images/dev/eclipse/0.png)
-4. As Main class select your `Lwjgl3Launcher` class
-5. After that, click on the Arguments tab
-6. At the bottom, under 'Working directory' select 'Other' -> Workspace...
+4. 在 Main class 中选择 `Lwjgl3Launcher` 类。
+5. 然后点击 Arguments 选项卡。
+6. 在底部的“Working directory”下选择“Other” -> Workspace...
   ![](/assets/images/dev/eclipse/1.png)
 
-   On **macOS**, LWJGL3 projects require one extra step: Either, in your Run Configuration, set the VM Options to `-XstartOnFirstThread`. Or, add the following experimental code snippet to your `main()` method: `Lwjgl3ApplicationConfiguration.useGlfwAsync();` Additional information on this can be found [here](/news/2021/07/devlog-7-lwjgl3#do-i-need-to-do-anything-else).
+   在 **macOS** 上，LWJGL3 项目还需要额外执行一步：在 Run Configuration 中将 VM Options 设置为 `-XstartOnFirstThread`，或者在 `main()` 方法中添加以下实验性代码：`Lwjgl3ApplicationConfiguration.useGlfwAsync();` 更多信息请查看[这里](/news/2021/07/devlog-7-lwjgl3#do-i-need-to-do-anything-else)。
    {: .notice--warning}
 
-7. Then select your asset folder located in `assets`
+7. 然后选择位于 `assets` 中的资源文件夹。
 
-### In NetBeans:
-Right-click the lwjgl3 project -> Run
-
-<br/>
-
-## Android
-- **IDEA/Android Studio:** Right-click AndroidLauncher -> Run AndroidLauncher
-- **Eclipse:** Right-click Android project -> Run As -> AndroidApplication
-- **NetBeans:** Right-click Android project -> Run As -> AndroidApplication
+### NetBeans：
+右键点击 lwjgl3 项目 -> Run
 
 <br/>
 
-## iOS
-### In IDEA/Android Studio
-1. Open Run/Debug Configurations
-2. Create a new run configuration for a RoboVM iOS application
+## Android 平台
+- **IDEA/Android Studio：**右键点击 AndroidLauncher -> Run AndroidLauncher
+- **Eclipse：**右键点击 Android 项目 -> Run As -> AndroidApplication
+- **NetBeans：**右键点击 Android 项目 -> Run As -> AndroidApplication
+
+<br/>
+
+## iOS 平台
+### IDEA/Android Studio
+1. 打开 Run/Debug Configurations。
+2. 为 RoboVM iOS 应用创建新的运行配置。
 
     ![](/assets/images/dev/idea/2.png)
 
-3. Select the provisioning profile and simulator/device target
+3. 选择 provisioning profile 和模拟器/设备目标。
 
-   Note: arm64 simulators are not working by default. Either use x86_64 or use the MetalANGLE RoboVM backend instead ("com.badlogicgames.gdx:gdx-backend-robovm-metalangle:$gdxVersion")
+   注意：arm64 模拟器默认无法工作。请使用 x86_64，或改用 MetalANGLE RoboVM 后端（"com.badlogicgames.gdx:gdx-backend-robovm-metalangle:$gdxVersion"）。
    {: .notice--warning}
-4. Run the created run configuration
+4. 运行创建的运行配置。
 
-For more information on using and configuring the RoboVM IntelliJ IDEA plugin please see the [documentation](https://mobivm.github.io).
+有关 RoboVM IntelliJ IDEA plugin 的使用和配置，请参阅[文档](https://mobivm.github.io)。
 
-### In Eclipse
-- Right-click the iOS RoboVM project > Run As > RoboVM runner of your choice
+### Eclipse
+- 右键点击 iOS RoboVM 项目 > Run As > 选择所需的 RoboVM runner
 
 ![](/assets/images/dev/eclipse/2.png)
 
-For more information on using and configuring the RoboVM IntelliJ IDEA plugin please see the [documentation](https://mobivm.github.io).
+有关 RoboVM IntelliJ IDEA plugin 的使用和配置，请参阅[文档](https://mobivm.github.io)。
 
 <br/>
 
-## HTML
-HTML is best suited to be run on command line. You are welcome to manually setup GWT in the IDE of your choice if you are familiar with it, but the recommended way is to drop down to terminal or command prompt.
+## HTML 平台
+HTML 最适合通过命令行运行。如果熟悉 GWT，也可以在喜欢的 IDE 中手动设置；但推荐使用终端或命令提示符。
 
-The HTML target can be run in **Super Dev** mode, which allows you to recompile on the fly, and debug your application in browser.
+HTML 目标可以在 **Super Dev** 模式下运行，从而即时重新编译，并在浏览器中调试应用程序。
 
-To do so, open up your favourite shell or terminal, change directory to the project directory and invoke the respective gradle task:
+为此，请打开喜欢的 shell 或终端，切换到项目目录，然后调用相应的 gradle 任务：
 
 ```
 ./gradlew html:superDev
 ```
 
-**On Unix:** If you get a permission denied error, set the execution flag on the gradlew file: `chmod +x gradlew`
+**在 Unix 上：**如果出现 permission denied 错误，请为 gradlew 文件设置执行标志：`chmod +x gradlew`
 {: .notice--primary}
 
-You should see lots of text wizzing by, and if all goes well you should see the following line at the end:
+你应该会看到大量文本滚过；如果一切顺利，末尾会出现以下内容：
 
 ![](/assets/images/dev/html/0.png)
 
-You can then go to [`http://localhost:8080/index.html`](http://localhost:8080/index.html), to see your application running, with a recompile button.
+随后可以访问 [`http://localhost:8080/index.html`](http://localhost:8080/index.html)，查看正在运行的应用程序，其中包含重新编译按钮。
 
-For further info on configuring and debugging with SuperDev check the [GWT documentation](http://www.gwtproject.org/articles/superdevmode.html).
+有关使用 SuperDev 进行配置和调试的更多信息，请查看 [GWT documentation](http://www.gwtproject.org/articles/superdevmode.html)。
 
 <br/>
 
-## Command Line
-All the targets can be run and deployed to via the command line interface.
+## 命令行
+所有目标都可以通过命令行界面运行和部署。
 
 **Desktop:**
 ```
@@ -150,7 +150,7 @@ All the targets can be run and deployed to via the command line interface.
 ./gradlew android:installDebug android:run
 ```
 
-The `ANDROID_HOME` environment variable needs to be pointing to a valid android SDK before you can do any command line wizardry for Android. On Windows, use: `set ANDROID_HOME=​C:/Path/To/Your/Android/Sdk`; on Linux and macOS: `export ANDROID_HOME=​/Path/To/Your/Android/Sdk`. Alternatively you can create a file called "local.properties" with the following content: `sdk.dir /Path/To/Your/Android/Sdk`.
+在通过命令行执行 Android 操作前，`ANDROID_HOME` 环境变量必须指向有效的 Android SDK。Windows 使用：`set ANDROID_HOME=​C:/Path/To/Your/Android/Sdk`；Linux 和 macOS 使用：`export ANDROID_HOME=​/Path/To/Your/Android/Sdk`。也可以创建名为“local.properties”的文件，内容如下：`sdk.dir /Path/To/Your/Android/Sdk`。
 
 **iOS:**
 ```
@@ -162,19 +162,19 @@ The `ANDROID_HOME` environment variable needs to be pointing to a valid android 
 ./gradlew html:superDev
 ```
 
-Then go to [`http://localhost:8080/index.html`](http://localhost:8080/index.html).
+然后访问 [`http://localhost:8080/index.html`](http://localhost:8080/index.html)。
 
-### Gradle tasks are failing?
-If whenever you invoke Gradle, the build or refresh fails to get more information, run the same command again and add the `--debug` parameter to the command, e.g.:
+### Gradle 任务失败怎么办？
+如果每次调用 Gradle 时构建或刷新都会失败，可以再次运行相同命令，并添加 `--debug` 参数，例如：
 
 ```
 ./gradlew lwjgl3:run --debug
 ```
 
-This will provide you with a stacktrace and give you a better idea of why gradle is failing.
+这样会提供 stacktrace，帮助你更好地了解 Gradle 失败的原因。
 
 
 <br/>
 
-# What to do next?
-Now that you're done with the set-up, you can get to do some real coding. Take a look at our post [A Simple Game](/wiki/start/a-simple-game) for a step-by-step guide.
+# 接下来做什么？
+完成设置后，就可以开始真正编写代码了。请阅读[一个简单的游戏](/wiki/start/a-simple-game)，按照步骤完成第一个游戏。

@@ -10,9 +10,8 @@ module LibGDXFetchVersions
     priority :highest
 
     def generate(site)
-        latestReleaseApiResponse = JSON.load(URI.open('https://api.github.com/repos/libgdx/libgdx/releases/latest'))
         site.data['versions'] = Hash.new
-        site.data['versions']['libgdxRelease'] = latestReleaseApiResponse['name']
+        site.data['versions']['libgdxRelease'] = site.data.dig('versions', 'libgdxRelease') || '1.13.1'
     end
 
   end

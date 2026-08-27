@@ -1,9 +1,9 @@
 ---
-title: Logging
+title: 日志记录
 ---
-The `Application` interface provides simple logging facilities that give granular control over which messages should be logged.
+`Application` 接口提供简单的日志功能，可以细粒度地控制要记录哪些消息。
 
-A message can be a normal **info message**, an **error message** with an optional exception or a **debug message**:
+消息可以是普通的**信息消息**、带可选异常的**错误消息**或**调试消息**：
 
 ```java
 Gdx.app.log("MyTag", "my informative message");
@@ -11,17 +11,17 @@ Gdx.app.error("MyTag", "my error message", exception);
 Gdx.app.debug("MyTag", "my debug message");
 ```
 
-On desktop, the messages are logged to the console; on Android to LogCat; and on GWT they are logged either to the browser console or to a `TextArea` provided in the `GwtApplicationConfiguration`.
+在桌面端，消息会记录到控制台；在 Android 上记录到 LogCat；在 GWT 上则记录到浏览器控制台，或记录到 `GwtApplicationConfiguration` 提供的 `TextArea`。
 
-Logging can be limited to a specific logging level:
+可以将日志限制为特定级别：
 
 ```java
 Gdx.app.setLogLevel(logLevel);
 ```
 
-where `logLevel` can be one of the following values:
+其中 `logLevel` 可以是以下值之一：
 
-  * `Application.LOG_DEBUG`: logs all messages.
-  * `Application.LOG_INFO`: logs error and normal messages.
-  * `Application.LOG_ERROR`: logs only error messages.
-  * `Application.LOG_NONE`: mutes all logging.
+  * `Application.LOG_DEBUG`：记录所有消息。
+  * `Application.LOG_INFO`：记录错误消息和普通消息。
+  * `Application.LOG_ERROR`：仅记录错误消息。
+  * `Application.LOG_NONE`：禁用所有日志。

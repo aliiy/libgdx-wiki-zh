@@ -1,15 +1,15 @@
 ---
-title: Collections
+title: 集合
 ---
-# Lists
+# 列表
 
 ## [Array](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/Array.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/utils/Array.java)
 
-A resizable, ordered or unordered array of objects. It often replaces ArrayList. It provides direct access to the backing array, which can be of a specific type rather than just Object[]. It can also be unordered, acting like a [bag/multiset](https://en.wikipedia.org/wiki/Set_%28computer_science%29#Multiset). In this case, a memory copy is avoided when removing elements (the last element is moved to the removed element's position).
+一种可调整大小、有序或无序的对象数组，通常用来替代 ArrayList。它可以直接访问底层数组，而且底层数组可以是特定类型，而不仅是 Object[]。它也可以是无序的，表现得像一个[包/多重集](https://en.wikipedia.org/wiki/Set_%28computer_science%29#Multiset)。此时删除元素无需复制内存（最后一个元素会移动到被删除元素的位置）。
 
-The iterator returned by `iterator()` is always the same instance, allowing the Array to be used with the enhanced for-each (`for( : )`) syntax without creating garbage. Note however that this differs from most iterable collections! It cannot be used in nested loops, else it will cause hard to find bugs.
+`iterator()` 返回的迭代器始终是同一个实例，因此 Array 可以在增强 for-each（`for( : )`）语法中使用而不会产生垃圾。但请注意，这与大多数可迭代集合不同！它不能用于嵌套循环，否则会产生难以查找的错误。
 
-## Primitive lists
+## 基本类型列表
 
 
   * [IntArray](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/IntArray.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/utils/IntArray.java)
@@ -20,14 +20,14 @@ The iterator returned by `iterator()` is always the same instance, allowing the 
   * [LongArray](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/LongArray.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/utils/LongArray.java)
   * [ByteArray](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/ByteArray.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/utils/ByteArray.java)
 
-These are identical to Array except they use primitive types instead of objects. This avoids boxing and unboxing.
+它们与 Array 相同，但使用基本类型而非对象，从而避免装箱和拆箱。
 
-## Specialized lists
+## 专用列表
 
 
 ### [SnapshotArray](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/SnapshotArray.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/utils/SnapshotArray.java)
 
-This is identical to Array except it guarantees that array entries provided by `begin()`, between indexes 0 and the size at the time `begin` was called, will not be modified until `end()` is called. This can be used to avoid concurrent modification. It requires iteration to be done a specific way:
+它与 Array 相同，但保证从 `begin()` 返回的数组条目（索引 0 到调用 `begin` 时的 size）在调用 `end()` 前不会被修改。这可用于避免并发修改。迭代必须采用特定方式：
 
 ```java
 SnapshotArray array = new SnapshotArray();
@@ -40,74 +40,74 @@ for (int i = 0, n = array.size; i < n; i++) {
 array.end();
 ```
 
-If any code inside `begin()` and `end()` would modify the SnapshotArray, the internal backing array is copied so that the array being iterated over is not modified. The extra backing array created when this occurs is kept so it can be reused if a concurrent modification occurs again in the future.
+如果 `begin()` 和 `end()` 之间的代码会修改 SnapshotArray，就会复制内部数组，从而避免正在迭代的数组被修改。发生这种情况时创建的额外备份数组会被保留，以便将来再次发生并发修改时复用。
 
 ### [DelayedRemovalArray](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/DelayedRemovalArray.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/utils/DelayedRemovalArray.java)
 
-This is identical to Array except any removals done after `begin()` is called are queued and only occur once `end()` is called. This can be used to avoid concurrent modification. Note that code using this type of list must be aware that removed items are not actually removed immediately. Because of this, often SnapshotArray is easier to use.
+它与 Array 相同，但在调用 `begin()` 后执行的删除会排队，直到调用 `end()` 才真正发生。这可用于避免并发修改。请注意，使用此列表的代码必须意识到，被删除的项目不会立即移除。因此，SnapshotArray 通常更易于使用。
 
 
 ### [PooledLinkedList](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/PooledLinkedList.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/utils/PooledLinkedList.java)
 
-A simple linked list that pools its nodes.
+一个会复用节点的简单链表。
 
 ### [SortedIntList](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/SortedIntList.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/utils/SortedIntList.java)
 
-A sorted double linked list which uses ints for indexing.
+一个使用 int 作为索引的有序双向链表。
 
-# Maps
+# 映射
 
 
 ## [ObjectMap](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/ObjectMap.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/utils/ObjectMap.java)
 
-An unordered map. This implementation is a cuckoo hash map using three hashes, random walking, and a small stash for problematic keys. Null keys are not allowed, null values are. No allocation is done except when growing the table size.
+一种无序映射。该实现是使用三个哈希、随机探查和小型暂存区处理问题键的布谷鸟哈希映射。不允许空键，但允许空值。除非扩大表大小，否则不会分配内存。
 
-Keys may only be in one of three locations in the backing array, allowing this map to perform very fast get, containsKey, and remove. Put can be a bit slower, depending on hash collisions. Load factors greater than 0.91 greatly increase the chances the map will have to rehash to the next higher POT backing array size.
+键只能位于备份数组的三个位置之一，因此该映射可以非常快速地执行 get、containsKey 和 remove。Put 的速度可能稍慢，具体取决于哈希冲突。负载因子大于 0.91 时，映射重新哈希到下一个更大的 POT 备份数组的概率会大幅增加。
 
-## Primitive maps
+## 基本类型映射
 
   * [IntMap](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/IntMap.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/utils/IntMap.java)
   * [LongMap](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/LongMap.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/utils/LongMap.java)
   * [ObjectIntMap](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/ObjectIntMap.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/utils/ObjectIntMap.java)
   * [ObjectFloatMap](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/ObjectFloatMap.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/utils/ObjectFloatMap.java)
 
-These maps are identical to ObjectMap except they use primitive types for the keys, except ObjectIntMapand ObjectFloatMap which use primitive values. This avoids boxing and unboxing.
+这些映射与 ObjectMap 相同，但键使用基本类型；ObjectIntMap 和 ObjectFloatMap 则使用基本类型值。这样可以避免装箱和拆箱。
 
-## Specialized maps
+## 专用映射
 
 ###  [OrderedMap](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/OrderedMap.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/utils/OrderedMap.java)
 
-This map is identical to ObjectMap except keys are also stored in an Array. This adds overhead to put and remove but provides ordered iteration. The key Array can be sorted directly to change the iteration order.
+该映射与 ObjectMap 相同，但还会将键存储在 Array 中。这会增加 put 和 remove 的开销，但能提供有序迭代。可以直接对键 Array 排序来改变迭代顺序。
 
 ### [IdentityMap](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/IdentityMap.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/utils/IdentityMap.java)
 
-This map is identical to ObjectMap except keys are compared using identity comparison (`==` instead of `.equals()`).
+该映射与 ObjectMap 相同，但键使用身份比较（`==` 而不是 `.equals()`）。
 
 ### [ArrayMap](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/ArrayMap.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/utils/ArrayMap.java)        
 
-This map uses arrays for both the keys and values. This means get does a comparison for each key in the map, but provides fast, ordered iteration and entries can be looked up by index.
+该映射同时使用数组存储键和值。这意味着 get 会比较映射中的每个键，但可以提供快速、有序的迭代，并可按索引查找条目。
 
-# Sets
+# 集合
 
 ## [ObjectSet](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/ObjectSet.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/utils/ObjectSet.java)
 
-Exactly like ObjectMap, except only keys are stored. No values are stored for each key.
+与 ObjectMap 完全相同，但只存储键，不为每个键存储值。
 
-## Primitive sets
+## 基本类型集合
 
   * [IntSet](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/IntSet.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/utils/IntSet.java)
 
-These maps are identical to ObjectSet except they use primitive types for the keys. This avoids boxing and unboxing.
+这些集合与 ObjectSet 相同，但键使用基本类型，从而避免装箱和拆箱。
 
-# Other collections
+# 其他集合
 
 ### [BinaryHeap](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/utils/BinaryHeap.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/utils/BinaryHeap.java)
 
-A [binary heap](https://en.wikipedia.org/wiki/Binary_heap). Can be a min-heap or a max-heap.
+一个[二叉堆](https://en.wikipedia.org/wiki/Binary_heap)，可以是最小堆或最大堆。
 
-# Benchmarks
-The benchmark below shows the difference between array and hashtable lookup (`.contains()` or `.get()`) using libGDX collection methods.
-If you have less than 1024 elements in a list, you shouldn't bother whether you're using arrays or hashtables (Maps or Sets). Mind the fact that hashtables have significantly slower iteration than arrays and cannot be ordered.
+# 基准测试
+下面的基准测试展示了使用 libGDX 集合方法进行数组和哈希表查找（`.contains()` 或 `.get()`）的差异。
+如果列表少于 1024 个元素，不必纠结使用数组还是哈希表（Map 或 Set）。请注意，哈希表的迭代速度明显慢于数组，并且无法排序。
 
 ```
                   array.size         GdxArray.contains()     GdxObjectSet.contains()

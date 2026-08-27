@@ -1,13 +1,13 @@
 ---
-title: Back and menu key catching
+title: 捕获返回键和菜单键
 ---
-When a user presses the back button on an Android device, this usually kills the currently running activity. Games might chose to display a confirmation dialog before letting the user exit. For that to work one needs to catch the back key so it is not passed on to the operating system:
+用户按下 Android 设备上的返回键时，通常会结束当前运行的 activity。游戏可能希望在允许用户退出前显示确认对话框。要实现这一点，需要捕获返回键，使其不会传递给操作系统：
 
 ```java
 Gdx.input.setCatchKey(Input.Keys.BACK, true);
 ```
 
-You will still receive key events if you have registered an [InputProcessor](/wiki/input/event-handling), but the operating system will not close your application.
+即使注册了 [InputProcessor](/wiki/input/event-handling)，仍然会收到按键事件，但操作系统不会关闭应用程序。
 
 ```   
 @Override
@@ -20,12 +20,12 @@ public boolean keyDown(int keycode) {
 }
 ```
 
-Note that the general paradigm in Android is to have the back key close the current activity. Deviating from this is usually viewed as bad practice.
+请注意，Android 的通用范式是使用返回键关闭当前 activity。偏离这一范式通常被视为不良实践。
 
-Another key that might need to be caught is the menu key. If uncaught, it will bring up the on-screen keyboard after a long press. Catching this key can be done as follows:
+另一个可能需要捕获的按键是菜单键。如果不捕获，长按后会弹出屏幕键盘。可以按如下方式捕获该键：
 
 ```java
 Gdx.input.setCatchKey(Input.Keys.MENU, true);
 ```
 
-There might be other keys to catch as well. You should catch all keys used to control your game to tell the operating system to prevent triggering behaviour outside your apps. This could affect media control keys on Android TV, and some general keys if you target HTML5 as well (see [HTML 5 specifics article](/wiki/html5-backend-and-gwt-specifics#preventing-keys-from-triggering-scrolling-and-other-browser-functions) for more information)
+可能还有其他需要捕获的按键。应该捕获所有用于控制游戏的按键，告知操作系统不要触发应用外部的行为。这可能影响 Android TV 上的媒体控制键，以及面向 HTML5 时的一些通用按键（更多信息请参阅 [HTML 5 特性文章](/wiki/html5-backend-and-gwt-specifics#preventing-keys-from-triggering-scrolling-and-other-browser-functions)）。

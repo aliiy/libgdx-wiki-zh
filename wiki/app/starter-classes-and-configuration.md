@@ -1,28 +1,28 @@
 ---
-title: Starter classes and configuration
+title: 启动类与配置
 ---
 * [Desktop (LWJGL3)](#desktop-lwjgl3)
 * [Android](#android)
-  - [Game Activity](#game-activity)
-  - [Game Fragment](#game-fragment)
-  - [Manifest configuration](#manifest-configuration)
-  - [Live Wallpapers](#live-wallpapers)
-  - [Screen Savers (aka Daydreams)](#screen-savers-aka-daydreams)
+  - [游戏 Activity](#game-activity)
+  - [游戏 Fragment](#game-fragment)
+  - [Manifest 配置](#manifest-configuration)
+  - [动态壁纸](#live-wallpapers)
+  - [屏幕保护程序（又称 Daydream）](#screen-savers-aka-daydreams)
 * [iOS/Robovm](#iosrobovm)
 * [HTML5/GWT](#html5gwt)
 
 
-For each target platform, a starter class has to be written. This class instantiates a back-end specific `Application` implementation and the `ApplicationListener` that implements the application logic. The starter classes are platform-dependent, so let's have a look at how to instantiate and configure these for each backend.
+需要为每个目标平台编写一个启动类。该类会实例化特定后端的 `Application` 实现，以及实现应用程序逻辑的 `ApplicationListener`。启动类依赖平台，下面来看看如何为各后端实例化和配置它们。
 
-This article assumes you have followed the instructions in [Project Setup](/wiki/start/project-generation) as well as [Importing & Running a Project](/wiki/start/import-and-running) and you therefore have already set up the project in your IDE.
+本文假设你已按照[项目设置](/wiki/start/project-generation)和[导入并运行项目](/wiki/start/import-and-running)中的说明操作，并已在 IDE 中设置好项目。
 {: .notice--info}
 
-# Desktop (LWJGL3)
+# 桌面端（LWJGL3）
 
-Since libGDX version 1.10.1, LWJGL3 has been the default desktop backend. You can find more information [here](/news/2021/07/devlog-7-lwjgl3).
+从 libGDX 1.10.1 起，LWJGL3 一直是默认桌面后端。更多信息请参阅[此处](/news/2021/07/devlog-7-lwjgl3)。
 {: .notice--info}
 
-Opening the `Lwjgl3Launcher.java` class in `my-gdx-game` shows the following:
+打开 `my-gdx-game` 中的 `Lwjgl3Launcher.java` 类，可以看到如下内容：
 
 ```java
 package com.me.mygdxgame;
@@ -53,17 +53,17 @@ public class Lwjgl3Launcher {
 }
 ```
 
-First an [Lwjgl3ApplicationConfiguration](https://github.com/libgdx/libgdx/blob/master/backends/gdx-backend-lwjgl3/src/com/badlogic/gdx/backends/lwjgl3/Lwjgl3ApplicationConfiguration.java) is instantiated. This class lets one specify various configuration settings, such as the initial screen resolution, whether to use OpenGL ES 2.0 or 3.0 and so on. Refer to the Javadocs of this class for more information.
+首先实例化 [Lwjgl3ApplicationConfiguration](https://github.com/libgdx/libgdx/blob/master/backends/gdx-backend-lwjgl3/src/com/badlogic/gdx/backends/lwjgl3/Lwjgl3ApplicationConfiguration.java)。该类可以指定各种配置设置，例如初始屏幕分辨率、使用 OpenGL ES 2.0 还是 3.0 等。更多信息请参阅该类的 Javadocs。
 
-Once the configuration object is set, an `Lwjgl3Application` is instantiated. The `MyGdxGame()` class is the ApplicationListener implementing the game logic.
+设置好配置对象后，会实例化 `Lwjgl3Application`。`MyGdxGame()` 类是实现游戏逻辑的 ApplicationListener。
 
-From there on a window is created and the ApplicationListener is invoked as described in [The Life-Cycle](/wiki/app/the-life-cycle)
+之后会创建窗口，并按照[生命周期](/wiki/app/the-life-cycle)中的说明调用 ApplicationListener。
 
 # Android
 
-## Game Activity
+## 游戏 Activity
 
-Android applications do not use a `main()` method as the entry-point, but instead require an Activity. Open the `AndroidLauncher.java` class in the `my-gdx-game-android` project:
+Android 应用程序不使用 `main()` 方法作为入口点，而是需要一个 Activity。打开 `my-gdx-game-android` 项目中的 `AndroidLauncher.java` 类：
 
 ```java
 package com.me.mygdxgame;
@@ -85,13 +85,13 @@ public class AndroidLauncher extends AndroidApplication {
 }
 ```
 
-The main entry-point method is the Activity's `onCreate()` method. Note that `AndroidLauncher` derives from `AndroidApplication`, which itself derives from `Activity`. As in the desktop starter class, a configuration instance is created ([AndroidApplicationConfiguration](https://github.com/libgdx/libgdx/tree/master/backends/gdx-backend-android/src/com/badlogic/gdx/backends/android/AndroidApplicationConfiguration.java)). Once configured, the `AndroidApplication.initialize()` method is called, passing in the `ApplicationListener` (`MyGdxGame`) as well as the configuration. Refer to the [AndroidApplicationConfiguration Javadocs](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/backends/android/AndroidApplicationConfiguration.html) for more information on what configuration settings are available.
+主要入口方法是 Activity 的 `onCreate()` 方法。请注意，`AndroidLauncher` 继承自 `AndroidApplication`，而后者继承自 `Activity`。与桌面启动类一样，会创建配置实例（[AndroidApplicationConfiguration](https://github.com/libgdx/libgdx/tree/master/backends/gdx-backend-android/src/com/badlogic/gdx/backends/android/AndroidApplicationConfiguration.java)）。配置完成后，调用 `AndroidApplication.initialize()` 方法，同时传入 `ApplicationListener`（`MyGdxGame`）和配置。可参阅 [AndroidApplicationConfiguration Javadocs](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/backends/android/AndroidApplicationConfiguration.html) 了解可用配置设置。
 
-Android applications can have multiple activities. libGDX games should usually only consist of a single activity. Different screens of the game are implemented within libGDX, not as separate activities. The reason for this is that creating a new `Activity` also implies creating a new OpenGL context, which is time consuming and also means that all graphical resources have to be reloaded.
+Android 应用程序可以有多个 activity。libGDX 游戏通常应只包含一个 activity。游戏的不同屏幕应在 libGDX 内实现，而不是使用独立 activity。原因是创建新的 `Activity` 也意味着创建新的 OpenGL 上下文，这会耗费时间，并且意味着必须重新加载所有图形资源。
 
-## Game Fragment
+## 游戏 Fragment
 
-A libGDX game can be hosted in an Android [Fragment](https://developer.android.com/guide/fragments) instead of using a complete Activity. This allows it to take up a portion of the screen in an Activity or be moved between layouts. To create a libGDX fragment, subclass `AndroidFragmentApplication` and implement the `onCreateView()` with the following initialization:
+libGDX 游戏可以托管在 Android [Fragment](https://developer.android.com/guide/fragments) 中，而不必使用完整的 Activity。这样可以让游戏只占据 Activity 的一部分屏幕，或在不同布局之间移动。要创建 libGDX fragment，请继承 `AndroidFragmentApplication`，并在 `onCreateView()` 中使用以下初始化代码：
 ```java
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -99,15 +99,15 @@ A libGDX game can be hosted in an Android [Fragment](https://developer.android.c
     }
 ```
 
-That code depends on some other changes to the -android project:
-1. [Add AndroidX Fragment Library to the -android project and its build path](https://developer.android.com/jetpack/androidx/releases/fragment) if you haven't already added it. This is needed in order to extend FragmentActivity later.
-2. Change the AndroidLauncher Activity to extend FragmentActivity, not AndroidApplication.
-3. Implement AndroidFragmentApplication.Callbacks on the AndroidLauncher Activity.
-4. Create a class that extends AndroidFragmentApplication which is the Fragment implementation for libGDX.
-5. Add the `initializeForView()` code in the Fragment's `onCreateView` method.
-6. Finally, replace the AndroidLauncher activity content with the libGDX Fragment.
+该代码还需要对 -android 项目进行以下修改：
+1. 如果尚未添加，请将 [AndroidX Fragment Library](https://developer.android.com/jetpack/androidx/releases/fragment) 添加到 -android 项目及其构建路径中，之后才能继承 FragmentActivity。
+2. 将 AndroidLauncher Activity 改为继承 FragmentActivity，而不是 AndroidApplication。
+3. 在 AndroidLauncher Activity 中实现 AndroidFragmentApplication.Callbacks。
+4. 创建一个继承 AndroidFragmentApplication 的类，作为 libGDX 的 Fragment 实现。
+5. 在 Fragment 的 `onCreateView` 方法中添加 `initializeForView()` 代码。
+6. 最后，将 AndroidLauncher activity 的内容替换为 libGDX Fragment。
 
-For example:
+例如：
 ```java
 // 2. Change AndroidLauncher activity to extend FragmentActivity, not AndroidApplication
 // 3. Implement AndroidFragmentApplication.Callbacks on the AndroidLauncher activity
@@ -139,8 +139,8 @@ public class AndroidLauncher extends FragmentActivity implements AndroidFragment
 }
 ```
 
-## Manifest configuration
-Besides the `AndroidApplicationConfiguration`, an Android application is also configured via the `AndroidManifest.xml` file, found in the root directory of the Android project. This might look something like this:
+## Manifest 配置
+除了 `AndroidApplicationConfiguration` 外，Android 应用程序还通过 Android 项目根目录中的 `AndroidManifest.xml` 文件进行配置。该文件可能如下所示：
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -172,15 +172,15 @@ Besides the `AndroidApplicationConfiguration`, an Android application is also co
 </manifest>
 ```
 
-#### Screen Orientation & Configuration Changes
-In addition to the targetSdkVersion, the `screenOrientation` and `configChanges` attributes of the activity element should always be set.
+#### 屏幕方向与配置变化
+除了 targetSdkVersion 外，还应始终设置 activity 元素的 `screenOrientation` 和 `configChanges` 属性。
 
-The `screenOrientation` attribute specifies a fixed orientation for the application. One may omit this if the application can work with both landscape and portrait mode.
+`screenOrientation` 属性指定应用程序的固定方向。如果应用程序同时支持横屏和竖屏，可以省略此属性。
 
-The `configChanges` attribute is *crucial* and should always have the values shown above. Omitting this attribute means that the application will be restarted every time a physical keyboard is slid out/in or if the orientation of the device changes. If the `screenOrientation` attribute is omitted, a libGDX application will receive calls to `ApplicationListener.resize()` to indicate the orientation change. API clients can then re-layout the application accordingly.
+`configChanges` 属性*非常重要*，应始终使用上面显示的值。省略此属性意味着每次滑出/收回实体键盘或设备方向发生变化时，应用程序都会重启。如果省略 `screenOrientation` 属性，libGDX 应用程序会收到 `ApplicationListener.resize()` 调用，以表示方向发生变化。API 使用者随后可以据此重新布局应用程序。
 
-#### Permissions
-If an application needs to be able to write to the external storage of a device (e.g. SD-card), needs internet access, uses the vibrator or wants to record audio, the following permissions need to be added to the `AndroidManifest.xml` file:
+#### 权限
+如果应用程序需要写入设备的外部存储（例如 SD 卡）、访问互联网、使用振动器或录制音频，则需要将以下权限添加到 `AndroidManifest.xml` 文件中：
 
 ```xml
 	<uses-permission android:name="android.permission.RECORD_AUDIO"/>
@@ -188,28 +188,27 @@ If an application needs to be able to write to the external storage of a device 
 	<uses-permission android:name="android.permission.VIBRATE"/>
 ```
 
-Users are generally suspicious of applications with many permissions, so choose these wisely.
+用户通常会对申请大量权限的应用程序保持警惕，因此请谨慎选择权限。
 
-For wake locking to work, `AndroidApplicationConfiguration.useWakeLock` needs to be set to true.
+要使唤醒锁生效，需要将 `AndroidApplicationConfiguration.useWakeLock` 设置为 true。
 
-If a game doesn't need accelerometer or compass access, it is advised to disable these by setting the
-`useAccelerometer` and `useCompass` fields of `AndroidApplicationConfiguration` to false.
+如果游戏不需要访问加速度计或指南针，建议将 `AndroidApplicationConfiguration` 的
+`useAccelerometer` 和 `useCompass` 字段设置为 false。
 
-If your game needs the gyroscope sensor, you have to set `useGyroscope` to true in `AndroidApplicationConfiguration` (It's disabled by default, to save energy).
+如果游戏需要陀螺仪传感器，必须在 `AndroidApplicationConfiguration` 中将 `useGyroscope` 设置为 true（默认禁用以节省电量）。
 
-Please refer to the [Android Developer's Guide](https://developer.android.com/guide) for more information on how to set other attributes like icons for your application.
+有关如何设置应用程序图标等其他属性的更多信息，请参阅 [Android Developer's Guide](https://developer.android.com/guide)。
 
-## Live Wallpapers
-A libGDX core application can also be used as an Android [Live Wallpaper](https://android-developers.googleblog.com/2010/02/live-wallpapers.html).
-The project setup is very similar to an Android game, but `AndroidLiveWallpaperService` is used in
-place of `AndroidApplication`. Live Wallpapers are Android [Services](https://developer.android.com/guide/components/services),
-not Activities.
+## 动态壁纸
+libGDX 核心应用程序也可以用作 Android [动态壁纸](https://android-developers.googleblog.com/2010/02/live-wallpapers.html)。
+项目设置与 Android 游戏非常相似，但使用 `AndroidLiveWallpaperService` 代替
+`AndroidApplication`。动态壁纸是 Android [服务](https://developer.android.com/guide/components/services)，
+而不是 Activity。
 
-**Note: Due to synchronization issues, you cannot combine games and live wallpapers in the same app. However, Live
-Wallpapers and Screen Savers can safely coexist in the same app.**
+**注意：由于同步问题，不能在同一个应用中同时使用游戏和动态壁纸。不过，动态壁纸和屏幕保护程序可以在同一个应用中安全共存。**
 
-First, extend `AndroidLiveWallpaperService` and override `onCreateApplication()` (instead of `onCreate()`
-like you would do with a game `Activity`):
+首先，继承 `AndroidLiveWallpaperService` 并重写 `onCreateApplication()`（而不是像游戏
+`Activity` 那样重写 `onCreate()`）：
 
 ```java
 public class MyLiveWallpaper extends AndroidLiveWallpaperService {
@@ -222,10 +221,9 @@ public class MyLiveWallpaper extends AndroidLiveWallpaperService {
 }
 ```
 
-You can optionally subscribe to Live Wallpaper-specific events by implementing `AndroidWallpaperListener` with your
-`ApplicationListener` class. `AndroidWallpaperListener` is not available from the `core` module, so you can either
-follow the strategy outlined in [Interfacing With Platform-Specific Code](/wiki/app/interfacing-with-platform-specific-code), or you can manage it just from the `android`
-module by subclassing your `ApplicationListener` like this:
+你可以让 `ApplicationListener` 类实现 `AndroidWallpaperListener`，以选择性地订阅动态壁纸专属事件。
+`AndroidWallpaperListener` 不在 `core` 模块中提供，因此可以采用[与平台特定代码交互](/wiki/app/interfacing-with-platform-specific-code)中介绍的策略，
+也可以仅在 `android` 模块中继承自己的 `ApplicationListener`，如下所示：
 
 ```java
 public class MyLiveWallpaper extends AndroidLiveWallpaperService {
@@ -257,10 +255,7 @@ public class MyLiveWallpaper extends AndroidLiveWallpaperService {
 }
 ```
 
-Since libGDX 1.9.12, you can also report the dominant colors of the wallpaper to
-the OS. Starting with Android 8.1, this is used by some Android launchers and lock screens for styling, such as changing
-the text color of the clock. You can create a method like this to report the colors, and access it from the core module
-using the strategy from [Interfacing With Platform-Specific Code](/wiki/app/interfacing-with-platform-specific-code):
+从 libGDX 1.9.12 起，还可以向操作系统报告壁纸的主色。Android 8.1 起，部分 Android 启动器和锁屏会使用这些颜色进行样式设置，例如更改时钟的文字颜色。可以创建如下方法来报告颜色，并按照[与平台特定代码交互](/wiki/app/interfacing-with-platform-specific-code)中的策略从 core 模块访问它：
 
 ```java
 public void notifyColorsChanged (Color primaryColor, Color secondaryColor, Color tertiaryColor) {
@@ -271,9 +266,7 @@ public void notifyColorsChanged (Color primaryColor, Color secondaryColor, Color
 }
 ```
 
-In additional to the service class, you must also create an `xml` file in the Android `res/xml` directory to define
-some Live Wallpaper properties: its thumbnail and description shown in the wallpaper picker, and an optional settings
-Activity. Let's call this file `livewallpaper.xml`.
+除了服务类，还必须在 Android `res/xml` 目录中创建一个 `xml` 文件，用于定义动态壁纸的部分属性：壁纸选择器中显示的缩略图和描述，以及可选的设置 Activity。这里将该文件命名为 `livewallpaper.xml`。
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -284,10 +277,7 @@ Activity. Let's call this file `livewallpaper.xml`.
     android:settingsActivity="com.mypackage.MyLiveWallpaperSettingsActivity"/>
 ```
 
-Finally, you'll need to add things to your `AndroidManifest.xml` files. Here's an example for a Live Wallpaper with a simple
-settings Activity. The key elements here are the `uses-feature` and `service` blocks. The label and icon set on the
-service appear in the Android application settings. The settings Activity and the Live Wallpaper service must both be set
-with `exported` true so they can be accessed by the Live Wallpaper picker.
+最后，还需要向 `AndroidManifest.xml` 文件中添加内容。下面是带有简单设置 Activity 的动态壁纸示例。这里的关键元素是 `uses-feature` 和 `service` 块。服务上设置的标签和图标会显示在 Android 应用设置中。设置 Activity 和动态壁纸服务都必须将 `exported` 设置为 true，才能由动态壁纸选择器访问。
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -313,20 +303,14 @@ with `exported` true so they can be accessed by the Live Wallpaper picker.
 </manifest>
 ```
 
-Live Wallpapers have some limitations concerning touch input. In general only one pointer will be reported. If you want
-full multi-touch events you can set the `AndroidApplicationConfiguration.getTouchEventsForLiveWallpaper` field to true.
+动态壁纸的触摸输入存在一些限制。通常只会报告一个指针。如果需要完整的多点触控事件，可以将 `AndroidApplicationConfiguration.getTouchEventsForLiveWallpaper` 字段设置为 true。
 
-## Screen Savers (aka Daydreams)
-A libGDX core application can also be used as an Android [Screen Saver](https://developer.android.com/about/versions/android-4.2#Daydream).
-Screen Savers were once known as Daydreams, so many of the related classes have the term "Daydream" in their names. Screen
-Savers have no relation to Google's Daydream VR platform.
+## 屏幕保护程序（又称 Daydream）
+libGDX 核心应用程序也可以用作 Android [屏幕保护程序](https://developer.android.com/about/versions/android-4.2#Daydream)。屏幕保护程序曾被称为 Daydream，因此许多相关类的名称中都包含“Daydream”一词。屏幕保护程序与 Google 的 Daydream VR 平台无关。
 
-The project setup is very similar to an Android game, but `AndroidDaydream` is used in  place of `AndroidApplication`.
-Screen Savers are Android [Services](https://developer.android.com/guide/components/services), not Activities.
+项目设置与 Android 游戏非常相似，但使用 `AndroidDaydream` 代替 `AndroidApplication`。屏幕保护程序是 Android [服务](https://developer.android.com/guide/components/services)，而不是 Activity。
 
-First, extend `AndroidDaydream` and override `onAttachedToWindow()` (instead of `onCreate()` like you
-would do with a game `Activity`). It must call through to `super`. You can also call `setInteractive()` from this method
-to enable/disable touch. A non-interactive Screen Saver immediately closes when the screen is touched.
+首先，继承 `AndroidDaydream` 并重写 `onAttachedToWindow()`（而不是像游戏 `Activity` 那样重写 `onCreate()`）。该方法必须调用 `super`。还可以在此方法中调用 `setInteractive()` 来启用或禁用触摸。非交互式屏幕保护程序在屏幕被触摸时会立即关闭。
 
 ```java
 public class MyScreenSaver extends AndroidDaydream {
@@ -341,8 +325,7 @@ public class MyScreenSaver extends AndroidDaydream {
 }
 ```
 
-In additional to the service class, you must also create an `xml` file in the Android `res/xml` directory to define
-the only Screensaver setting: an optional settings Activity. Let's call this file `screensaver.xml`.
+除了服务类，还必须在 Android `res/xml` 目录中创建一个 `xml` 文件，用于定义屏幕保护程序唯一的设置：可选的设置 Activity。这里将该文件命名为 `screensaver.xml`。
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -350,9 +333,7 @@ the only Screensaver setting: an optional settings Activity. Let's call this fil
     android:settingsActivity="com.badlogic.gdx.tests.android/.MyScreenSaverSettingsActivity" />
 ```
 
-Finally, you'll need to add things to your `AndroidManifest.xml` files. Here's an example for a Screen Saver with a simple
-settings Activity. Note that a settings Activity is optional. The key element is the `service` block. The settings Activity
-and the Screen Saver service must both be set with `exported` true so they can be accessed by the Screen Saver picker.
+最后，还需要向 `AndroidManifest.xml` 文件中添加内容。下面是带有简单设置 Activity 的屏幕保护程序示例。注意，设置 Activity 是可选的。关键元素是 `service` 块。设置 Activity 和屏幕保护程序服务都必须将 `exported` 设置为 true，才能由屏幕保护程序选择器访问。
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -379,7 +360,7 @@ and the Screen Saver service must both be set with `exported` true so they can b
 
 # iOS/Robovm
 
-Opening the `IOSLauncher.java` class in `my-gdx-game` shows the following:
+打开 `my-gdx-game` 中的 `IOSLauncher.java` 类，可以看到如下内容：
 
 ```java
 package com.me.mygdxgame.ios;
@@ -406,10 +387,10 @@ public class IOSLauncher extends IOSApplication.Delegate {
 }
 ```
 
-See [this medium article](https://medium.com/@bschulte19e/deploying-your-libgdx-game-to-ios-in-2020-4ddce8fff26c) for more details on deploying to iOS devices.
+有关部署到 iOS 设备的更多细节，请参阅[这篇 Medium 文章](https://medium.com/@bschulte19e/deploying-your-libgdx-game-to-ios-in-2020-4ddce8fff26c)。
 
 # HTML5/GWT
-The main entry-point for an HTML5/GWT application is a `GwtApplication`. Open `GwtLauncher.java` in the my-gdx-game-html5 project:
+HTML5/GWT 应用程序的主要入口点是 `GwtApplication`。打开 my-gdx-game-html5 项目中的 `GwtLauncher.java`：
 
 ```java
 package com.me.mygdxgame.gwt;
@@ -435,12 +416,12 @@ public class GwtLauncher extends GwtApplication {
 }
 ```
 
-The main entry-point is composed of two methods, `GwtApplication.getConfig()` and `GwtApplication.createApplicationListener()`. The former has to return a [GwtApplicationConfiguration](https://github.com/libgdx/libgdx/tree/master/backends/gdx-backends-gwt/src/com/badlogic/gdx/backends/gwt/GwtApplicationConfiguration.java) instance, which specifies various configuration settings for the HTML5 application. The `GwtApplication.createApplicatonListener()` method returns the `ApplicationListener` to run.
+主要入口由两个方法组成：`GwtApplication.getConfig()` 和 `GwtApplication.createApplicationListener()`。前者必须返回 [GwtApplicationConfiguration](https://github.com/libgdx/libgdx/tree/master/backends/gdx-backends-gwt/src/com/badlogic/gdx/backends/gwt/GwtApplicationConfiguration.java) 实例，用于指定 HTML5 应用程序的各种配置。`GwtApplication.createApplicatonListener()` 方法返回要运行的 `ApplicationListener`。
 
-### Module Files
-GWT needs the actual Java code for each jar/project that is referenced. Additionally, each of these jars/projects needs to have one module definition file, having the suffix gwt.xml.
+### 模块文件
+GWT 需要每个被引用 jar/项目的实际 Java 代码。此外，每个此类 jar/项目都需要一个模块定义文件，文件后缀为 gwt.xml。
 
-In the example project setup, the module file of the html5 project looks like this:
+在示例项目设置中，html5 项目的模块文件如下所示：
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -460,17 +441,17 @@ In the example project setup, the module file of the html5 project looks like th
 </module>
 ```
 
-This specifies two other modules to inherit from (gdx-backends-gwt and the core project) as well as the entry-point class (`GwtLauncher` above) and a path relative to the html5 project's root directory, pointing to the assets directory.
+该文件指定了要继承的两个其他模块（gdx-backends-gwt 和 core 项目）、入口类（上面的 `GwtLauncher`），以及一个相对于 html5 项目根目录、指向 assets 目录的路径。
 
-Both the gdx-backend-gwt jar and the core project have a similar module file, specifying other dependencies. *You cannot use jars/projects which do not contain a module file and source!*
+gdx-backend-gwt jar 和 core 项目也有类似的模块文件，用于指定其他依赖。*不能使用不包含模块文件和源代码的 jar/项目！*
 
-For more information on modules and dependencies refer to the [GWT Developer Guide](https://developers.google.com/web-toolkit/doc/1.6/DevGuide).
+有关模块和依赖的更多信息，请参阅 [GWT Developer Guide](https://developers.google.com/web-toolkit/doc/1.6/DevGuide)。
 
-### GWT Specifics
+### GWT 特性
 
-The HTML backend has a number of caveats. Be sure to check out the  comprehensive [HTML Backend Guide](/wiki/html5-backend-and-gwt-specifics#differences-between-gwt-and-desktop-java)!
+HTML 后端存在一些注意事项。请务必查看完整的 [HTML Backend Guide](/wiki/html5-backend-and-gwt-specifics#differences-between-gwt-and-desktop-java)！
 {: .notice--warning}
 
-GWT does not support Java **reflection** for various reasons. libGDX has an internal emulation layer that will generate reflection information for a select few internal classes. This means that if you use the [Json serialization](/wiki/utils/reading-and-writing-json) capabilities of libGDX, you'll run into issues. You can fix this by specifying for which packages and classes reflection information should be generated for. To do so, take a look at the [Reflection Guide](/wiki/utils/reflection#gwt).
+由于各种原因，GWT 不支持 Java **反射**。libGDX 内部有一个仿真层，会为少数内部类生成反射信息。这意味着如果使用 libGDX 的 [Json 序列化](/wiki/utils/reading-and-writing-json)功能，就会遇到问题。可以指定应为哪些包和类生成反射信息来解决。具体请查看[反射指南](/wiki/utils/reflection#gwt)。
 
-A libGDX HTML5 application preloads all assets found in the `gdx.assetpath`. During this loading process, a **loading screen** is displayed which is implemented via GWT widget. If you want to customize this loading screen, you can simply overwrite the `GwtApplication.getPreloaderCallback()` method (in `GwtLauncher` in the above example). An example can be found [here](/wiki/html5-backend-and-gwt-specifics#changing-the-load-screen-progress-bar).
+libGDX HTML5 应用程序会预加载 `gdx.assetpath` 中的所有资源。加载过程中会显示一个通过 GWT widget 实现的**加载屏幕**。如果要自定义该加载屏幕，只需重写 `GwtApplication.getPreloaderCallback()` 方法（在上例的 `GwtLauncher` 中）。示例请参阅[此处](/wiki/html5-backend-and-gwt-specifics#changing-the-load-screen-progress-bar)。

@@ -1,23 +1,23 @@
 ---
 title: Scene2d.ui
 ---
-## Overview
+## 概述
 
-scene2d is libGDX's 2D scene graph. At its core, it provides basic 2D scene graph functionality: actors, groups, drawing, events, and actions. This is a lot of utility that applications can leverage, but it is reasonably low level. For games this is fine because most actors are application specific. For building UIs, the scene2d.ui package provides common UI widgets and other classes built on top of scene2d.
+scene2d 是 libGDX 的 2D 场景图。其核心提供基本的 2D 场景图功能：Actor、Group、绘制、事件和 Action。这些功能足以供应用程序使用，但抽象层级相对较低。对于游戏这通常没有问题，因为大多数 Actor 都是应用特定的。构建 UI 时，scene2d.ui 包在 scene2d 之上提供了常见的 UI 控件和其他类。
 
-It is highly recommended to read or least skim the [scene2d documentation](/wiki/graphics/2d/scene2d/scene2d) before continuing.
+继续之前，强烈建议阅读或至少浏览一下 [scene2d 文档](/wiki/graphics/2d/scene2d/scene2d)。
 
-Check out [https://libGDXinfo.wordpress.com](https://libgdxinfo.wordpress.com/) for examples showcasing Scene2d actors, scenes, Stages Images etc..
+展示 Scene2d Actor、场景、Stage、Image 等内容的示例请参阅 [https://libGDXinfo.wordpress.com](https://libgdxinfo.wordpress.com/)。
 
- * [Widget and WidgetGroup](#widget-and-widgetgroup)
- * [Layout](#layout)
- * [Stage setup](#stage-setup)
- * [Skin](#skin)
- * [Drawable](#drawable)
- * [ChangeEvents](#changeevents)
- * [Clipping](#clipping)
- * [Rotation and scale](#rotation-and-scale)
- * [Layout widgets](#layout-widgets)
+  * [Widget 与 WidgetGroup](#widget-and-widgetgroup)
+  * [布局](#layout)
+  * [Stage 设置](#stage-setup)
+  * [Skin](#skin)
+  * [Drawable](#drawable)
+  * [ChangeEvent](#changeevents)
+  * [裁剪](#clipping)
+  * [旋转与缩放](#rotation-and-scale)
+  * [布局控件](#layout-widgets)
    * [Table](#table)
    * [Container](#container)
    * [Stack](#stack)
@@ -26,7 +26,7 @@ Check out [https://libGDXinfo.wordpress.com](https://libgdxinfo.wordpress.com/) 
    * [Tree](#tree)
    * [VerticalGroup](#verticalgroup)
    * [HorizontalGroup](#horizontalgroup)
- * [Widgets](#widgets)
+  * [控件](#widgets)
    * [Label](#label)
    * [Image](#image)
    * [Button](#button)
@@ -43,32 +43,32 @@ Check out [https://libGDXinfo.wordpress.com](https://libgdxinfo.wordpress.com/) 
    * [Window](#window)
    * [Touchpad](#touchpad)
    * [Dialog](#dialog)
- * [Widgets without scene2d.ui](#widgets-without-scene2dui)
- * [Drag and Drop](#drag-and-drop-draganddrop-class)
- * [Usage without touch or mouse](#usage-without-touch-or-mouse)
- * [Examples](#examples)
+  * [不使用 scene2d.ui 的控件](#widgets-without-scene2dui)
+  * [拖放](#drag-and-drop-draganddrop-class)
+  * [不使用触摸或鼠标](#usage-without-touch-or-mouse)
+  * [示例](#examples)
 
-# Widget and WidgetGroup
+# Widget 与 WidgetGroup
 
-UIs often have many UI widgets to be sized and positioned on the screen. Doing this manually is time consuming, makes code difficult to read and maintain, and doesn't easily adapt to different screen sizes. The Layout interface defines methods that allow for more intelligent layout for actors.
+UI 通常包含许多需要设置尺寸和位置的控件。手动完成这项工作耗时、难以阅读和维护，也不易适应不同屏幕尺寸。Layout 接口定义了用于更智能地布局 Actor 的方法。
 
-The Widget and WidgetGroup classes extend Actor and Group respectively, and they both implement Layout. These two classes are the basis for actors that will participate in layout. UI widgets should extend WidgetGroup if they have child actors, otherwise they should extend Widget.
+Widget 和 WidgetGroup 类分别继承 Actor 和 Group，并且都实现 Layout。它们是参与布局的 Actor 的基础类。含有子 Actor 的 UI 控件应继承 WidgetGroup，否则应继承 Widget。
 
-## Layout
+## 布局
 
-UI widgets do not set their own size and position. Instead, the parent widget sets the size and position of each child. Widgets provide a minimum, preferred, and maximum size that the parent can use as hints. Some parent widgets, such as Table and Container, can be given constraints on how to size and position the children. To give a widget a specific size in a layout, the widget's minimum, preferred, and maximum size are left alone and size constraints are set in the parent.
+UI 控件不会设置自身的尺寸和位置，而是由父控件设置每个子控件的尺寸和位置。控件会提供最小、首选和最大尺寸，父控件可以将其作为参考。一些父控件（例如 Table 和 Container）可以设置子控件尺寸和位置的约束。要在布局中指定控件尺寸，应保持控件的最小、首选和最大尺寸不变，而在父控件中设置尺寸约束。
 
-Before each widget is drawn, it first calls `validate`. If the widget's layout is invalid, its `layout` method will be called so that the widget (and any child widgets) can cache information needed for drawing at their current size. The `invalidate` and `invalidateHierarchy` methods both invalidate the layout for a widget.
+每个控件绘制前都会先调用 `validate`。如果控件布局无效，将调用其 `layout` 方法，使控件（及其子控件）能够缓存当前尺寸下绘制所需的信息。`invalidate` 和 `invalidateHierarchy` 方法都会使控件布局失效。
 
-`invalidate` should be called when the widget's state has changed and the cached layout information needs to be recalculated, but the widget's minimum, preferred, and maximum size are unaffected. This means that the widget needs to be laid out again, but the widget's desired size hasn't changed so the parent is unaffected.
+当控件状态改变、需要重新计算缓存的布局信息，但控件的最小、首选和最大尺寸未受影响时，应调用 `invalidate`。这表示控件需要重新布局，但期望尺寸没有改变，因此不会影响父控件。
 
-`invalidateHierarchy` should be called when the widget's state has changed that affects the widget's minimum, preferred, or maximum size. This means that the parent's layout may be affected by the widget's new desired size. `invalidateHierarchy` calls `invalidate` on the widget and every parent up to the root.
+当控件状态改变并影响其最小、首选或最大尺寸时，应调用 `invalidateHierarchy`。这表示父控件的布局可能会受到控件新期望尺寸的影响。`invalidateHierarchy` 会对控件及其一路到根节点的所有父控件调用 `invalidate`。
 
-## Stage setup
+## Stage 设置
 
-Most scene2d.ui layouts will use a [table](/wiki/graphics/2d/scene2d/table) that is the size of the stage. All other widgets and nested tables are placed in this table.
+大多数 scene2d.ui 布局都会使用一个尺寸等于 Stage 的 [table](/wiki/graphics/2d/scene2d/table)，所有其他控件和嵌套 Table 都放置在该 Table 中。
 
-Here is an example of the most basic scene2d.ui application with a root table:
+下面是使用根 Table 的最基本 scene2d.ui 应用示例：
 
 ```java
 private Stage stage;
@@ -102,17 +102,17 @@ public void dispose() {
 }
 ```
 
-Note that `setFillParent` is used on the root table, causing it to be sized to its parent (in this case, the stage) when validated. Normally a widget's size is set by its parent and `setFillParent` must not be used. `setFillParent` is for convenience only when the widget's parent does not set the size of its children (such as the stage).
+注意，根 Table 使用了 `setFillParent`，因此验证时会将其尺寸设置为父对象的尺寸（本例中为 Stage）。通常控件尺寸由父控件设置，不应使用 `setFillParent`。只有当控件的父对象不会设置子控件尺寸（例如 Stage）时，`setFillParent` 才是一个便利功能。
 
-Tables automatically adapt to various screen resolutions, so this sets up a stage that uses pixel coordinates. See [stage viewport setup](/wiki/graphics/2d/scene2d/scene2d#viewport) for setting up a stage that scales.
+Table 会自动适应不同屏幕分辨率，因此上述代码设置的是使用像素坐标的 Stage。关于设置可缩放 Stage，请参阅 [Stage viewport 设置](/wiki/graphics/2d/scene2d/scene2d#viewport)。
 
 ## Skin
 
-Most UI widgets are made up of a few configurable resources: images, fonts, colors, etc. All the resources needed to render a widget is called a "style". Each widget defines its own style class (usually a static member class) and has constructors for setting the initial style and a `setStyle` method for changing the style later.
+大多数 UI 控件由一些可配置资源组成：图像、字体、颜色等。绘制控件所需的全部资源称为“style”。每个控件都有自己的 style 类（通常是静态成员类），并提供用于设置初始 style 的构造函数，以及之后更改 style 的 `setStyle` 方法。
 
-Skin files from the [libGDX tests](https://github.com/libgdx/libgdx/tree/master/tests/gdx-tests-android/assets/data) can be used as a starting point. You will need: uiskin.png, uiskin.atlas, uiskin.json, and default.fnt. This enables you to quickly get started using scene2d.ui and replace the skin assets later.
+可以将 [libGDX 测试](https://github.com/libgdx/libgdx/tree/master/tests/gdx-tests-android/assets/data)中的 Skin 文件作为起点。需要使用：uiskin.png、uiskin.atlas、uiskin.json 和 default.fnt。这样可以快速开始使用 scene2d.ui，之后再替换 Skin 资源。
 
-Styles can be configured using JSON or with code:
+可以使用 JSON 或代码配置 style：
 
 ```java
 TextureRegion upRegion = ...
@@ -131,25 +131,25 @@ TextButton button2 = new TextButton("Button 2", style);
 table.add(button2);
 ```
 
-Note the same style can be used for multiple widgets. Also note that all images needed by UI widgets are actually implementations of the Drawable interface.
+注意，同一个 style 可以用于多个控件。还要注意，UI 控件所需的所有图像实际上都是 Drawable 接口的实现。
 
-The Skin class can be used to more conveniently define the styles and other resources for UI widgets. See the [Skin documentation](/wiki/graphics/2d/scene2d/skin) for more information. It is very strongly recommended to use Skin for convenience, even if not defining styles via JSON.
+Skin 类可以更方便地定义 UI 控件的样式和其他资源。更多信息请参阅 [Skin 文档](/wiki/graphics/2d/scene2d/skin)。即使不通过 JSON 定义样式，也强烈建议使用 Skin 以获得便利。
 
 ## Drawable
 
-The Drawable interface provides a draw method that takes a SpriteBatch, position, and size. The implementation can draw anything it wants: texture regions, sprites, animations, etc. Drawables are used extensively for all images that make up widgets. Implementations are provided to draw texture regions, sprites, nine patches, and to tile a texture region. Custom implementations can draw anything they like.
+Drawable 接口提供一个接收 SpriteBatch、位置和尺寸的 draw 方法。实现可以绘制任意内容：纹理区域、精灵、动画等。控件中的各种图像广泛使用 Drawable。框架提供了绘制纹理区域、精灵、九宫格和纹理平铺的实现，也可以自行实现任意绘制方式。
 
-Drawable provides a minimum size, which can be used as a hint for the smallest it should be drawn. It also provides top, right, bottom, and left sizes, which can be used as a hint for how much padding should be around content drawn on top of the drawable.
+Drawable 提供最小尺寸，可作为其绘制尺寸下限的参考。它还提供上、右、下、左四个尺寸，可作为 Drawable 上方所绘制内容周围应留多少内边距的参考。
 
-By default, NinePatchDrawable uses the top, right, bottom, and left sizes of the corresponding nine patch texture regions. However, the drawable sizes are separate from the nine patch sizes. The drawable sizes can be changed to draw content on the nine patch with more or less padding than the actual nine patch regions.
+默认情况下，NinePatchDrawable 使用对应九宫格纹理区域的上、右、下、左尺寸。不过，Drawable 尺寸与九宫格尺寸彼此独立。可以更改 Drawable 尺寸，使九宫格上绘制的内容比实际九宫格区域拥有更多或更少的内边距。
 
-Creating drawables is very common and somewhat tedious. It is recommended to use the [skin methods](/wiki/graphics/2d/scene2d/skin#conversions) to automatically obtain a drawable of the appropriate type.
+创建 Drawable 很常见，也有些繁琐。建议使用 [Skin 方法](/wiki/graphics/2d/scene2d/skin#conversions) 自动获取适当类型的 Drawable。
 
-### ChangeEvents
+### ChangeEvent
 
-Most widgets fire a ChangeEvent when something changes. This is a generic event, what actually changed depends on each widget. Eg, for a button the change is that the button was pressed, for a slider the change is the slider position, etc.
+大多数控件在发生变化时都会触发 ChangeEvent。这是一个通用事件，具体变化取决于控件。例如，按钮的变化是被按下，滑块的变化是位置改变，等等。
 
-ChangeListener should be used to detect these events:
+应使用 ChangeListener 检测这些事件：
 
 ```java
 actor.addListener(new ChangeListener() {
@@ -159,19 +159,19 @@ actor.addListener(new ChangeListener() {
 });
 ```
 
-ChangeListener should be used when possible instead of ClickListener, eg on buttons. ClickListener reacts to input events on the widget and only knows if the widget has been clicked. The click will still be detected if the widget is disabled and doesn't handle the widget being changed by a key press or programmatically. Also, for most widgets the ChangeEvent can be cancelled, allowing the widget to revert the change.
+在可能的情况下，应使用 ChangeListener 而不是 ClickListener，例如处理按钮时。ClickListener 响应控件上的输入事件，只知道控件是否被点击。即使控件已禁用，ClickListener 仍可能检测到点击，而且它无法处理控件因按键或程序调用而发生的变化。此外，大多数控件的 ChangeEvent 都可以取消，使控件恢复变化前的状态。
 
-### Clipping
+### 裁剪
 
-Clipping is most easily done using `setClip(true)` on a Table. Actors in the table will be clipped to the table's bounds. Culling is done so actors completely outside of the table's bounds are not drawn at all.
+最简单的裁剪方式是在 Table 上使用 `setClip(true)`。Table 中的 Actor 会被裁剪到 Table 边界内，同时会执行剔除，使完全位于 Table 边界外的 Actor 不被绘制。
 
-Actors added to a table using the `add` Table methods get a table cell and will be sized and positioned by the table. Like any group, actors can still be added to a table using the `addActor` method. The table will not size and position actors added this way. This can be useful when using a table solely for clipping.
+使用 Table 的 `add` 方法添加的 Actor 会获得一个表格单元，并由 Table 设置尺寸和位置。与其他 Group 一样，也可以使用 `addActor` 方法向 Table 添加 Actor，但 Table 不会以这种方式添加的 Actor 设置尺寸和位置。当 Table 仅用于裁剪时，这种方式很有用。
 
-## Rotation and scale
+## 旋转与缩放
 
-As [described previously](/wiki/graphics/2d/scene2d/scene2d#group-transform), a scene2d group that has transform enabled causes a SpriteBatch flush before drawing its children. A UI often has dozens, if not hundreds, of groups. Flushing for each group would severely limit performance, so most scene2d.ui groups have transform set to false by default. Rotation and scale is ignored when the group's transform is disabled.
+如[前文所述](/wiki/graphics/2d/scene2d/scene2d#group-transform)，启用变换的 scene2d Group 会在绘制子 Actor 前刷新 SpriteBatch。UI 通常有几十甚至上百个 Group，为每个 Group 刷新会严重限制性能，因此大多数 scene2d.ui Group 默认将 transform 设为 false。Group 禁用变换后，旋转和缩放会被忽略。
 
-Transforms can be enabled as needed, with some caveats. Not all widgets support all features when rotation or scaling is applied. Eg, transform can be enabled for a Table and then it can be rotated and scaled. Children will be drawn rotated and scaled, input is routed correctly, etc. However, other widgets may perform drawing without taking rotation and/or scale into account. A workaround for this problem is to wrap a widget in a table or container with transform enabled and set the rotation and scale on the table or container, not on the widget:
+可以根据需要启用变换，但有一些注意事项。并非所有控件在旋转或缩放时都支持全部功能。例如，可以为 Table 启用变换，然后旋转和缩放它；子控件会随之旋转和缩放，输入也会正确路由。不过，其他控件绘制时可能不会考虑旋转和/或缩放。解决办法是将控件包裹在启用了变换的 Table 或 Container 中，并在 Table 或 Container 上设置旋转和缩放，而不是在控件上设置：
 
 ```java
 TextButton button = new TextButton("Text Button", skin);
@@ -182,152 +182,152 @@ wrapper.setRotation(45);
 wrapper.setScaleX(1.5f);
 ```
 
-Note that scene2d.ui groups that perform layout, such as Table, will use the unscaled and unrotated bounds of a transformed widget when computing the layout.
+注意，执行布局的 scene2d.ui Group（例如 Table）计算布局时，会使用经过变换控件未缩放、未旋转的边界。
 
-Widgets that perform clipping, such as ScrollPane, use `glScissor` which uses a screen aligned rectangle. These widgets cannot be rotated.
+执行裁剪的控件（例如 ScrollPane）使用 `glScissor`，而它使用与屏幕对齐的矩形。因此这些控件不能旋转。
 
-If excessive batch flushes are occurring due to transform being enabled on many groups, `CpuSpriteBatch` can be used for the stage. This does transformations using the CPU to avoid flushing the batch.
+如果许多 Group 启用变换导致 Batch 频繁刷新，可以将 `CpuSpriteBatch` 用于 Stage。它使用 CPU 执行变换，从而避免刷新 Batch。
 
-## Layout widgets
+## 布局控件
 
 ### Table
 
-[The Table class](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/Table.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/Table.java)) sizes and positions its children using a logical table, similar to HTML tables. Tables are intended to be used extensively in scene2d.ui to layout widgets, as they are easy to use and much more powerful than manually sizing and positioning widgets. Table-based layouts don't rely on absolute positioning and therefore automatically adjust to different widget sizes and screen resolutions.
+[Table 类](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/Table.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/Table.java)）使用类似 HTML 表格的逻辑表格设置子控件的尺寸和位置。Table 易于使用，功能也比手动设置控件尺寸和位置强大得多，因此 scene2d.ui 广泛使用 Table 布局控件。基于 Table 的布局不依赖绝对定位，因此能自动适应不同的控件尺寸和屏幕分辨率。
 
-It is highly recommended to read the [Table documentation](/wiki/graphics/2d/scene2d/table) before building a UI using scene2d.ui.
+使用 scene2d.ui 构建 UI 前，强烈建议阅读 [Table 文档](/wiki/graphics/2d/scene2d/table)。
 
 ### Container
 
-[The Container class](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/Container.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/Container.java)) is equivalent to a Table with only a single child, but is more lightweight. Container has all of the constraints of a table cell and is useful for setting the size and alignment of a single widget. If you implement with Scene2D, Container presents to you a much better personal development experience if you encounter trouble adjusting values for alignments and sizes for whatever an object holds and supports. While the advantages of this class generally work best within a Table object, you may still find a benefit in certain scenarios even outside of such code.
+[Container 类](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/Container.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/Container.java)）相当于只有一个子控件的 Table，但更加轻量。Container 具有表格单元的全部约束，适合设置单个控件的尺寸和对齐方式。使用 Scene2D 开发时，如果调整对象内容的对齐和尺寸遇到困难，Container 可以带来更好的开发体验。虽然该类的优势通常在 Table 中最明显，但在 Table 之外的某些场景中也同样有用。
 
 ### Stack
 
-[Stack](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/Stack.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/Stack.java)) is a WidgetGroup that lays out each child to be the size of the stack. This is useful when it is necessary to have widgets stacked on top of each other. The first widget added to the stack is drawn on the bottom, and the last widget added is drawn on the top.
+[Stack](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/Stack.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/Stack.java)）是一个将每个子控件布局为自身尺寸的 WidgetGroup。需要将控件层叠在一起时很有用。首先添加的控件绘制在底部，最后添加的控件绘制在顶部。
 
 ### ScrollPane
 
-[ScrollPane](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/ScrollPane.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/ScrollPane.java)) scrolls a child widget using scrollbars and/or mouse or touch dragging. Scrolling is automatically enabled when the widget is larger than the scroll pane. If the widget is smaller than the scroll pane in one direction, it is sized to the scroll pane in that direction. ScrollPane has many settings for if and how touches control scrolling, fading scrollbars, etc. ScrollPane has drawables for the background, horizontal scrollbar and knob, and vertical scrollbar and knob. If touches are enabled (the default), all the drawables are optional.
+[ScrollPane](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/ScrollPane.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/ScrollPane.java)）使用滚动条和/或鼠标、触摸拖动滚动子控件。控件大于 ScrollPane 时会自动启用滚动。如果控件在某个方向上小于 ScrollPane，则会在该方向调整为 ScrollPane 的尺寸。ScrollPane 提供了许多设置，用于控制触摸是否以及如何控制滚动、滚动条是否淡出等。ScrollPane 为背景、水平滚动条和滑块、垂直滚动条和滑块提供 Drawable。启用触摸（默认设置）时，所有 Drawable 都是可选的。
 
-Note: ScrollPane doesn't support well children that dynamically change their size or move while dragging them. Having a children in your scrollpane that move while being dragged will make the ScrollPane flicker.
+注意：ScrollPane 对拖动过程中动态改变尺寸或移动的子控件支持不佳。在 ScrollPane 中放置拖动时会移动的子控件，会导致 ScrollPane 闪烁。
 
 ### SplitPane
 
-[SplitPane](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/SplitPane.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/SplitPane.java)) contains two widgets and is divided in two either horizontally or vertically. The user may resize the widgets with a draggable splitter. The child widgets are always sized to fill their half of the splitpane. SplitPane has a drawable for the draggable splitter.
+[SplitPane](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/SplitPane.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/SplitPane.java)）包含两个控件，并水平或垂直分成两部分。用户可以拖动分隔条调整控件尺寸。子控件始终填满 SplitPane 的对应半区。SplitPane 为可拖动分隔条提供 Drawable。
 
 ### Tree
 
-[Tree](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/Tree.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/Tree.java)) displays a hierarchy of nodes. Each node may have child nodes and can be expanded or collapsed. Each node has an actor, allowing complete flexibility over how each item is displayed. Tree has drawables for the plus and minus icons next to each node's actor.
+[Tree](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/Tree.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/Tree.java)）显示节点层级。每个节点可以拥有子节点，并展开或折叠。每个节点都有一个 Actor，可以完全自由地决定各项的显示方式。Tree 为节点 Actor 旁的加号和减号图标提供 Drawable。
 
 ### VerticalGroup
 
-A [VerticalGroup](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/VerticalGroup.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/VerticalGroup.java)) is equivalent to a Table with only a single column, but is more lightweight. VerticalGroup allows widgets to be inserted in the middle and removed, while Table does not.
+[VerticalGroup](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/VerticalGroup.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/VerticalGroup.java)）相当于只有一列的 Table，但更加轻量。VerticalGroup 允许在中间插入和移除控件，而 Table 不支持。
 
 ### HorizontalGroup
 
-A [HorizontalGroup](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/HorizontalGroup.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/HorizontalGroup.java)) is equivalent to a Table with only a single row, but is more lightweight. HorizontalGroup allows widgets to be inserted in the middle and removed, while Table does not.
+[HorizontalGroup](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/HorizontalGroup.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/HorizontalGroup.java)）相当于只有一行的 Table，但更加轻量。HorizontalGroup 允许在中间插入和移除控件，而 Table 不支持。
 
-## Widgets
+## 控件
 
 ### Label
 
-[Label](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/Label.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/Label.java)) displays text using a bitmap font and a color. The text may contain newlines. Word wrap may be enabled, in which case the width of the label should be set by the parent. The lines of text can be aligned relative to each other, and also all of the text aligned within the label widget.
+[Label](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/Label.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/Label.java)）使用位图字体和颜色显示文本。文本可以包含换行符。可以启用自动换行，此时 Label 的宽度应由父控件设置。文本行可以相互对齐，全部文本也可以在 Label 控件内对齐。
 
-The labels that use the same font will be the same size, though they may have different colors. Bitmap fonts don't typical scale well, especially at small sizes. It is suggested to use a separate bitmap font for each font size. The bitmap font image should be packed into the skin's atlas to reduce texture binds.
+使用相同字体的 Label 尺寸相同，但颜色可以不同。位图字体通常不适合缩放，尤其是在较小尺寸下。建议为每种字号使用单独的位图字体。位图字体图像应打包到 Skin 的 atlas 中，以减少纹理绑定。
 
-To create a label which contain text with different colors, the [BitmapFont](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g2d/BitmapFont.html) used to create the label should have markup enabled by setting it in the [BitmapFont.BitmapFontData](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g2d/BitmapFont.BitmapFontData.html) object passed via the constructor. If you're using the [AssetManager](/wiki/managing-your-assets), you can pass this data by passing an appropriate [BitmapFontParameter](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/assets/loaders/BitmapFontLoader.BitmapFontParameter.html) object when you call [load](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/assets/AssetManager.html#load-java.lang.String-java.lang.Class-com.badlogic.gdx.assets.AssetLoaderParameters-).
+要创建包含不同颜色文本的标签，用于创建标签的 [BitmapFont](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g2d/BitmapFont.html) 必须启用标记语言，方法是在通过构造函数传入的 [BitmapFont.BitmapFontData](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g2d/BitmapFont.BitmapFontData.html) 对象中进行设置。如果使用 [AssetManager](/wiki/managing-your-assets)，可以在调用 `load` 时传入适当的 [BitmapFontParameter](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/assets/loaders/BitmapFontLoader.BitmapFontParameter.html) 对象来提供这些数据。
 
 ### Image
 
-[Image](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/Image.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/Image.java)) simply displays a drawable. The drawable can be a texture, texture region, ninepatch, sprite, etc. The drawable may be scaled and aligned within the image widget bounds in various ways.
+[Image](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/Image.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/Image.java)）只显示一个 Drawable。Drawable 可以是纹理、纹理区域、九宫格、精灵等，也可以通过多种方式在 Image 控件边界内缩放和对齐。
 
-For a tutorial on using Image (Create, rotate, resize and creating images with repeating texture [see this Image tutorial](https://libgdxinfo.wordpress.com/basic_image/))
+有关 Image 的使用教程（创建、旋转、调整大小以及使用重复纹理创建图像），请参阅 [Image 教程](https://libgdxinfo.wordpress.com/basic_image/)。
 
 ### Button
 
-[Button](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/Button.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/Button.java)) by itself it is just an empty button, but it extends table so other widgets can be added to it. It has an `up` background that is normally displayed, and a `down` background that is displayed when pressed. It has a checked state which is toggled each time it is clicked, and when checked it will use the `checked` background instead of `up`, if defined. It also has pressed/unpressed offsets, which offset the entire button contents when pressed/unpressed.
+[Button](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/Button.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/Button.java)）本身只是一个空按钮，但它继承 Table，因此可以向其中添加其他控件。它有通常显示的 `up` 背景，以及按下时显示的 `down` 背景。它还有一个每次点击都会切换的 checked 状态；如果定义了 `checked` 背景，选中时会使用它代替 `up`。此外还有按下和未按下偏移量，用于偏移按钮的全部内容。
 
 ### TextButton
 
-[TextButton](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/TextButton.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/TextButton.java)) extends Button and contains a label. TextButton adds to Button a bitmap font and a colors for the text in the up, down, and checked states.
+[TextButton](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/TextButton.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/TextButton.java)）继承 Button 并包含一个 Label。TextButton 为 Button 增加位图字体，以及 up、down 和 checked 状态下文本的颜色。
 
-TextButton extends Button which extends Table, so widgets can be added to the TextButton using the Table methods.
+TextButton 继承 Button，而 Button 继承 Table，因此可以使用 Table 方法向 TextButton 添加控件。
 
 ### ImageButton
 
-[ImageButton](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/ImageButton.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/ImageButton.java)) extends Button and contains an image widget. ImageButton adds to Button a drawables for the image widget in the up, down, and checked states.
+[ImageButton](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/ImageButton.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/ImageButton.java)）继承 Button 并包含一个 Image 控件。ImageButton 为 Button 增加 Image 控件在 up、down 和 checked 状态下使用的 Drawable。
 
-Note that ImageButton extends Button, which already has a background drawable for the up, down, and checked states. ImageButton is only needed when it is desired to have a drawable (such as an icon) on top of the button background.
+注意，ImageButton 继承 Button，而 Button 已经为 up、down 和 checked 状态提供背景 Drawable。只有需要在按钮背景上方放置 Drawable（例如图标）时，才需要使用 ImageButton。
 
-ImageButton extends Button which extends Table, so widgets can be added to the ImageButton using the Table methods.
+ImageButton 继承 Button，而 Button 继承 Table，因此可以使用 Table 方法向 ImageButton 添加控件。
 
 ### CheckBox
 
-[CheckBox](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/CheckBox.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/CheckBox.java)) extends TextButton and adds an image widget to the left of the label. It has a drawable for the image widget for the checked and unchecked states.
+[CheckBox](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/CheckBox.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/CheckBox.java)）继承 TextButton，并在 Label 左侧增加 Image 控件。它为 Image 控件提供选中和未选中状态下的 Drawable。
 
 ### ButtonGroup
 
-[ButtonGroup](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/ButtonGroup.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/ButtonGroup.java)) is not an actor and has no visuals. Buttons are added to it and it enforces a minimum and maximum number of checked buttons. This allows for buttons (button, text button, checkbox, etc) to be used as "radio" buttons.
+[ButtonGroup](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/ButtonGroup.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/ButtonGroup.java)）不是 Actor，也没有视觉表现。向其中添加按钮后，它会限制选中按钮数量的最小值和最大值，因此可以将按钮（Button、TextButton、CheckBox 等）用作“单选”按钮。
 
 ### TextField
 
-[TextField](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/TextField.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/TextField.java)) is a single line text entry field. It has drawables for the background, text cursor, and text selection, a font and font color for the entered text, and a font and font color for the message displayed when the text field is empty. Password mode can be enabled, where it will display asterisks instead of the entered text.
+[TextField](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/TextField.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/TextField.java)）是单行文本输入框。它为背景、文本光标和文本选择提供 Drawable，为输入文本以及文本框为空时显示的提示信息分别提供字体和字体颜色。可以启用密码模式，此时会以星号代替输入文本。
 
 ### TextArea
 
-[TextArea](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/TextArea.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/TextArea.java)) is similiar to a TextField, but allows multiple line text entry.
+[TextArea](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/TextArea.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/TextArea.java)）类似 TextField，但允许输入多行文本。
 
 ### List
 
-[List](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/List.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/List.java)) is a list box that displays textual items and highlights the selected item. List has a font, selected item background drawable, and a font color for selected and unselected items. A list does not scroll on its own, but is often put in a scrollpane.
+[List](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/List.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/List.java)）是显示文本项并突出显示选中项的列表框。List 提供字体、选中项背景 Drawable，以及选中和未选中项的字体颜色。List 不会自行滚动，但通常会放入 ScrollPane 中。
 
 ### SelectBox
 
-[SelectBox](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/SelectBox.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/SelectBox.java)) is a drop-down list, it allows one of a number of values to be chosen from a list. When inactive, the selected value is displayed. When activated, it shows the list of values that may be selected. SelectBox has drawables for the background, list background, and selected item background, a font and font color, and a setting for how much spacing is used between items.
+[SelectBox](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/SelectBox.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/SelectBox.java)）是下拉列表，允许从列表中选择多个值中的一个。未激活时显示选中值，激活后显示可选值列表。SelectBox 提供背景、列表背景和选中项背景的 Drawable、字体和字体颜色，以及项目之间间距的设置。
 
 ### ProgressBar
 
-[ProgressBar](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/ProgressBar.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/ProgressBar.java)) is a widget that visually displays the progress of some activity or a variable value within a given range. The progress bar has a range (min, max) and a stepping between each value it represents. The percentage of completeness typically starts out as an empty progress bar and gradually becomes filled in as the task or value increases towards upper limit.
+[ProgressBar](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/ProgressBar.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/ProgressBar.java)）是用于直观显示某项活动进度或给定范围内变量值的控件。进度条有一个范围（min、max），以及所表示各个值之间的步进。完成百分比通常从空进度条开始，随着任务或数值接近上限逐渐填满。
 
-A progress bar can be setup to be of horizontal or vertical orientation, although the increment direction is always the same. For horizontal progress bar, is grows to the right, for vertical, upwards. Animation for changes to the progress bar value can be enabled to make the bar fill more smoothly over time.
+进度条可以设置为水平或垂直方向，但递增方向始终固定。水平进度条向右增长，垂直进度条向上增长。可以为进度条数值变化启用动画，使其随时间更平滑地填充。
 
 ### Slider
 
-[Slider](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/Slider.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/Slider.java)) is a horizontal indicator that allows a user to set a value. The slider has a range (min, max) and a stepping between each value the slider represents. Slider has drawables for the background, the slider knob, and for the portion of the slider before and after the knob.
+[Slider](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/Slider.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/Slider.java)）是允许用户设置数值的水平指示器。Slider 有一个范围（min、max）以及所表示各个值之间的步进。Slider 提供背景、滑块，以及滑块前后部分的 Drawable。
 
-A slider with touches disabled, a drawable before the knob, and without the knob can be used as a substitute for progress bar, as both widgets share the same codebase and use same visual style. Animation for changes to the slider value can be enabled to make the progress bar fill more smoothly.
+禁用触摸、设置滑块前方 Drawable 并隐藏滑块的 Slider 可以替代进度条，因为两个控件共享相同代码并使用相同视觉样式。可以为 Slider 数值变化启用动画，使进度填充更平滑。
 
 
 ### Window
 
-[Window](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/Window.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/Window.java)) is a table with a title bar area above the contents that displays a title. It can optionally act as a modal dialog, preventing touch events to widgets below. Window has a background drawable and a font and font color for the title.
+[Window](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/Window.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/Window.java)）是一个在内容上方带标题栏并显示标题的 Table。它可以选择作为模态对话框使用，阻止触摸事件传递给下方控件。Window 提供背景 Drawable，以及标题使用的字体和字体颜色。
 
 ### Touchpad
 
-[Touchpad](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/Touchpad.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/Touchpad.java)) is an onscreen joystick that moves in a circular area. It has a background drawable and a drawable for the knob that the user drags around. If you want to implement a "follow mode" for your joystick element, check out the example [here](https://github.com/libgdx/libgdx/issues/6688#issuecomment-962640273).
+[Touchpad](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/Touchpad.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/Touchpad.java)）是屏幕上的摇杆，可在圆形区域内移动。它提供背景 Drawable，以及用户拖动的摇杆柄 Drawable。若想为摇杆元素实现“跟随模式”，请参阅[此处示例](https://github.com/libgdx/libgdx/issues/6688#issuecomment-962640273)。
 
 ### Dialog
 
-[Dialog](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/Dialog.html) ([code](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/Dialog.java)) is a window with a content table and a button table underneath. Anything can be added to the dialog, but convenience methods are provided to add a label to the content table and buttons to the button table.
+[Dialog](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/scenes/scene2d/ui/Dialog.html)（[代码](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/scenes/scene2d/ui/Dialog.java)）是一个包含内容 Table 和下方按钮 Table 的窗口。可以向 Dialog 添加任意内容，同时它提供便利方法，可向内容 Table 添加 Label，向按钮 Table 添加按钮。
 
-## Widgets without scene2d.ui
+## 不使用 scene2d.ui 的控件
 
-Widgets can be used as simple actors in scene2d, without using tables or the rest of scene2d.ui. Widgets have a default size and can be positioned absolutely, the same as any actor. If a widget's size is changed, the `invalidate` Widget method must be called so the widget will relayout at the new size.
+不使用 Table 或 scene2d.ui 其余部分时，Widget 也可以作为 scene2d 中的普通 Actor 使用。Widget 有默认尺寸，也可以像其他 Actor 一样绝对定位。如果改变 Widget 的尺寸，必须调用 Widget 的 `invalidate` 方法，使其按新尺寸重新布局。
 
-Some widgets, such as Table, don't have a default size after construction because their preferred size is based on the widgets they will contain. After the widgets have been added, the `pack` method can be used to set the width and height of the widget to its preferred width and height. This method also calls `invalidate` if the widget's size was changed, and then calls `validate` so that the widget adjusts itself to the new size.
+某些 Widget（例如 Table）构造后没有默认尺寸，因为其首选尺寸取决于将要包含的 Widget。添加 Widget 后，可以使用 `pack` 方法将控件的宽高设置为首选宽高。如果尺寸发生改变，该方法还会调用 `invalidate`，然后调用 `validate` 使控件调整到新尺寸。
 
-## Drag and Drop (DragAndDrop class)
-It should be noted that to make a drag start/source actor, a table and to have that table and all of its contents trigger a drag, one must enable Table.setTouchable(Enabled). It is set to ChildrenOnly by default.
+## 拖放（DragAndDrop 类）
+注意，要让 Table 成为拖动起始/源 Actor，并让 Table 及其全部内容触发拖动，必须启用 Table.setTouchable(Enabled)。默认设置为 ChildrenOnly。
 
-## Usage without touch or mouse
+## 不使用触摸或鼠标
 
-Scene2d.ui is mainly designed with touch or mouse control in mind. Stage has a `setKeyboardFocus` and a `setScrollFocus` methods to set the Actor receiving scroll and key events. However, it does not support a full type focus and is therefore not operable with keys only.
-A focusing system is needed for games designed with controller-only or keyboard-only interface. [gdx-controllerutils project](https://github.com/MrStahlfelge/gdx-controllerutils)'s scene2d module includes a `ControllerMenuStage` adding this to scene2d.ui. [View the documentation](https://github.com/MrStahlfelge/gdx-controllerutils/wiki/Button-operable-Scene2d).
+Scene2d.ui 主要针对触摸或鼠标控制设计。Stage 提供 `setKeyboardFocus` 和 `setScrollFocus` 方法，用于设置接收滚动和键盘事件的 Actor。不过，它不支持完整的类型焦点，因此无法仅使用键盘操作。
+为仅使用控制器或键盘操作的游戏设计界面时，需要焦点系统。[gdx-controllerutils 项目](https://github.com/MrStahlfelge/gdx-controllerutils)的 scene2d 模块包含一个向 scene2d.ui 添加此功能的 `ControllerMenuStage`。[查看文档](https://github.com/MrStahlfelge/gdx-controllerutils/wiki/Button-operable-Scene2d)。
 
-## Examples
+## 示例
 
-For now, please see these test programs:
+目前请参阅以下测试程序：
 
- * [UISimpleTest](https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests/src/com/badlogic/gdx/tests/UISimpleTest.java#L37)
+  * [UISimpleTest](https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests/src/com/badlogic/gdx/tests/UISimpleTest.java#L37)
  * [TableLayoutTest](https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests/src/com/badlogic/gdx/tests/TableLayoutTest.java#L35)
  * [UITest](https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests/src/com/badlogic/gdx/tests/UITest.java#L50)
  * [ImageTest](https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests/src/com/badlogic/gdx/tests/ImageTest.java#L30)

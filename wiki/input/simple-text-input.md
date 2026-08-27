@@ -1,13 +1,13 @@
 ---
-title: Simple text input
+title: 简单文本输入
 ---
-If an application needs to ask the user for a string, e.g a user name or a password, it can do so by using a simple dialog box that is customizable to some extent.
+如果应用程序需要用户输入字符串，例如用户名或密码，可以使用具有一定可定制性的简单对话框。
 
-On the desktop a Swing dialog will be opened, prompting the user to enter a string. (⚠ In the LWJGL3 backend this method is [not yet implemented](https://github.com/libgdx/libgdx/blob/master/backends/gdx-backend-lwjgl3/src/com/badlogic/gdx/backends/lwjgl3/DefaultLwjgl3Input.java#L306).)
+在桌面端会打开 Swing 对话框，提示用户输入字符串。（⚠ LWJGL3 后端中此方法[尚未实现](https://github.com/libgdx/libgdx/blob/master/backends/gdx-backend-lwjgl3/src/com/badlogic/gdx/backends/lwjgl3/DefaultLwjgl3Input.java#L306)。）
 
-On Android a standard Android dialog will be opened, again prompting the user for input.
+在 Android 上会打开标准 Android 对话框，同样提示用户输入内容。
 
-To receive the input or a notification that the user canceled the input, one has to implement the `TextInputListener` interface:
+要接收输入或用户取消输入的通知，需要实现 `TextInputListener` 接口：
 
 ```java
 public class MyTextInputListener implements TextInputListener {
@@ -21,13 +21,13 @@ public class MyTextInputListener implements TextInputListener {
 }
 ```
 
-The `input()` method will be called when the user enters a text string. The `canceled()` method will be called if the user closed the dialog on the desktop or pressed the back button on Android.
+用户输入文本字符串时会调用 `input()` 方法。用户在桌面端关闭对话框或在 Android 上按下返回键时，会调用 `canceled()` 方法。
 
-To bring up the dialog, simple invoke the following method with your listener:
+要显示对话框，只需将监听器传给以下方法：
 
 ```java
 MyTextInputListener listener = new MyTextInputListener();
 Gdx.input.getTextInput(listener, "Dialog Title", "Initial Textfield Value", "Hint Value");
 ```
 
-The methods of the listener will be called on the rendering thread, right before the `ApplicationListener.render()` method is called.
+监听器的方法会在渲染线程上、调用 `ApplicationListener.render()` 方法之前调用。

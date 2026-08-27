@@ -1,42 +1,42 @@
 ---
 title: jnigen
 ---
-jnigen is a small library that can be used with or without libGDX which allows C/C++ code to be written inline with Java source code. This increases the locality of code that conceptually belongs together (the Java native class methods and the actual implementation) and makes refactoring a lot easier compared to the usual [JNI](https://en.wikipedia.org/wiki/Java_Native_Interface) workflow. Arrays and direct buffers are converted for you, further reducing boilerplate. Building the natives for Windows, Linux, OS X, and Android is handled for you. jnigen also provides a mechanism for loading native libraries from a JAR at runtime, which avoids "java.library.path" troubles.
+jnigen 是一个可独立使用或与 libGDX 配合使用的小型库，允许将 C/C++ 代码内联写入 Java 源代码。它让概念上属于同一部分的代码（Java 本机类方法和实际实现）彼此更接近，相比通常的 [JNI](https://en.wikipedia.org/wiki/Java_Native_Interface) 工作流更容易重构。数组和直接缓冲区会自动转换，进一步减少样板代码。Windows、Linux、OS X 和 Android 的本机库构建也由它处理。jnigen 还提供了运行时从 JAR 加载本机库的机制，避免 “java.library.path” 带来的问题。
 
-## Setup
+## 设置
 
-You will need MinGW for both 32 and 64 bit. After installation, be sure the `bin` directory is on your path.
+需要安装 32 位和 64 位 MinGW。安装后，请确保 `bin` 目录位于 PATH 中。
 
-Note that gdx-jnigen is a Java project. It has a blank AndroidManifest.xml because the Android NDK requires it, but it is not an Android project.
+注意，gdx-jnigen 是 Java 项目。由于 Android NDK 要求存在 AndroidManifest.xml，它包含一个空文件，但本身不是 Android 项目。
 
 ### Windows
 
-  * **MinGW 32 bit** Run [mingw-get-setup.exe](https://sourceforge.net/projects/mingw/files/Installer/), install with the GUI, choose `mingw32-base` and `mingw32-gcc-g++` under "Basic Setup", then Installation -> Apply Changes.
-  * **MinGW 64 bit** Download the [MinGW 64 bit](https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/4.8.2/threads-win32/seh/x86_64-4.8.2-release-win32-seh-rt_v3-rev1.7z/download) binaries and unzip.
+  * **32 位 MinGW** 运行 [mingw-get-setup.exe](https://sourceforge.net/projects/mingw/files/Installer/)，通过 GUI 安装，在 “Basic Setup” 下选择 `mingw32-base` 和 `mingw32-gcc-g++`，然后选择 Installation -> Apply Changes。
+  * **64 位 MinGW** 下载 [64 位 MinGW](https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/4.8.2/threads-win32/seh/x86_64-4.8.2-release-win32-seh-rt_v3-rev1.7z/download) 二进制文件并解压。
 
 ### Linux
 
-  * Ubuntu and other Debian-based systems (unverified)
+  * Ubuntu 和其他基于 Debian 的系统（未经验证）
 
 ```bash
 sudo apt-get install g++-mingw-w64-i686 g++-mingw-w64-x86-64
 ```
 
-  * Arch Linux (this installs a compiler for both 32-bit and 64-bit; [read more](https://wiki.archlinux.org/index.php/MinGW_package_guidelines))
+  * Arch Linux（这会安装同时支持 32 位和 64 位的编译器；[了解更多](https://wiki.archlinux.org/index.php/MinGW_package_guidelines)）
 
 ```bash
 sudo pacman -S mingw-w64-gcc
 ```
 
-  * Fedora, CentOS and RHEL-based systems
+  * Fedora、CentOS 和基于 RHEL 的系统
 
 ```bash
 sudo dnf install mingw32-gcc-c++ mingw64-gcc-c++ mingw32-winpthreads-static mingw64-winpthreads-static
 ```
 
-## Quickstart
+## 快速开始
 
-Here is a barebones example, first the Java source with inline native code:
+下面是一个最简示例，先看包含内联本机代码的 Java 源代码：
 
 ```
 public class Example {
@@ -53,22 +53,22 @@ public class Example {
 }
 ```
 
-The `@off` comment turns off the Eclipse source formatter for the rest of the file. This prevents it from ruining the formatting of our native code in the comments. This feature has to be turned "on" in Eclipse preferences: Java > Code Style > Formatter. Click on "Edit" button, "Off/On Tags", check off "Enable Off/On tags".
+`@off` 注释会关闭文件其余部分的 Eclipse 源代码格式化程序，避免破坏注释中本机代码的格式。必须在 Eclipse 首选项 Java > Code Style > Formatter 中启用此功能。点击 “Edit” 按钮，选择 “Off/On Tags”，勾选 “Enable Off/On tags”。
 
-Next, a native method is defined. Normally for JNI you would need to run [javah](https://docs.oracle.com/javase/7/docs/technotes/tools/windows/javah.html) to generate stub source files which you would edit and need to keep up to date with the Java source. With jnigen, you just use a multi-line comment immediately after the native method which contains your native code. The parameters for the native method are available to your native code.
+接下来定义一个本机方法。通常使用 JNI 时，需要运行 [javah](https://docs.oracle.com/javase/7/docs/technotes/tools/windows/javah.html) 生成存根源文件，再编辑它们并保持与 Java 源代码同步。使用 jnigen 时，只需在本机方法后立即添加包含本机代码的多行注释即可。本机方法的参数可供本机代码使用。
 
-Lastly, a main method is defined. The `SharedLibraryLoader` extracts the appropriate native library from the classpath and loads it. This allows you to distribute your native libraries inside your JARs and you will never have problems with `java.library.path`.
+最后定义 main 方法。`SharedLibraryLoader` 会从类路径中提取并加载适合的本机库，因此可以将本机库放在 JAR 中分发，不会再遇到 `java.library.path` 问题。
 
-## How it works
+## 工作原理
 
-jnigen has two parts:
+jnigen 包含两部分：
 
-  * Inspect Java source files in a specific folder, detect native methods and the attached C++ implementation, and spit out a C++ source file and header, similar to what you'd create manually with JNI.
-  * Provide a generator for Ant build scripts that build the native source for every platform.
+  * 检查指定文件夹中的 Java 源文件，检测本机方法及其附带的 C++ 实现，并输出类似手动使用 JNI 创建的 C++ 源文件和头文件。
+  * 提供 Ant 构建脚本生成器，为每个平台构建本机源代码。
 
-### Native code generation
+### 本机代码生成
 
-Here's an example of Java/C++ mixed in a single Java source file as understood by jnigen (taken from [BufferUtils](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/utils/BufferUtils.java)):
+下面是 jnigen 所理解的 Java/C++ 混合 Java 源文件示例（取自 [BufferUtils](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/utils/BufferUtils.java)）：
 
 ```java
 private static native ByteBuffer newDisposableByteBuffer (int numBytes); /*
@@ -81,14 +81,14 @@ private native static void copyJni (float[] src, Buffer dst, int numFloats, int 
 */
 ```
 
-The C++ code is contained in a block comment after the Java native method declaration. Java side input parameters will be available to the C++ code by their Java names, and, if possible marshalled for a limited subset of types. The following marshalling takes place:
+C++ 代码位于 Java 本机方法声明后的块注释中。Java 侧输入参数可以通过其 Java 名称供 C++ 代码使用，并在可能时对有限类型子集进行封送。封送规则如下：
 
-  * Primitive types are passed as is, using jint, jshort, jboolean, etc as their types.
-  * One dimensional primitive type arrays are converted to typed pointers you can directly access. The arrays are automatically locked and unlocked for you via JNIEnv::GetPrimitiveArrayCritical and JNIEnv::ReleasePrimitiveArrayCritical.
-  * Direct buffers are converted to unsigned char`*` pointers via JNIEnv::GetDirectBufferAddress. Note that the position of the buffer is not taken into account!
-  * Any other type will be passed with its respective JNI type, eg normal Java objects will be passed as jobject.
+  * 基本类型按原样传递，类型使用 jint、jshort、jboolean 等。
+  * 一维基本类型数组会转换为可直接访问的类型化指针。数组会通过 JNIEnv::GetPrimitiveArrayCritical 和 JNIEnv::ReleasePrimitiveArrayCritical 自动锁定和解锁。
+  * 直接缓冲区会通过 JNIEnv::GetDirectBufferAddress 转换为 unsigned char`*` 指针。注意，缓冲区的位置不会被考虑！
+  * 其他类型会以对应的 JNI 类型传递，例如普通 Java 对象会作为 jobject 传递。
 
-The above two jnigen native methods would translate to the following C++ source (there would be a corresponding header file as well):
+上面的两个 jnigen 本机方法会转换为以下 C++ 源代码（同时还会生成对应的头文件）：
 
 ```cpp
 JNIEXPORT jobject JNICALL Java_com_badlogic_gdx_utils_BufferUtils_newDisposableByteBuffer(JNIEnv* env, jclass clazz, jint numBytes) {
@@ -108,14 +108,14 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3FLjava
 }
 ```
 
-As you can see, the marshalling is inserted at the top and bottom of the method automatically in `copyJni()`. If you return from your JNI method in place other than the end of your method, jnigen will wrap your function with a second function that does all the marshalling,.
+可以看到，封送代码会在 `copyJni()` 方法的开头和结尾自动插入。如果 JNI 方法从不是末尾的位置返回，jnigen 会用另一个负责全部封送的函数包装你的函数。
 
-jnigen outputs the Java line numbers in the generated native code, telling us where in the original Java source file the C++ appeared. This is helpful when building jnigen generated C++ code, as the Ant script will spit out errors with Java line numbers to which we can jump to by clicking on the line in the console.
+jnigen 会在生成的本机代码中输出 Java 行号，指出 C++ 代码在原始 Java 源文件中的位置。这对构建 jnigen 生成的 C++ 代码很有帮助，因为 Ant 脚本会输出带 Java 行号的错误，可以点击控制台中的行直接跳转。
 
-### How to use
+### 使用方法
 
-The recommended way to use jnigen is through the gradle plugin, even though it is not requiered.  
-First of all, you need to apply the jnigen plugin:  
+推荐通过 Gradle 插件使用 jnigen，尽管这不是必需的。
+首先需要应用 jnigen 插件：
 ```gradle
 // Add buildscript dependency
 buildscript {
@@ -128,31 +128,31 @@ buildscript {
 apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
 ```
 
-Then you can configure the build actions in a `jnigen {}` block.  
-You can add new targets with `add(<platform>, <bitness>, <architectur>)`.  
-Platforms: `Windows`, `Linux`, `MacOsX`, `IOS`, `Android`  
-Architecture: `x86`(default), `ARM`  
-Bitness: `32`(default), `64`, `128`  
+然后可以在 `jnigen {}` 块中配置构建操作。
+可以使用 `add(<platform>, <bitness>, <architectur>)` 添加新目标。
+平台：`Windows`、`Linux`、`MacOsX`、`IOS`、`Android`
+架构：`x86`（默认）、`ARM`
+位数：`32`（默认）、`64`、`128`
 
-Note: iOS and Android don't accept Architecture or Bitness and will only generate one task.  
+注意：iOS 和 Android 不接受 Architecture 或 Bitness，只会生成一个任务。
 
-Every new target will create a new gradle task in the pattern `jnigenBuild<platform><architecture><bitness>`, however default values will be ignored in the task name.  
+每个新目标都会创建一个命名模式为 `jnigenBuild<platform><architecture><bitness>` 的 Gradle 任务，但默认值会从任务名称中省略。
 
-Executing these tasks will build the native library for the specified platform.  
+执行这些任务会为指定平台构建本机库。
 
-Note: For building android natives you need `NDK_HOME` set and pointing to a valid NDK. iOS and MacOS can only be compiled on MacOS.  
+注意：构建 Android 本机库时，需要将 `NDK_HOME` 设置为有效 NDK 的路径。iOS 和 MacOS 只能在 MacOS 上编译。
 
-For distribution the `jnigenJarNatives<destintation>` tasks exist. They will pack the generated natives in a jar, so that they can be loaded by the `SharedLibraryLoader`. These jars should be distributed.  
+用于分发的任务是 `jnigenJarNatives<destintation>`。它们会将生成的本机库打包进 jar，以便由 `SharedLibraryLoader` 加载。这些 jar 应随应用分发。
 
 Destintation: `Desktop`, `Àndroid`, `IOS`  
 
-Every taget can also be configured with additional linker flags and other configuration, if needed.  
-For a complete documentation of all options and how to apply them, please take a look at the jnigen [documentation](https://github.com/libgdx/gdx-jnigen#gdx-jnigen-gradle-quickstart).  
+每个目标还可以根据需要配置额外的链接器标志和其他选项。
+关于所有选项及其应用方式的完整文档，请参阅 jnigen[文档](https://github.com/libgdx/gdx-jnigen#gdx-jnigen-gradle-quickstart)。
 
 
-### More
+### 更多内容
 
-Here are a number of jnigen builds that can serve as examples of varying complexity:
+下面是一些不同复杂度的 jnigen 构建示例：
 
 * [gdx](https://github.com/libgdx/libgdx/blob/master/gdx/build.gradle)
 * [gdx-freetype](https://github.com/libgdx/libgdx/blob/master/extensions/gdx-freetype/build.gradle)
@@ -161,7 +161,7 @@ Here are a number of jnigen builds that can serve as examples of varying complex
 * [Jamepad](https://github.com/libgdx/Jamepad/blob/master/build.gradle)
 
 ### ccache
-Using [ccache](https://ccache.dev/) is highly recommended if you build for all platforms (Linux, Windows, Mac OS X, Android, iOS, arm arm-v7, x86, x64 and all permutations). For libgdx, we use a very simple setup. On our build server, we have an `/opt/ccache` directory that houses a bunch of shell scripts, one for each compiler binary:
+如果要为所有平台（Linux、Windows、Mac OS X、Android、iOS，以及 arm、arm-v7、x86、x64 的所有组合）构建，强烈建议使用 [ccache](https://ccache.dev/)。libGDX 使用非常简单的配置。在构建服务器上，我们有一个 `/opt/ccache` 目录，其中包含多个 shell 脚本，每个编译器二进制文件对应一个：
 
 ```
 jenkins@badlogic:~/workspace/libgdx/gdx/jni$ ls -lah /opt/ccache/
@@ -173,22 +173,22 @@ jenkins@badlogic:~/workspace/libgdx/gdx/jni$ ls -lah /opt/ccache/
 -rwxr-xr-x  1 jenkins  www-data   82 Apr  6 13:15 x86_64-w64-mingw32-gcc
 ```
 
-Each of these scripts looks like this (with a modified executable name of course):
+每个脚本看起来都像这样（当然可执行文件名称会有所不同）：
 
 ```
 echo "g++ ccache!"
 ccache /usr/bin/g++ "$@"
 ```
 
-To make ccache work, just make sure the `/opt/ccache` directory is first in your PATH:
+要让 ccache 生效，只需确保 `/opt/ccache` 目录位于 PATH 的最前面：
 
 ```
 export PATH=/opt/ccache:$PATH
 ```
 
-Any time one of the compilers is invoked, the shell scripts redirect to ccache.
+每当调用某个编译器时，shell 脚本都会将其重定向到 ccache。
 
-For Android it is sufficient to set NDK_CCACHE
+对于 Android，只需设置 NDK_CCACHE 即可。
 
 ```
 export NDK_CCACHE=ccache

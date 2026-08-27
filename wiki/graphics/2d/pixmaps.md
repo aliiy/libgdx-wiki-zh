@@ -1,24 +1,24 @@
 ---
-title: Pixmaps
+title: Pixmap
 ---
-# Introduction
+# 简介
 
-A [Pixmap](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/Pixmap.html) [(code)](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/graphics/Pixmap.java) encapsulates image data resident in memory. It supports simple file loading and draw operations for basic image manipulation. The most typical use is preparation of an image for upload to the GPU by wrapping in a 
+一个 [Pixmap](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/Pixmap.html) [(代码)](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/graphics/Pixmap.java) 封装驻留在内存中的图像数据。它支持简单的文件加载和绘制操作，可用于基本的图像处理。最常见的用途是将其包装在
 [Texture](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/Texture.html)
-[(code)](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/graphics/Texture.java) instance. There are also methods for image saving/loading through the 
+[(code)](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/graphics/Texture.java) 实例中，以准备将图像上传到 GPU。还可以通过
 [PixmapIO](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/PixmapIO.html)
-[(code)](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/graphics/PixmapIO.java) class. PixmapIO supports uncompressed [PNG](https://en.wikipedia.org/wiki/Portable_Network_Graphics) as well as _CIM_, a compression format peculiar to libGDX which is useful for quick storage access such as during state saving/loading between application focus changes.
+[(code)](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/graphics/PixmapIO.java) 类保存和加载图像。PixmapIO 支持未压缩的 [PNG](https://en.wikipedia.org/wiki/Portable_Network_Graphics)，以及 libGDX 特有的压缩格式 _CIM_。CIM 适合快速访问存储，例如在应用失去和恢复焦点时保存或加载状态。
 
-*As a Pixmap resides in native heap memory it must be disposed of by calling `dispose()` when no longer needed to prevent memory leaks.*
+*由于 Pixmap 位于本地堆内存中，不再需要时必须调用 `dispose()` 释放，以防止内存泄漏。*
 
-# Pixmap Creation
+# 创建 Pixmap
 
-Pixmaps can be created from a _byte array_ containing image data encoded as [JPEG](https://en.wikipedia.org/wiki/Jpeg), [PNG](https://en.wikipedia.org/wiki/Portable_Network_Graphics) or [BMP](https://en.wikipedia.org/wiki/BMP_file_format), a 
+Pixmap 可以通过包含 [JPEG](https://en.wikipedia.org/wiki/Jpeg)、[PNG](https://en.wikipedia.org/wiki/Portable_Network_Graphics) 或 [BMP](https://en.wikipedia.org/wiki/BMP_file_format) 编码图像数据的 _byte array_、
 [FileHandle](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/files/FileHandle.html)
-[(code)](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/files/FileHandle.java), or a specification of dimensions and a format. Once created it can be further manipulated before being uploaded to an OpenGL [Texture](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/Texture.html)
-[(code)](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/graphics/Texture.java)  for rendering or saved for some future use.
+[(code)](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/files/FileHandle.java)，或指定尺寸和格式来创建。创建后，可以先进一步处理，再上传到 OpenGL [Texture](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/Texture.html)
+[(code)](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/graphics/Texture.java) 进行渲染，或保存供以后使用。
 
-The following example creates a 64x64 32-bit RGBA Pixmap, draws a filled green circle inside it, uploads it to a Texture and then disposes of the memory:
+下面的示例创建一个 64x64 的 32 位 RGBA Pixmap，在其中绘制绿色实心圆，将其上传到 Texture，然后释放内存：
 
 ```java
 Pixmap pixmap = new Pixmap( 64, 64, Format.RGBA8888 );
@@ -28,9 +28,9 @@ Texture pixmaptex = new Texture( pixmap );
 pixmap.dispose();
 ```
 
-Note that the memory of the Pixmap is no longer needed after being wrapped in the Texture and uploaded to the GPU. It is therefore disposed of. Note also that this Texture will be _unmanaged_ as it was not created from a persistent file, but a volatile piece of memory which was subsequently discarded.
+注意，Pixmap 被包装到 Texture 并上传到 GPU 后，其内存便不再需要，因此应将其释放。还要注意，由于该 Texture 不是从持久文件创建的，而是来自随后被丢弃的易失内存，所以它属于 _unmanaged_ 资源。
 
-The next example shows a pause/resume life cycle of a typical Android application:
+下面的示例展示典型 Android 应用的暂停/恢复生命周期：
 
 ```java
 
@@ -54,8 +54,8 @@ public void resume() {
 }
 ```
 
-In the preceding example, _pixmap_ will be written to an external location using a simple compression scheme upon application focus loss, and subsequently upon regaining focus it will be reloaded if extant at the specified location.
+在上例中，应用失去焦点时会使用简单的压缩方案将 _pixmap_ 写入外部位置；重新获得焦点时，如果指定位置仍存在该文件，就会重新加载它。
 
-# Drawing
+# 绘制
 
-Pixmap supports simple drawing operations such as the drawing of lines, filled or unfilled rectangles and circles, as well as the setting of individual pixels and drawing of other pixmaps. These operations are also affected by color, blending, and filters which are controlled by `setColor()`, `setBlending()`, and `setFilter()` respectively.
+Pixmap 支持简单的绘制操作，例如绘制线条、实心或空心矩形和圆、设置单个像素，以及绘制其他 Pixmap。这些操作还会受到颜色、混合和过滤器的影响，分别由 `setColor()`、`setBlending()` 和 `setFilter()` 控制。

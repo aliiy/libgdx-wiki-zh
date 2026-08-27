@@ -1,81 +1,81 @@
 ---
-title: Getting Help
+title: 获取帮助
 ---
-The [libGDX community](https://libgdx.com/community/) is glad to help you when you get stuck or encounter a bug, but we need your help to make it as easy to help you as possible.
+当你遇到困难或 bug 时，[libGDX 社区](https://libgdx.com/community/)很乐意提供帮助，但也需要你的配合，让帮助过程尽可能顺利。
 
-## Contents
+## 目录
 
-* [Helping Yourself](#helping-yourself)
-* [Help Us Help You](#help-us-help-you)
-* [Title](#title)
-* [Context](#context)
-* [Relevance](#relevance)
-* [Problem Statement](#problem-statement)
-* [Exceptions](#exceptions)
-* [Code Snippets](#code-snippets)
-* [Executable Example Code](#executable-example-code)
-  * [Example Resources](#example-resources)
-  * [Barebones Application](#barebones-application)
-  * [Barebones SpriteBatch](#barebones-spritebatch)
-  * [Barebones Stage](#barebones-stage)
-* [Actually Executable](#actually-executable)
-* [Attitude](#attitude)
-* [Formatting](#formatting)
+* [先自行排查](#helping-yourself)
+* [让我们更好地帮助你](#help-us-help-you)
+* [标题](#title)
+* [背景](#context)
+* [相关性](#relevance)
+* [问题描述](#problem-statement)
+* [异常](#exceptions)
+* [代码片段](#code-snippets)
+* [可执行示例代码](#executable-example-code)
+  * [示例资源](#example-resources)
+  * [最简应用](#barebones-application)
+  * [最简 SpriteBatch](#barebones-spritebatch)
+  * [最简 Stage](#barebones-stage)
+* [确实可执行](#actually-executable)
+* [态度](#attitude)
+* [格式](#formatting)
 
-## Helping Yourself
+## 先自行排查
 
-Please go through this short checklist to make sure you haven't missed an easy to find solution.
+请先检查以下简短清单，确保没有错过容易找到的解决方案。
 
-  * Are you using the latest nightly build? You can do so by changing `gdxVersion` in `build.gradle` to the snapshot version listed [on GitHub](https://github.com/libgdx/libgdx#readme). Please try that first, as issues are being fixed every single day.
-  * Have you read the documentation on the [wiki](/wiki/)? It can also be very helpful to look at the [Javadocs](https://javadoc.io/doc/com.badlogicgames.gdx) and [source code](https://github.com/libgdx/libgdx) (don't be shy!). Search the [tests](https://github.com/libgdx/libgdx/tree/master/tests/gdx-tests/src/com/badlogic/gdx/tests) for a specific class to find example code.
-  * Have you [searched on our Discord server](https://libgdx.com/community/discord/) for your problem?
-  * Have you [searched the issue tracker](https://github.com/libgdx/libgdx/issues?q=is%3Aissue) for your problem? Be sure to search "All issues", not just "Open issues".
+  * 你使用的是最新的 nightly build 吗？可以将 `build.gradle` 中的 `gdxVersion` 改为 [GitHub](https://github.com/libgdx/libgdx#readme) 上列出的 snapshot 版本。请先尝试这一点，因为问题每天都在修复。
+  * 你读过 [wiki](/wiki/) 上的文档吗？查看 [Javadocs](https://javadoc.io/doc/com.badlogicgames.gdx) 和[源代码](https://github.com/libgdx/libgdx)也很有帮助（不要害羞！）。还可以在[测试](https://github.com/libgdx/libgdx/tree/master/tests/gdx-tests/src/com/badlogic/gdx/tests)中搜索特定类，查找示例代码。
+  * 你在我们的 [Discord 服务器](https://libgdx.com/community/discord/)中搜索过相关问题吗？
+  * 你在[问题跟踪器](https://github.com/libgdx/libgdx/issues?q=is%3Aissue)中搜索过相关问题吗？请务必搜索“所有问题”，而不只是“开放问题”。
 
-**If you still have a problem, the way to get help is the [libGDX Discord](https://libgdx.com/community/discord/). There are a lot of active users, any one of which could answer your question right now.**
+**如果问题仍未解决，可以通过 [libGDX Discord](https://libgdx.com/community/discord/) 获取帮助。那里有很多活跃用户，其中任何一位都可能立即回答你的问题。**
 
-Otherwise, if you wish to [post a new issue](https://github.com/libgdx/libgdx/blob/master/.github/CONTRIBUTING.md) on the [tracker](https://github.com/libgdx/libgdx/issues), keep reading.
+否则，如果你想在[跟踪器](https://github.com/libgdx/libgdx/issues)上[提交新问题](https://github.com/libgdx/libgdx/blob/master/.github/CONTRIBUTING.md)，请继续阅读。
 
-## Help Us Help You
-If you believe your issue, error, or suspected bug is related to a specific backend, please present the following information with your issue. If you are on the Discord have the following information on hand.
+## 让我们更好地帮助你
+如果你认为问题、错误或疑似 bug 与某个特定后端有关，请在问题中提供以下信息。如果你在 Discord 上提问，也请准备好这些信息。
 
-**For Android backend issues**
- - **Note:** Android issues can sometimes be more difficult due to device manufactures breaking things or buggy drivers.
-- Please have the device name and Android version in the bug report. Providing things won't be broken, we will make an attempt to fix the issue or implement a workaround for the device.
+**Android 后端问题**
+ - **注意：**由于设备制造商造成的问题或驱动程序缺陷，Android 问题有时会更难处理。
+  - 请在 bug 报告中提供设备名称和 Android 版本，以便我们尝试修复问题或为设备实现变通方案。
 
-**For Desktop backend issues (LWJGL 2 & 3)**
- - Please list the operating system and version, architecture, and if necessary OpenGL version.
- - Also mark specifically which of those backends have this issue.
+**桌面后端问题（LWJGL 2 和 3）**
+  - 请列出操作系统及版本、架构，以及必要时的 OpenGL 版本。
+  - 还请明确指出哪些后端存在该问题。
 
-**For iOS (RoboVM) backend issues**
- - Please list the iOS version, and device the issue occurs on
+**iOS（RoboVM）后端问题**
+  - 请列出 iOS 版本和出现问题的设备。
 
-**For GWT (WebGL) backend issues**
- - Please list the operating system and version, and architecture.
- - Please list the browser and browser version
+**GWT（WebGL）后端问题**
+  - 请列出操作系统及版本和架构。
+  - 请列出浏览器及浏览器版本。
 
-Listing this information can greatly reduce the workload on us and can greatly increase the chances your issue will be resolved or an available fix or workaround implemented.
+提供这些信息可以大幅减少我们的工作量，也能显著提高问题得到解决或实现修复方案、变通方案的可能性。
 
-## Title
+## 标题
 
-Write a clear and short title. Titles that do not describe the issue (such as "please help") or contain all caps, exclamation marks, etc. make it much less likely that your issue will be read.
+写一个清晰简短的标题。无法描述问题的标题（例如“请帮忙”），或包含全大写、感叹号等内容的标题，会大幅降低问题被阅读的可能性。
 
-## Context
+## 背景
 
-Describe what you are trying to achieve. If it might help your question get answered, also explain the reasons why. If specific solutions are unacceptable, list them and why.
+描述你想要实现的目标。如果说明原因有助于回答问题，也请一并说明。如果某些解决方案不可接受，请列出它们及原因。
 
-Try to keep the information relevant. If you aren't sure, include the extra information but if your text gets very long, provide an executive summary separate from the rest.
+尽量只保留相关信息。如果不确定，可以加入额外信息；但如果内容很长，请另提供一份摘要。
 
-## Problem Statement
+## 问题描述
 
-Concisely describe the problem. Describe each approach you have tried and, for each of those, explain what you expected and what actually happened.
+简洁地描述问题。说明你尝试过的每种方法，并分别解释预期结果和实际发生的情况。
 
-If you fail to do this, likely you will be ignored. No one wants to guess what your problem is and often they don't have the time or patience to ask for the information you should have included from the start.
+如果做不到这一点，你很可能会被忽略。没人愿意猜测你的问题是什么，而且他们通常没有时间或耐心询问你一开始就应提供的信息。
 
-## Exceptions
+## 异常
 
-If an exception occurred, include the _full_ exception message and stack-trace.
+如果发生了异常，请包含完整的异常消息和堆栈跟踪。
 
-Often the first line number just after the deepest (nearest to the bottom) exception message is most relevant. If this line is in your code, along with the full exception message and stack-trace you should include your code for this line and 1-2 surrounding lines.
+通常，紧接在最深层（最靠近底部）的异常消息之后的第一行行号最为相关。如果这一行位于你的代码中，除了完整的异常消息和堆栈跟踪，还应包含该行及其上下各 1-2 行代码。
 
 ```
 Exception in thread "LWJGL Application" com.badlogic.gdx.utils.GdxRuntimeException: java.lang.NullPointerException
@@ -89,29 +89,29 @@ Caused by: java.lang.NullPointerException
 	at com.badlogic.gdx.backends.lwjgl.LwjglApplication$1.run(LwjglApplication.java:108)
 ```
 
-## Code Snippets
+## 代码片段
 
-Code snippets are most often not very useful. Unless you are blatantly misusing the API, most problems cannot be solved just by looking at a code snippet. Code snippets mostly lead to vague guesses at what might be wrong instead of a real answer to your question. Instead, include **executable example code**.
+代码片段通常不太有用。除非你明显误用了 API，否则大多数问题无法仅凭代码片段解决。代码片段往往只能让人模糊猜测可能出错的地方，而不是给出真正的答案。请改为提供**可执行示例代码**。
 
-## Executable Example Code
+## 可执行示例代码
 
-Example code that can be copied, pasted, and run is the best way to get help. It saves those helping you time because they can see the problem right away. They can quickly fix your code or fix the bug, verify the fix, and show you the result. No matter what, an executable example has to be written to properly test, fix, and verify the fix. If you can't debug and fix the problem yourself, you can still help by providing the executable example.
+可以复制、粘贴并运行的示例代码是获得帮助的最佳方式。它能让帮助者立即看到问题，从而快速修改代码或修复 bug、验证修复并展示结果。无论如何，都需要编写可执行示例来正确测试、修复并验证问题。如果你无法自行调试和修复问题，提供可执行示例仍然能帮助大家。
 
-Creating executable example code does take some time. You need to take apart your application and reconstruct the relevant parts in a new, barebones application that shows the problem. Quite often just by doing this you will figure out the problem. If not, you will get help very quickly and the people helping you will have more time to help more people.
+创建可执行示例代码确实需要一些时间。你需要拆分应用，并在一个能复现问题的新最简应用中重建相关部分。很多时候，仅仅这样做就能找到问题；如果仍未找到，你也能更快获得帮助，而帮助者也有更多时间帮助其他人。
 
-Example code should be contained entirely in a single class (use static member classes if needed) and executable, meaning it has a main method and can simply be copied, pasted, and run. Do not use a GdxTest, as that cannot be copy, pasted, and run.
+示例代码应完全包含在单个类中（必要时使用静态成员类），并且包含 main 方法，可以直接复制、粘贴并运行。不要使用 GdxTest，因为它无法直接复制、粘贴和运行。
 
-For more about how to make executable example code, please see [SSCCE](http://sscce.org/) and [MCVE](https://stackoverflow.com/help/minimal-reproducible-example).
+有关如何制作可执行示例代码的更多信息，请参阅 [SSCCE](http://sscce.org/) 和 [MCVE](https://stackoverflow.com/help/minimal-reproducible-example)。
 
-### Example Resources
+### 示例资源
 
-Often executable examples need some resources, such as an image or sound file. It is extra work for those trying to help if they must download your specific resources. Instead, it is ideal to use resources from the [libgdx tests](https://github.com/libgdx/libgdx/tree/master/tests/gdx-tests-android/assets). This enables your example code to be simply pasted into the `gdx-tests-lwjgl` project and run.
+可执行示例通常需要图像或声音文件等资源。如果帮助者必须下载你的专用资源，就会增加额外工作。最好使用 [libgdx 测试](https://github.com/libgdx/libgdx/tree/master/tests/gdx-tests-android/assets)中的资源，这样示例代码就可以直接粘贴到 `gdx-tests-lwjgl` 项目中运行。
 
-The easiest way to write an executable example is to paste one of the barebones applications below into the `gdx-tests-lwjgl` project and then modify it to show your problem, using only the [test resources](https://github.com/libgdx/libgdx/tree/master/tests/gdx-tests-android/assets). Note the test resources are pulled in by `gdx-tests-lwjgl` from the `gdx-tests-android` project.
+编写可执行示例最简单的方法，是将下面的某个最简应用粘贴到 `gdx-tests-lwjgl` 项目中，然后仅使用[测试资源](https://github.com/libgdx/libgdx/tree/master/tests/gdx-tests-android/assets)修改它以展示问题。注意，测试资源由 `gdx-tests-lwjgl` 从 `gdx-tests-android` 项目引入。
 
-### Barebones Application
+### 最简应用
 
-Below is a simple, barebones, executable application. This can be used as a base for creating your own executable example code.
+下面是一个简单的最简可执行应用，可以作为创建自己可执行示例代码的基础。
 
 ```java
 import com.badlogic.gdx.*;
@@ -134,9 +134,9 @@ public class Barebones extends ApplicationAdapter {
 }
 ```
 
-### Barebones SpriteBatch
+### 最简 SpriteBatch
 
-This barebones application uses SpriteBatch to draw an image from the `gdx-tests-lwjgl` project.
+这个最简应用使用 SpriteBatch 绘制来自 `gdx-tests-lwjgl` 项目的图像。
 
 ```java
 import com.badlogic.gdx.*;
@@ -166,9 +166,9 @@ public class BarebonesBatch extends ApplicationAdapter {
 }
 ```
 
-### Barebones Stage
+### 最简 Stage
 
-This barebones application has a [scene2d](/wiki/graphics/2d/scene2d/scene2d) Stage and uses [scene2d.ui](/wiki/graphics/2d/scene2d/scene2d-ui) to draw a label and a button. It uses the [Skin](/wiki/graphics/2d/scene2d/skin) from the gdx-tests-lwjgl project.
+这个最简应用包含一个 [scene2d](/wiki/graphics/2d/scene2d/scene2d) Stage，并使用 [scene2d.ui](/wiki/graphics/2d/scene2d/scene2d-ui) 绘制标签和按钮。它使用来自 gdx-tests-lwjgl 项目的 [Skin](/wiki/graphics/2d/scene2d/skin)。
 
 ```java
 import com.badlogic.gdx.*;
@@ -215,14 +215,14 @@ public class BarebonesStage extends ApplicationAdapter {
 }
 ```
 
-## Actually Executable
+## 确实可执行
 
-If your executable example cannot be pasted into the `gdx-tests-lwjgl` project and run, then it is not actually an executable example. Others should not have to fix up your code to run it, not even to add a main method.
+如果你的可执行示例无法粘贴到 `gdx-tests-lwjgl` 项目并运行，那么它实际上就不是可执行示例。其他人不应为了运行它而修补你的代码，甚至不应替你添加 main 方法。
 
-## Attitude
+## 态度
 
-Begging for help or a quick answer tends to turn people off and makes it less likely you will receive help at all. Just be polite and your question will get answered politely as time allows. If you are rude, you will be ignored or met with rudeness in return. The people helping you are busy and providing you help for free simply because they are nice. They don't owe you anything and they don't have to care about you or your problems.
+乞求帮助或催促快速回答往往会令人反感，也会降低你获得帮助的可能性。保持礼貌，大家会在时间允许时回答你。如果你态度粗鲁，就会被忽略或得到同样粗鲁的回应。帮助你的人都很忙，只是出于善意免费提供帮助；他们不欠你什么，也没有义务关心你或你的问题。
 
-## Formatting
+## 格式
 
-If you spend a little bit of your time to format your post nicely, it is more likely others will spend their time responding to your post. This means capital letters where appropriate, paragraphs to separate ideas, use actual words (rather than "u", "bcoz", etc), put code in code blocks, etc. If English is not your first language, we understand. No need to apologize, just do your best to make an effort.
+如果你花一点时间把帖子排版清楚，别人也更可能花时间回复。包括在适当位置使用大写字母，用段落区分想法，使用完整词语（而不是“u”“bcoz”等），将代码放入代码块等。如果英语不是你的母语，我们理解。无需道歉，只要尽力认真表达即可。

@@ -1,55 +1,55 @@
 ---
-title: Managing your assets
+title: 管理资源
 ---
-### Why would I want to use the AssetManager
+### 为什么要使用 AssetManager
 
-[AssetManager](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/assets/AssetManager.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/assets/AssetManager.java) helps you load and manage your assets. It is the recommended way to load your assets, due to the following nice behaviors:
+[AssetManager](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/assets/AssetManager.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/assets/AssetManager.java) 可以帮助你加载和管理资源。由于具备以下优点，推荐使用它加载资源：
 
-  * Loading of most resources is done asynchronously, so you can display a reactive loading screen while things load
-  * Assets are reference counted. If two assets A and B both depend on another asset C, C won't be disposed until A and B have been disposed. This also means that if you load an asset multiple times, it will actually be shared and only take up memory once!
-  * A single place to store all your assets.
-  * Allows to transparently implement things like caches (see FileHandleResolver below)
+  * 大多数资源会异步加载，因此可以在加载过程中显示响应式加载画面
+  * 资源使用引用计数。如果资源 A 和 B 都依赖资源 C，那么只有在 A 和 B 都被释放后，C 才会被释放。这也意味着多次加载同一资源时，资源实际上会被共享，只占用一份内存！
+  * 在一个地方统一存放所有资源。
+  * 可以透明地实现缓存等功能（见下文的 FileHandleResolver）
 
-Still with me? Then read on.
+还在继续阅读吗？那就接着往下看。
 
-### Creating an AssetManager
+### 创建 AssetManager
 
-This part is rather simple:
+这部分很简单：
 
 ```java
 AssetManager manager = new AssetManager();
 ```
 
-This sets up a standard AssetManager, with all the loaders libGDX has in store at the moment. Let's see how the loading mechanism works.
+这会创建一个标准的 AssetManager，并包含当前 libGDX 提供的所有加载器。下面看看加载机制如何工作。
 
-**Caution:** don't make your `AssetManager` or any other resources (like `Texture`, etc.) `static`, unless you properly manage them. E.g. the following code will cause issues:
+**注意：**除非能够妥善管理，否则不要将 `AssetManager` 或其他资源（例如 `Texture`）声明为 `static`。例如，下面的代码会导致问题：
 
 ```java
 public static AssetManager assets = new AssetManager();
 ```
 
-This will cause problems on Android because the life-cycle of the static variable is not necessarily the same as the life-cycle of your application. Therefore the `AssetManager` instance of a previous instance of your application might be used for the next instance, while the resources are no longer valid. This typically would cause black/missing textures or incorrect assets.
+这会在 Android 上造成问题，因为静态变量的生命周期不一定与应用生命周期相同。因此，前一个应用实例的 `AssetManager` 可能被下一个实例使用，但其中的资源已经失效，通常会导致纹理变黑、缺失或资源错误。
 
-On Android, it is even possible for multiple instances of your Activity to be active at the same time, so do not think you're safe even if you handle life-cycle methods properly! (See [this StackOverflow question](https://stackoverflow.com/questions/4341600/how-to-prevent-multiple-instances-of-an-activity-when-it-is-launched-with-differ) for details.)
+在 Android 上，甚至可能同时存在多个 Activity 实例，因此即使正确处理了生命周期方法，也不要以为这样就安全了！（详情请参阅[这个 StackOverflow 问题](https://stackoverflow.com/questions/4341600/how-to-prevent-multiple-instances-of-an-activity-when-it-is-launched-with-differ)。）
 
-### Adding Assets to the queue
+### 将资源加入队列
 
-To load assets, the AssetManager needs to know how to load a specific type of asset. This functionality is implemented via AssetLoaders. There are two variants, SynchronousAssetLoader and AsynchronousAssetLoader. The former loads everything on the rendering thread, the latter loads parts of the asset on another thread, e.g., the Pixmap needed for a Texture, and then loads the OpenGL dependent part on the rendering thread. The following resources can be loaded out of the box with the AssetManager as constructed above.
+要加载资源，AssetManager 需要知道如何加载特定类型的资源。这通过 AssetLoader 实现。AssetLoader 有两种：SynchronousAssetLoader 和 AsynchronousAssetLoader。前者在渲染线程上加载所有内容，后者在其他线程上加载资源的一部分（例如 Texture 所需的 Pixmap），然后在渲染线程上加载依赖 OpenGL 的部分。使用上面创建的 AssetManager，可以直接加载以下资源。
 
 
-  * Pixmaps via [PixmapLoader](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/assets/loaders/PixmapLoader.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/assets/loaders/PixmapLoader.java)
-  * Textures via [TextureLoader](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/assets/loaders/TextureLoader.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/assets/loaders/TextureLoader.java)
-  * BitmapFonts via [BitmapFontLoader](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/assets/loaders/BitmapFontLoader.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/assets/loaders/BitmapFontLoader.java)
-  * FreeTypeFonts via [FreeTypeFontLoader](https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests/src/com/badlogic/gdx/tests/extensions/FreeTypeFontLoaderTest.java)
-  * TextureAtlases via [TextureAtlasLoader](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/assets/loaders/TextureAtlasLoader.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/assets/loaders/TextureAtlasLoader.java)
-  * Music instances via [MusicLoader](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/assets/loaders/MusicLoader.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/assets/loaders/MusicLoader.java)
-  * Sound instances via [SoundLoader](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/assets/loaders/SoundLoader.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/assets/loaders/SoundLoader.java)
-  * Skins via [SkinLoader](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/assets/loaders/SkinLoader.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/assets/loaders/SkinLoader.java)
-  * Particle Effects via [ParticleEffectLoader](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/assets/loaders/ParticleEffectLoader.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/assets/loaders/ParticleEffectLoader.java)
-  * I18NBundles via [I18NBundleLoader](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/assets/loaders/I18NBundleLoader.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/assets/loaders/I18NBundleLoader.java)
-  * FreeTypeFontGenerator via FreeTypeFontGeneratorLoader [(code)](https://github.com/libgdx/libgdx/blob/master/extensions/gdx-freetype/src/com/badlogic/gdx/graphics/g2d/freetype/FreeTypeFontGeneratorLoader.java)
+  * Pixmaps，通过 [PixmapLoader](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/assets/loaders/PixmapLoader.html) [(代码)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/assets/loaders/PixmapLoader.java)
+  * Textures，通过 [TextureLoader](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/assets/loaders/TextureLoader.html) [(代码)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/assets/loaders/TextureLoader.java)
+  * BitmapFonts，通过 [BitmapFontLoader](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/assets/loaders/BitmapFontLoader.html) [(代码)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/assets/loaders/BitmapFontLoader.java)
+  * FreeTypeFonts，通过 [FreeTypeFontLoader](https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests/src/com/badlogic/gdx/tests/extensions/FreeTypeFontLoaderTest.java)
+  * TextureAtlases，通过 [TextureAtlasLoader](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/assets/loaders/TextureAtlasLoader.html) [(代码)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/assets/loaders/TextureAtlasLoader.java)
+  * Music 实例，通过 [MusicLoader](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/assets/loaders/MusicLoader.html) [(代码)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/assets/loaders/MusicLoader.java)
+  * Sound 实例，通过 [SoundLoader](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/assets/loaders/SoundLoader.html) [(代码)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/assets/loaders/SoundLoader.java)
+  * Skins，通过 [SkinLoader](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/assets/loaders/SkinLoader.html) [(代码)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/assets/loaders/SkinLoader.java)
+  * Particle Effects，通过 [ParticleEffectLoader](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/assets/loaders/ParticleEffectLoader.html) [(代码)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/assets/loaders/ParticleEffectLoader.java)
+  * I18NBundles，通过 [I18NBundleLoader](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/assets/loaders/I18NBundleLoader.html) [(代码)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/assets/loaders/I18NBundleLoader.java)
+  * FreeTypeFontGenerator，通过 FreeTypeFontGeneratorLoader [(代码)](https://github.com/libgdx/libgdx/blob/master/extensions/gdx-freetype/src/com/badlogic/gdx/graphics/g2d/freetype/FreeTypeFontGeneratorLoader.java)
 
-Loading a specific asset is simple:
+加载特定资源很简单：
 
 ```java
 manager.load("mytexture.png", Texture.class);
@@ -57,7 +57,7 @@ manager.load("myfont.fnt", BitmapFont.class);
 manager.load("mymusic.ogg", Music.class);
 ```
 
-These calls will enqueue those assets for loading. The assets will be loaded in the order we called the [AssetManager.load()](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/assets/AssetManager.html#load-java.lang.String-java.lang.Class-) method. Some loaders allow you to also pass parameters to them via AssetManager.load(). Say we want to specify a non-default filter and mipmapping setting for loading a texture:
+这些调用会将资源加入加载队列。资源会按照调用 [AssetManager.load()](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/assets/AssetManager.html#load-java.lang.String-java.lang.Class-) 的顺序加载。某些加载器还允许通过 AssetManager.load() 传入参数。假设我们希望为纹理加载指定非默认过滤器和 mipmapping 设置：
 
 ```java
 TextureParameter param = new TextureParameter();
@@ -66,10 +66,10 @@ param.genMipMaps = true;
 manager.load("mytexture.png", Texture.class, param);
 ```
 
-Look into the loaders mentioned above to find out about their parameters.
+请查看上面提到的加载器，了解它们的参数。
 
-### Actually loading the assets
-So far we only queued assets to be loaded. The AssetManager does not yet load anything. To kick this off we have to call AssetManager.update() continuously, say in our ApplicationListener.render() method:
+### 实际加载资源
+到目前为止，我们只是将资源加入加载队列，AssetManager 还没有真正加载任何内容。要开始加载，必须持续调用 AssetManager.update()，例如在 ApplicationListener.render() 方法中调用：
 
 ```java
 public MyAppListener implements ApplicationListener {
@@ -86,22 +86,22 @@ public MyAppListener implements ApplicationListener {
 }
 ```
 
-As long as AssetManager.update() returns false you know it's still loading assets. To poll the concrete state of loading you can use AssetManager.getProgress(), which returns a number between 0 and 1 indicating the percentage of assets loaded so far. There are other methods in AssetManager that give you similar information, like AssetManager.getLoadedAssets() or AssetManager.getQueuedAssets(). <b>You have to call AssetManager.update() to keep loading!</b>
+只要 AssetManager.update() 返回 false，就说明资源仍在加载。可以使用 AssetManager.getProgress() 查询具体进度，它会返回 0 到 1 之间的数字，表示当前已加载资源的百分比。AssetManager 中还有其他提供类似信息的方法，例如 AssetManager.getLoadedAssets() 和 AssetManager.getQueuedAssets()。<b>必须调用 AssetManager.update() 才能继续加载！</b>
 
-If you want to block and make sure all assets are loaded you can call:
+如果希望阻塞并确保所有资源都已加载，可以调用：
 
 ```java
 manager.finishLoading();
 ```
 
-This will block until all the assets that have been queued are actually done loading. Kinda defeats the purpose of asynchronous loading, but sometimes one might need it (e.g., loading the assets needed to display the loading screen itself).
+这会一直阻塞，直到队列中的所有资源完成加载。这在一定程度上违背了异步加载的目的，但有时确实需要这样做（例如加载显示加载画面所需的资源）。
 
-### Optimize loading
-In order to perform loading as efficiently/fast as possible while trying to keep a certain FPS, AssetManager.update() should be called with parameters.<br>**E.g. AssetManager.update(17)** - In this case the AssetManager blocks for at least 17 milliseconds (only less if all assets are loaded) and loads as many assets as possible, before it returns control back to the render method. Blocking for 16 or 17 milliseconds leads to ~60FPS as 1/60*1000 = 16.66667. Note that it might block for longer, depending on the asset that is being loaded so **don't** take the desired FPS as guaranteed.
+### 优化加载
+为了在保持一定 FPS 的同时尽可能高效、快速地加载资源，应为 AssetManager.update() 传入参数。<br>**例如：AssetManager.update(17)** —— 此时 AssetManager 至少阻塞 17 毫秒（只有在所有资源都已加载时才会少于此时间），并尽可能多地加载资源，然后将控制权交还给渲染方法。阻塞 16 或 17 毫秒可以达到约 60FPS，因为 1/60*1000 = 16.66667。请注意，根据当前加载的资源，阻塞时间可能更长，因此**不要**将目标 FPS 视为保证值。
 
-### Loading a TTF using the AssetHandler
+### 使用 AssetHandler 加载 TTF
 
-Loading a TrueType file via the AssetHandler requires only a little bit extra tweaking. Before we can load a TTF, we need to set the type of loader we're going to use for FreeType fonts. This is done with the following:
+通过 AssetHandler 加载 TrueType 文件只需进行少量额外配置。在加载 TTF 前，需要设置 FreeType 字体使用的加载器类型，方法如下：
 
 ```java
 FileHandleResolver resolver = new InternalFileHandleResolver();
@@ -109,9 +109,9 @@ manager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(r
 manager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
 ```
 
-Next, we'll want to create a `FreeTypeFontLoaderParameter` that defines 1) our actual font file, and 2) our font size. There are other parameters we can define here, too, when you have time to dig more.
+接下来创建 `FreeTypeFontLoaderParameter`，用于定义 1）实际字体文件，2）字体大小。这里还可以定义其他参数，具体可进一步了解。
 
-Let's say we want to create two different fonts: a smaller, sans-serif font that will be used for one type of writing text, and a larger, serif font for titles and other fun things. I've decided to use Arial and Georgia for these two fonts, respectively. Here's how I can load them using the AssetManager:
+假设我们要创建两种不同的字体：一种较小的无衬线字体，用于某类正文；另一种较大的衬线字体，用于标题和其他内容。我决定分别使用 Arial 和 Georgia。下面是使用 AssetManager 加载它们的方法：
 
 ```java
 // First, let's define the params and then load our smaller font
@@ -127,16 +127,16 @@ myBigFont.fontParameters.size = 20;
 manager.load("georgia.ttf", BitmapFont.class, myBigFont);
 ```
 
-Neat! Now we've got two different fonts, `mySmallFont` and `myBigFont`, that we can use to display different text.
+这样就得到了两种不同的字体 `mySmallFont` 和 `myBigFont`，可以用来显示不同文本。
 
-We're not quite done yet. Now that the fonts have been `.load`ed, we still need to set them. We can do this like so:
+现在还没有完全结束。字体已经通过 `.load` 加载，但我们还需要获取它们。可以这样做：
 
 ```java
 BitmapFont mySmallFont = manager.get("arial.ttf", BitmapFont.class);
 BitmapFont myBigFont = manager.get("georgia.ttf", BitmapFont.class);
 ```
 
-The name you give the manager doesn't have to match the name of the font, like in the above example. If you want to use the same font for different sizes, just make sure the name you give the asset manager when loading the font is unique. For example, here's how you could load the Arial font in both 10pt and 20pt:
+传给管理器的名称不必与字体名称一致，就像上面的例子一样。如果想使用同一字体的不同大小，只需确保加载字体时传给资源管理器的名称唯一。例如，下面展示了如何加载 10pt 和 20pt 大小的 Arial 字体：
 
 ```java
 FreeTypeFontLoaderParameter arial10 = new FreeTypeFontLoaderParameter();
@@ -158,15 +158,15 @@ arial20.fontParameters.size = 20;
 manager.load("arial20.ttf", BitmapFont.class, arial20);
 ```
 
-### Getting Assets
-That's again easy:
+### 获取资源
+这同样很简单：
 
 ```java
 Texture tex = manager.get("mytexture.png", Texture.class);
 BitmapFont font = manager.get("myfont.fnt", BitmapFont.class);
 ```
 
-This of course assumes that those assets have been successfully loaded. If we want to poll whether a specific asset has been loaded we can do the following:
+当然，这假设这些资源已经成功加载。如果要查询某个资源是否已加载，可以这样做：
 
 ```java
 if(manager.isLoaded("mytexture.png")) {
@@ -175,35 +175,35 @@ if(manager.isLoaded("mytexture.png")) {
 }
 ```
 
-### Disposing Assets
-Easy again, and here you can see the real power of the AssetManager:
+### 释放资源
+这同样很简单，下面可以看到 AssetManager 的真正优势：
 
 ```java
 manager.unload("myfont.fnt");
 ```
 
-If that font references a Texture that you loaded manually before, the texture won't get destroyed! It will be reference counted, getting one reference from the bitmap font and another from itself. As long as this count is not zero, the texture won't be disposed.
+如果该字体引用了之前手动加载的 Texture，纹理不会被销毁！它会使用引用计数：位图字体提供一个引用，纹理自身再提供一个引用。只要计数不为零，纹理就不会被释放。
 
-* Assets managed via the AssetManager shouldn't be disposed manually, instead, call AssetManager.unload()!
+* 由 AssetManager 管理的资源不应手动释放，应调用 AssetManager.unload()！
 
-If you want to get rid of all assets at once you can call:
+如果希望一次释放所有资源，可以调用：
 
 ```java
 manager.clear();
 ```
 
-or
+或者
 
 ```java
 manager.dispose();
 ```
 
-Both will dispose all currently loaded assets and remove any queued and not yet loaded assets. The AssetManager.dispose() method will also kill the AssetManager itself. After a call to this method you should not use the manager anymore.
+这两种方法都会释放当前已加载的所有资源，并移除队列中尚未加载的资源。AssetManager.dispose() 方法还会销毁 AssetManager 自身。调用此方法后不应再使用该管理器。
 
-And that's pretty much everything there is. Now for the nitty-gritty parts.
+以上就是基本用法。下面介绍更细节的部分。
 
-### I only supply Strings, where does the AssetManager load the assets from?
-Every loader has a reference to a FileHandleResolver. That's a simple interface looking like this:
+### 我只提供了字符串，AssetManager 从哪里加载资源？
+每个加载器都持有一个 FileHandleResolver 引用。这是一个简单的接口：
 
 ```java
 public interface FileHandleResolver {
@@ -211,39 +211,39 @@ public interface FileHandleResolver {
 }
 ```
 
-By default, every loader uses an InternalFileHandleResolver. That will return a FileHandle pointing at an internal file (just like Gdx.files.internal("mytexture.png"). You can write your own resolvers! Look into the assets/loaders/resolvers package for more FileHandleResolver implementation. One use case for this would be a caching system, where you check if you have a newer version downloaded to the external storage first, and fall back to the internal storage if it's not available. The possibilities are endless.
+默认情况下，每个加载器都使用 InternalFileHandleResolver。它会返回指向内部文件的 FileHandle（就像 Gdx.files.internal("mytexture.png") 一样）。你也可以编写自己的解析器！可以查看 assets/loaders/resolvers 包中的其他 FileHandleResolver 实现。一个应用场景是缓存系统：先检查外部存储中是否有已下载的新版本，如果没有，再回退到内部存储。应用方式不受限制。
 
-You can set the FileHandleResolver to be used via the second constructor of AssetManager:
+可以通过 AssetManager 的第二个构造函数设置要使用的 FileHandleResolver：
 
 ```java
 AssetManager manager = new AssetManager(new ExternalFileHandleResolver());
 ```
 
-This will make sure all default loaders listed above will use that loader.
+这样可以确保上面列出的所有默认加载器都使用该解析器。
 
-### Writing your own Loaders
-I can't anticipate which other types of resources you want to load, so at some point you might want to write your own loaders. There are two interfaces called SynchronousAssetLoader and AsynchronousAssetLoader you can implement. Use the former if your asset type is fast to load, use the latter if you want your loading screen to be responsive. I suggest basing your loader on the code of one of the loaders listed above. Look into MusicLoader for a simple SynchronousAssetLoader, look into PixmapLoader for a simple AsynchronousAssetLoader. BitmapFontLoader is a good example of an asynchronous loader that also has dependencies that need to be loaded before the actual asset can be loaded (in that case it's the texture storing the glyphs). Again, you can do pretty much anything with this.
+### 编写自己的加载器
+我无法预知你还想加载哪些其他类型的资源，因此你可能会需要编写自己的加载器。你可以实现 SynchronousAssetLoader 和 AsynchronousAssetLoader 这两个接口。如果资源类型加载很快，可以使用前者；如果希望加载画面保持响应，则使用后者。建议参考上面列出的某个加载器的代码来编写。MusicLoader 是简单的 SynchronousAssetLoader 示例，PixmapLoader 是简单的 AsynchronousAssetLoader 示例。BitmapFontLoader 则是一个很好的异步加载器示例，它还有一些必须先于实际资源加载的依赖（这里指存储字形的纹理）。总之，你可以用这种方式实现很多功能。
 
-Additionally, the `loadAsync` function _can_ be used to load parts of the assets where the loading can be delegated to another thread (this is a requirement for responsive loading screen). The `loadSync` function _must_ be used if some parts of the asset needs to be loaded on the main rendering thread. For example, OpenGL API function calls must be invoked on the main rendering thread, therefore any parts of the asset and its loading involving calls to OpenGL must be called in `loadSync`.
+此外，`loadAsync` 函数_可以_用于加载能够交给其他线程处理的资源部分（这是实现响应式加载画面的要求）。如果资源的某些部分必须在主渲染线程上加载，则_必须_使用 `loadSync` 函数。例如，OpenGL API 函数调用必须在主渲染线程上执行，因此资源中任何涉及 OpenGL 调用的部分都必须在 `loadSync` 中处理。
 
-`loadAsync` will be called first and `loadSync` afterwards. You can pass information from `loadASync` to `loadSync` with the aid of your custom asset loader class' attributes. **Care must be taken to initialize these temporary variables to null between the loading of each separate asset or you might end up loading the same asset multiple times!** Easiest way to achieve this is by setting your temporary variables to null at the beginning of `loadASync` implementation. `PixmapLoader` class demonstrates a simple way of using the temporary variables correctly, whereas `TextureLoader` shows a more complex way to pass information between `loadAsync` and `loadSync`.
+`loadAsync` 会先被调用，之后才会调用 `loadSync`。借助自定义资源加载器类的属性，可以将信息从 `loadASync` 传递给 `loadSync`。**务必在每个独立资源开始加载时将这些临时变量初始化为 null，否则可能会多次加载同一个资源！**最简单的做法是在 `loadASync` 实现的开头将临时变量设为 null。`PixmapLoader` 类展示了正确使用临时变量的简单方式，而 `TextureLoader` 则展示了在 `loadAsync` 和 `loadSync` 之间传递信息的更复杂方式。
 
-Once you are done writing your loader, tell the AssetManager about it:
+完成加载器后，将它告知 AssetManager：
 
 ```java
 manager.setLoader(MyAssetClass.class, new MyAssetLoader(new InternalFileHandleResolver()));
 manager.load("myasset.mas", MyAssetClass.class);
 ```
 
-### Resuming with a Loading Screen
-On Android, your app can be paused and resumed. Managed OpenGL resources like Textures need to be reloaded in that case, which can take a bit of time. If you want to display a loading screen on resume, you can do the following after you created your AssetManager.
+### 使用加载画面恢复
+在 Android 上，应用可能会暂停和恢复。此时，Texture 等受管理的 OpenGL 资源需要重新加载，这可能需要一些时间。如果希望在恢复时显示加载画面，可以在创建 AssetManager 后执行以下操作。
 
 ```java
 Texture.setAssetManager(manager);
 ```
 
-In your ApplicationListener.resume() method you can then switch to your loading screen and call AssetManager.update() again until everything is back to normal.
+随后，可以在 ApplicationListener.resume() 方法中切换到加载画面，并再次调用 AssetManager.update()，直到一切恢复正常。
 
-If you don't set the AssetManager as shown in the last snippet, the usual managed texture mechanism will kick in, so you don't have to worry about anything.
+如果没有像上一个代码片段那样设置 AssetManager，通常的受管理纹理机制会自动生效，因此无需进行其他处理。
 
-And this concludes the long awaited article on the AssetManager. 
+至此，期待已久的 AssetManager 文章就结束了。
