@@ -1,14 +1,14 @@
 ---
 permalink: /community/jams/
-title: "Game Jams"
+title: "Game Jam"
 classes: wide3
 header:
   overlay_color: "#000"
   overlay_filter: "0.5"
   overlay_image: /assets/images/jams.jpeg
-  caption: "Photo credit: [**Sincerely Media**](https://unsplash.com/photos/v0msYhZq2RU)"
+  caption: "图片来源：[**Sincerely Media**](https://unsplash.com/photos/v0msYhZq2RU)"
 
-excerpt: "Our community is also regularly hosting game jams for libGDX. Here is a list of our past and upcoming jams:"
+excerpt: "我们的社区也会定期举办 libGDX Game Jam。以下是我们往届和即将举办的 Game Jam 列表："
 
 toc: true
 toc_sticky: false
@@ -16,66 +16,66 @@ toc_sticky: false
 
 {% include breadcrumbs.html %}
 
-# Upcoming
-If you want to stay up to date – join the official [libGDX Discord](/community/discord/)!
+# 即将举办
+想掌握最新动态的话，就加入官方 [libGDX Discord](/community/discord/) 吧！
 
-## September 2026
-Suggestions: 6th – 8th  
-Voting: 10th – 12th  
-Jam: 13th – 19th
+## 2026 年 9 月
+主题提议：6 日 – 8 日  
+投票：10 日 – 12 日  
+Jam：13 日 – 19 日
 
-## December 2026
-Suggestions: Nov. 29th – Dec. 1st  
-Voting: 3rd – 5th  
-Jam: 6th – 12th
+## 2026 年 12 月
+主题提议：11 月 29 日 – 12 月 1 日  
+投票：3 日 – 5 日  
+Jam：6 日 – 12 日
 
-# Rules
-We encourage camaraderie, teamwork, and good sportsmanship with a side of well-intentioned buffoonery. Nonetheless, there are some rules to be followed:
+# 规则
+我们鼓励友谊、团队合作和良好的体育精神，也欢迎一点善意的插科打诨。尽管如此，还是有以下规则需要遵守：
 
-- The game must be created with the libGDX framework.
-- The game must be created within the jam period. Late submissions are to be approved by admins.
-- Starter projects and templates are permitted, so long as they are not fully fledged games.
-- You can work in groups or individually.
-- Your game must be based on the selected theme.
-- Any and all copyright laws pertaining to assets you use must be followed.
+- 游戏必须使用 libGDX 框架制作。
+- 游戏必须在 Jam 期间内完成。逾期提交需经管理员批准。
+- 允许使用起始项目和模板，前提是它们不是完整的游戏。
+- 你可以组队参加，也可以独立完成。
+- 你的游戏必须围绕选定的主题来制作。
+- 必须遵守与你所用素材相关的一切版权法律。
 
 <br/>
 
-# Past Jams
-* [One Life Only](https://itch.io/jam/libgdx-jam-37) (June 2026)
-* [That's a Weapon?](https://itch.io/jam/libgdx-jam-36) (March 2026)
-* [BRIDGES](https://itch.io/jam/libgdx-jam-35) (December 2025)
-* [Dungeons](https://itch.io/jam/libgdx-jam-34) (September 2025)
-* [Nature's Revenge](https://itch.io/jam/libgdx-jam-33) (June 2025)
-* [Magic and Spells](https://itch.io/jam/libgdx-jam-32) (March 2025)
-* [Roguelike](https://itch.io/jam/libgdx-jam-31) (December 2024)
-* [The 4 Elements (Fire, Water, Earth, Air)](https://itch.io/jam/libgdx-jam-30) (September 2024)
-* [TIME TRAVEL](https://itch.io/jam/libgdx-jam-29) (June 2024)
-* [THE UNDERWORLD](https://itch.io/jam/libgdx-jam-28) (March 2024)
-* [It Came From Above](https://itch.io/jam/libgdx-jam-27) (December 2023)
-* [A Terrifying (K)Night!](https://itch.io/jam/libgdx-jam-26) (September 2023)
-* [UNDERWATER](https://itch.io/jam/libgdx-jam-25) (June 2023)
-* [Pixel Wars](https://itch.io/jam/libgdx-jam-24) (March 2023)
-* [DYSTOPIAN CHRISTMAS](https://itch.io/jam/libgdx-jam-23) (December 2022)
-* [Post Apocalyptic](https://itch.io/jam/libgdx-jam-22) (September 2022)
-* [Floating Cities](https://itch.io/jam/libgdx-jam-21) (June 2022)
-* [Underground](https://itch.io/jam/libgdx-jam-20) (March 2022)
-* [Machines & Slimes](https://itch.io/jam/libgdx-jam-19) (December 2021)
-* [ZERO GRAVITY](https://itch.io/jam/libgdx-jam-18) (September 2021)
-* [BALLS](https://itch.io/jam/libgdx-jam-17) (June 2021)
-* [ALICE IN WONDERLAND](https://itch.io/jam/libgdx-jam-16) (March 2021)
-* [The player is asleep](https://itch.io/jam/libgdx-jam-15) (December 2020)
-* [Parallel Worlds](https://itch.io/jam/libgdx-jam-september-2020) (September 2020)
-* [Tower Defense Without Towers](https://itch.io/jam/libgdx-jam-june-2020) (June 2020)
-* [GLOBAL THERMONUCLEAR WAR](https://itch.io/jam/libgdx-jam-march-2020) (March 2020)
-* [THE WORLD IS FOOD](https://itch.io/jam/libgdx-jam-december-2019) (December 2019)
-* [Halloween](https://itch.io/jam/libgdx-jam-october-2019) (October 2019)
-* [One Room](https://itch.io/jam/libgdx-jam-august-2019) (August 2019)
-* [Upside Down](/archive/libgdxjam.com/entries1d1f.html) (April 2019)
-* [Energy](/archive/libgdxjam.com/entries303d.html) (February 2019)
-* [Time](/archive/libgdxjam.com/entries34de.html) (October 2018)
-* [The World Is Shrinking](/archive/libgdxjam.com/entries280b.html) (July 2018)
-* [Light vs. Dark](/archive/libgdxjam.com/entries8a8a.html) (May 2018)
-* [A Rainy Day](/archive/libgdxjam.com/entries62c9.html) (March 2018)
-* [Three Colors, Three Buttons](/archive/libgdxjam.com/entriesd8d2.html) (February 2018)
-* [Life in space](https://itch.io/jam/libgdxjam) (December 2015)
+# 历届 Game Jam
+* [仅有一次生命](https://itch.io/jam/libgdx-jam-37)（2026 年 6 月）
+* [这也算武器？](https://itch.io/jam/libgdx-jam-36)（2026 年 3 月）
+* [桥梁](https://itch.io/jam/libgdx-jam-35)（2025 年 12 月）
+* [地牢](https://itch.io/jam/libgdx-jam-34)（2025 年 9 月）
+* [自然的复仇](https://itch.io/jam/libgdx-jam-33)（2025 年 6 月）
+* [魔法与咒语](https://itch.io/jam/libgdx-jam-32)（2025 年 3 月）
+* [Roguelike](https://itch.io/jam/libgdx-jam-31)（2024 年 12 月）
+* [四大元素（火、水、土、气）](https://itch.io/jam/libgdx-jam-30)（2024 年 9 月）
+* [时间旅行](https://itch.io/jam/libgdx-jam-29)（2024 年 6 月）
+* [冥界](https://itch.io/jam/libgdx-jam-28)（2024 年 3 月）
+* [天降之物](https://itch.io/jam/libgdx-jam-27)（2023 年 12 月）
+* [一个恐怖的（骑）士之夜！](https://itch.io/jam/libgdx-jam-26)（2023 年 9 月）
+* [水下](https://itch.io/jam/libgdx-jam-25)（2023 年 6 月）
+* [像素战争](https://itch.io/jam/libgdx-jam-24)（2023 年 3 月）
+* [反乌托邦圣诞节](https://itch.io/jam/libgdx-jam-23)（2022 年 12 月）
+* [末日废土](https://itch.io/jam/libgdx-jam-22)（2022 年 9 月）
+* [浮空城市](https://itch.io/jam/libgdx-jam-21)（2022 年 6 月）
+* [地下](https://itch.io/jam/libgdx-jam-20)（2022 年 3 月）
+* [机械与史莱姆](https://itch.io/jam/libgdx-jam-19)（2021 年 12 月）
+* [零重力](https://itch.io/jam/libgdx-jam-18)（2021 年 9 月）
+* [球球](https://itch.io/jam/libgdx-jam-17)（2021 年 6 月）
+* [爱丽丝梦游仙境](https://itch.io/jam/libgdx-jam-16)（2021 年 3 月）
+* [玩家睡着了](https://itch.io/jam/libgdx-jam-15)（2020 年 12 月）
+* [平行世界](https://itch.io/jam/libgdx-jam-september-2020)（2020 年 9 月）
+* [没有塔的塔防](https://itch.io/jam/libgdx-jam-june-2020)（2020 年 6 月）
+* [全球热核战争](https://itch.io/jam/libgdx-jam-march-2020)（2020 年 3 月）
+* [世界就是食物](https://itch.io/jam/libgdx-jam-december-2019)（2019 年 12 月）
+* [万圣节](https://itch.io/jam/libgdx-jam-october-2019)（2019 年 10 月）
+* [一个房间](https://itch.io/jam/libgdx-jam-august-2019)（2019 年 8 月）
+* [颠倒世界](/archive/libgdxjam.com/entries1d1f.html)（2019 年 4 月）
+* [能量](/archive/libgdxjam.com/entries303d.html)（2019 年 2 月）
+* [时间](/archive/libgdxjam.com/entries34de.html)（2018 年 10 月）
+* [世界正在缩小](/archive/libgdxjam.com/entries280b.html)（2018 年 7 月）
+* [光明与黑暗](/archive/libgdxjam.com/entries8a8a.html)（2018 年 5 月）
+* [一个雨天](/archive/libgdxjam.com/entries62c9.html)（2018 年 3 月）
+* [三种颜色，三个按钮](/archive/libgdxjam.com/entriesd8d2.html)（2018 年 2 月）
+* [太空生活](https://itch.io/jam/libgdxjam)（2015 年 12 月）

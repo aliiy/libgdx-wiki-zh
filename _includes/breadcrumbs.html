@@ -1,7 +1,7 @@
 {% comment %}<!-- https://jekyllcodex.org/without-plugin/breadcrumbs/ -->{% endcomment %}
 <div id="breadcrumbs" style="margin-top: -25px; margin-bottom: 30px;font-size:17px">
 {% assign crumbs = page.url | remove:'/index.html' | split: '/' %}
-<a href="/">Home</a>
+<a href="/">首页</a>
 {% for crumb in crumbs offset: 1 %}
   {% if forloop.last %}
     / <b>{{ page.title }}</b>

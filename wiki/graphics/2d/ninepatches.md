@@ -10,7 +10,7 @@ title: 九宫格
 ## 简介
 
 NinePatch 图像是一种定义了“可拉伸”区域的图像。利用此属性，可以将图像重复到很小的区域，或缩放到很大的区域。由于区域是预先定义的，图像不会显得被拉伸（前提是创建图像时已考虑缩放）。libGDX 中对应的 NinePatch 类位于[这里](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g2d/NinePatch.html)
-[(code)](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/graphics/g2d/NinePatch.java).
+[(代码)](https://github.com/libgdx/libgdx/tree/master/gdx/src/com/badlogic/gdx/graphics/g2d/NinePatch.java)。
 
 NinePatch 用于 LibGDX 的多种 Scene2d 组件，包括按钮、滚动窗格和文本框。
 
@@ -34,7 +34,7 @@ libGDX 提供多种资源加载方式，NinePatch 也不例外。手动创建和
 ```java
 NinePatch patch = new NinePatch(new Texture(Gdx.files.internal("knob.png")), 12, 12, 12, 12);
 ```
-四个 _integer_ 参数指定允许图像拉伸的区域（以像素为单位）。
+四个 _整数_ 参数指定允许图像拉伸的区域（以像素为单位）。
 
 将 NinePatch 应用于 Scene2D 元素时，才能真正体现它的作用。下面使用刚创建的图像实例化一个按钮。
 ```java

@@ -71,8 +71,8 @@ MapObjects objects = layer.getObjects();
 ### 地图对象
 
 该 API 已提供一些专用地图对象，例如
-[CircleMapObject](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/maps/objects/CircleMapObject.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/maps/objects/CircleMapObject.java),
-[PolygonMapObject](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/maps/objects/PolygonMapObject.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/maps/objects/PolygonMapObject.java) 
+[CircleMapObject](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/maps/objects/CircleMapObject.html) [(代码)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/maps/objects/CircleMapObject.java),
+[PolygonMapObject](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/maps/objects/PolygonMapObject.html) [(代码)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/maps/objects/PolygonMapObject.java) 
 ，等等。
 
 地图格式的加载器会解析这些对象，并将它们放入对应的

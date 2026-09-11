@@ -1,7 +1,7 @@
 ---
 title: 启动类与配置
 ---
-* [Desktop (LWJGL3)](#desktop-lwjgl3)
+* [桌面端（LWJGL3）](#desktop-lwjgl3)
 * [Android](#android)
   - [游戏 Activity](#game-activity)
   - [游戏 Fragment](#game-fragment)

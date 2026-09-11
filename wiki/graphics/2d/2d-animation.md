@@ -21,7 +21,7 @@ title: 2D 动画
 
 libGDX 的 [Animation](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g2d/Animation.html) [(代码)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g2d/Animation.java) 类可用于方便地管理动画。它由图像列表和帧间隔时间构造。播放期间，其 `getKeyFrame` 方法接收一个已用时间参数，并返回该时间对应的图像。
 
-Animation 有一个泛型类型参数，用于表示图像的类类型。该类型通常是 TextureRegion 或 PolygonRegion，但任何可渲染对象都可以使用。声明 Animation 时指定动画类型即可，例如 `Animation<TextureRegion> myAnimation = new Animation<TextureRegion>(/*...*/)`. 通常不建议使用 Sprite 类表示动画帧，因为 Sprite 类包含的位置数据不会在帧之间自动传递。
+Animation 有一个泛型类型参数，用于表示图像的类类型。该类型通常是 TextureRegion 或 PolygonRegion，但任何可渲染对象都可以使用。声明 Animation 时指定动画类型即可，例如 `Animation<TextureRegion> myAnimation = new Animation<TextureRegion>(/*...*/)`。通常不建议使用 Sprite 类表示动画帧，因为 Sprite 类包含的位置数据不会在帧之间自动传递。
 
 ## TextureAtlas 示例
 

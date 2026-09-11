@@ -5,9 +5,9 @@ title: 向量、矩阵和四元数
 
 libGDX 提供了多个线性代数类，用于处理物理学和应用数学中的常见任务，包括：
 
-  * *[Vector](https://en.wikipedia.org/wiki/Euclidean_vector)*
-  * *[Matrix](https://en.wikipedia.org/wiki/Matrix_%28mathematics%29)*
-  * *[Quaternion](https://en.wikipedia.org/wiki/Quaternion)*
+  * *[向量](https://en.wikipedia.org/wiki/Euclidean_vector)*
+  * *[矩阵](https://en.wikipedia.org/wiki/Matrix_%28mathematics%29)*
+  * *[四元数](https://en.wikipedia.org/wiki/Quaternion)*
 
 完整解释这些概念超出了本文范围，但上面的链接可以作为进一步了解的起点。下面概述它们在 LibGDX 中的用法和实现。
 

@@ -12,7 +12,7 @@ redirect_from:
 
 1. 下载 libGDX 项目生成工具（gdx-liftoff）。
 
-    <a href="https://github.com/libgdx/gdx-liftoff/releases/latest" class="btn btn--success">Download gdx-liftoff</a>
+    <a href="https://github.com/libgdx/gdx-liftoff/releases/latest" class="btn btn--success">下载 gdx-liftoff</a>
 2. 文件位于版本发布页面的 Assets 部分。下载以 `.jar` 结尾的文件。
 
 3. 双击下载的文件。如果无法打开，请打开命令行工具，进入保存 `.jar` 文件的下载目录，并运行命令 <br>`java -jar gdx-liftoff-x.x.x.x.jar`。将 `x` 替换为下载的版本号，例如 `gdx-liftoff-1.12.1.12.jar`。
@@ -20,7 +20,7 @@ redirect_from:
 
 随后会打开下面的设置界面，用于生成项目：
 
-![Setup UI](https://github.com/libgdx/gdx-liftoff/raw/master/.github/screenshot.png){: style="width: 500px;" }
+![设置界面](https://github.com/libgdx/gdx-liftoff/raw/master/.github/screenshot.png){: style="width: 500px;" }
 
 可以观看视频指南 <a href="https://youtu.be/VF6N_X_oWr0">GDX-Liftoff：libGDX 项目设置</a>，也可以继续按照以下步骤操作。
 

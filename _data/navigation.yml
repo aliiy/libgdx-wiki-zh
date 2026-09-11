@@ -1,50 +1,50 @@
 # Main Top Nav Bar
 main:
-  - title: "News"
+  - title: "新闻"
     url: /news/
-  - title: "Features"
+  - title: "特性"
     url: /features/
-  - title: "Showcase"
+  - title: "作品展示"
     url: /showcase/
-  - title: "Documentation"
+  - title: "文档"
     url: /dev/
-  - title: "Community"
+  - title: "社区"
     url: /community/
 # /wiki/ Top Nav Bar
 wiki:
-  - title: "Back to Main Site"
+  - title: "返回主站"
     url: /
-  - title: "Wiki Home"
+  - title: "Wiki 首页"
     url: /wiki/
 # /dev/ Sidebar
 dev:
-  - title: "Documentation"
+  - title: "文档"
     children:
-      - title: "Getting Started"
+      - title: "入门"
         url: /wiki/start/setup
       - title: "Wiki"
         url: /wiki/
       - title: "Javadocs"
         url: https://javadoc.io/doc/com.badlogicgames.gdx
-      - title: "Versions"
+      - title: "版本历史"
         url: /dev/versions/
-  - title: "Tools & Frameworks"
+  - title: "工具与框架"
     children:
       - title: "Awesome-libGDX"
         url: https://github.com/rafaskb/awesome-libgdx#readme
-      - title: "Tools"
+      - title: "工具"
         url: /dev/tools/
-  - title: "Contributing to libGDX"
+  - title: "参与 libGDX 贡献"
     children:
-      - title: "Contributing Guidelines"
+      - title: "贡献指南"
         url: /dev/contributing/
-      - title: "Reporting an Issue"
+      - title: "报告问题"
         url: /dev/issues/
-      - title: "Roadmap"
+      - title: "路线图"
         url: /roadmap/
-      - title: "Working from Source"
+      - title: "从源码开发"
         url: /dev/from-source/
-      - title: "Building the Natives"
+      - title: "构建原生库"
         url: /dev/natives/
-      - title: "Funding"
+      - title: "资助"
         url: /funding/

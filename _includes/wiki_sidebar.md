@@ -105,6 +105,7 @@
   * [Continuous and Non Continuous Rendering](/wiki/graphics/continuous-and-non-continuous-rendering)
   * [Integrating libgdx and the device camera](/wiki/graphics/integrating-libgdx-and-the-device-camera)
   * [OpenGL (ES) Support](/wiki/graphics/opengl-es-support)
+      * [ANGLE](/wiki/graphics/opengl-es-support/angle)
   * [Profiling](/wiki/graphics/profiling)
   * [Querying and Configuring Graphics (monitors, display modes, vsync, display cutouts)](/wiki/graphics/querying-and-configuring-graphics)
   * [Taking a Screenshot](/wiki/graphics/taking-a-screenshot)

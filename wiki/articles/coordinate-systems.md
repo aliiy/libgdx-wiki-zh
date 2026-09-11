@@ -81,7 +81,7 @@ title: 坐标系
   </tr>
   <tr>
     <td>依赖</td>
-    <td>取决于设备、资源和 asset</td>
+    <td>取决于设备、资源和资源文件</td>
   </tr>
 </table>
 
@@ -190,7 +190,7 @@ Pixmap 坐标是一个例外。Pixmap 通常用于上传纹理数据。例如，
   </tr>
   <tr>
     <td>系统</td>
-    <td>取决于应用，但通常为 y-up</td>
+    <td>取决于应用，但通常为 y 轴向上</td>
   </tr>
   <tr>
     <td>类型</td>

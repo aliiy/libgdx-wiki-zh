@@ -19,9 +19,9 @@ title: Java Development Kit 选择
 在 [Oracle](https://www.oracle.com/index.html) 更改许可模式之前，各供应商就已经提供了多种发行版。
 许可证结构变化之前，就已经存在来自不同供应商的各种发行版，人们出于多种原因使用它们，例如使用不同的 Java Virtual Machine（JVM）变体来提升性能。这对个人开发者或公司开发者意味着什么？关于如何选择 JDK，有个好消息：存在可用于商业用途的免费开源发行版。它们会列在[发行版](#distributions)中。
 
-* [Oracle - JDK Licensing - FAQs](https://www.oracle.com/java/technologies/javase/jdk-faqs.html) 
-* [Lakesidesoftware - Article - 2019](https://www.lakesidesoftware.com/blog/java-did-what-understanding-how-2019-java-licensing-changes-impact-you)
-* [Aspera - Article - 2019](https://www.aspera.com/en/blog/oracle-will-charge-for-java-starting-in-2019/)
+* [Oracle - JDK 许可 - 常见问题](https://www.oracle.com/java/technologies/javase/jdk-faqs.html) 
+* [Lakesidesoftware - 文章 - 2019](https://www.lakesidesoftware.com/blog/java-did-what-understanding-how-2019-java-licensing-changes-impact-you)
+* [Aspera - 文章 - 2019](https://www.aspera.com/en/blog/oracle-will-charge-for-java-starting-in-2019/)
 
 
 
@@ -32,7 +32,7 @@ title: Java Development Kit 选择
   [Panama](https://openjdk.java.net/projects/panama/))，并完成基础 JEP。作为大型 JEP 基础的相关小功能，例如 [Records](https://openjdk.java.net/jeps/384) 和
  [Sealed Classes](https://openjdk.java.net/jeps/360)，会在主要功能之间发布。
  
-* [All JEPs](https://openjdk.java.net/jeps/0)
+* [所有 JEP](https://openjdk.java.net/jeps/0)
 
 
 # 版本

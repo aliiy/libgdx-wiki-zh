@@ -3,7 +3,7 @@ title: 位图字体
 ---
 libGDX 使用位图文件（PNG）渲染字体。字体中的每个字形都有对应的 TextureRegion。
 
-[BitmapFont class](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g2d/BitmapFont.html) [(code)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g2d/BitmapFont.java)
+[BitmapFont 类](https://javadoc.io/doc/com.badlogicgames.gdx/gdx/latest/com/badlogic/gdx/graphics/g2d/BitmapFont.html) [(代码)](https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g2d/BitmapFont.java)
 
 BitmapFont 在 libGDX 1.5.6 版本中进行了重构。[这篇博客文章](https://web.archive.org/web/20200928220256/https://www.badlogicgames.com/wordpress/?p=3658)详细介绍了这些变更，并提供了一个将 1.5.6 之前的代码迁移到新 API 的小示例。
 
@@ -28,7 +28,7 @@ BitmapFont 在 libGDX 1.5.6 版本中进行了重构。[这篇博客文章](http
 [FreeTypeFontGenerator](https://web.archive.org/web/20200423064636/ttp://www.badlogicgames.com/wordpress/?p=2300) - 为字体生成位图，而不是提供由 Hiero 等工具预先渲染的位图
 
 示例
-: [(more)](https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests/src/com/badlogic/gdx/tests/extensions/InternationalFontsTest.java)
+: [(更多)](https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests/src/com/badlogic/gdx/tests/extensions/InternationalFontsTest.java)
 
 ```java
 FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("unbom.ttf"));

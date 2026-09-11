@@ -153,9 +153,9 @@ batch.end();
 ## 视频示例
 
 
-  * [Particle Effect Example on LibGDX.info](https://libgdxinfo.wordpress.com/particleeffect/)
-  * [source](https://hg.sr.ht/~dermetfan/somelibgdxtests/browse/core/src/net/dermetfan/someLibgdxTests/screens/ParticleEffectsTutorial.java) of the video
-  * [source](https://hg.sr.ht/~dermetfan/somelibgdxtests/browse/core/src/net/dermetfan/someLibgdxTests/screens/PoolingTutorial.java) of the video using [pooling](https://www.youtube.com/watch?v=3OwIiELYa70)
+  * [LibGDX.info 上的粒子效果示例](https://libgdxinfo.wordpress.com/particleeffect/)
+  * 该视频的[源代码](https://hg.sr.ht/~dermetfan/somelibgdxtests/browse/core/src/net/dermetfan/someLibgdxTests/screens/ParticleEffectsTutorial.java)
+  * 该视频使用[对象池](https://www.youtube.com/watch?v=3OwIiELYa70)的[源代码](https://hg.sr.ht/~dermetfan/somelibgdxtests/browse/core/src/net/dermetfan/someLibgdxTests/screens/PoolingTutorial.java)
 
 <a href="https://www.youtube.com/watch?feature=player_embedded&v=LCLa-rgR_MA
 " target="_blank"><img src="http://img.youtube.com/vi/LCLa-rgR_MA/0.jpg"

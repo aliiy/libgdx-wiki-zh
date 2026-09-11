@@ -31,7 +31,7 @@ title: 内存管理
   * TileAtlas
   * TileMapRenderer
   * com.badlogic.gdx.physics.box2d.World
-  * all bullet classes
+  * 所有 Bullet 类
 
 资源一旦不再需要就应立即释放，以回收其占用的内存。访问已释放的资源会产生未定义错误，因此务必清除对已释放资源的所有引用。
 

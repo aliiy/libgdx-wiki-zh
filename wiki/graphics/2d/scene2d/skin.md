@@ -21,9 +21,9 @@ Skin 类存储 UI 控件使用的资源，是存放纹理区域、九宫格、�
 Skin 中的资源通常来自[纹理图集](/wiki/tools/texture-packer#textureatlas)、通过 JSON 定义的控件样式和其他对象，以及通过代码添加到 Skin 的对象。即使不使用 JSON，也建议将 Skin 与纹理图集及通过代码添加的对象配合使用。这样获取 Drawable 实例更加方便，也能作为集中获取 UI 资源的位置。
 
 有用的资源：
-* [Ready to use skins.](https://github.com/czyzby/gdx-skins)
+* [可直接使用的皮肤](https://github.com/czyzby/gdx-skins)
 * [Skin Composer](https://ray3k.wordpress.com/software/skin-composer-for-libgdx/) 是用于创建和编辑 Skin 的 UI 工具。
-* [Basic skin Label tutorial ](https://libgdxinfo.wordpress.com/basic-label/)
+* [Label 皮肤基础教程](https://libgdxinfo.wordpress.com/basic-label/)
 
 ## 资源
 

@@ -1,5 +1,5 @@
 ---
-title: "Wiki Search"
+title: "Wiki 搜索"
 
 layout: default_wiki # This page is a modified version of _layouts/wiki.html
 description: "求，就必得到；找，就必寻见！"

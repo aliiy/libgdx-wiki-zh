@@ -1,6 +1,6 @@
 ---
 permalink: /community/
-title: "Community"
+title: "社区"
 classes: wide2
 header:
   overlay_color: "#000"
@@ -9,45 +9,45 @@ header:
   actions:
     - label: "Discord"
       url: "/community/discord/"
-  caption: "Photo credit: [**You X Ventures**](https://unsplash.com/photos/Oalh2MojUuk)"
+  caption: "图片来源：[**You X Ventures**](https://unsplash.com/photos/Oalh2MojUuk)"
 
-excerpt: "libGDX has a very active community on Discord, Stack Overflow and Reddit. If you want to join us, the best place to start is our official Discord server."
+excerpt: "libGDX 在 Discord、Stack Overflow 和 Reddit 上拥有非常活跃的社区。如果你想加入我们，最好的起点就是我们的官方 Discord 服务器。"
 
 feature_row:
   - image_path: /assets/images/discord.svg
     alt: "Discord"
-    title: "The Official Discord Server"
-    excerpt: 'libGDX also has a friendly Discord community. There are a number of channels, including but not limited to: screenshot sharing, question & answers, and Kotlin discussions.'
+    title: "官方 Discord 服务器"
+    excerpt: 'libGDX 还有一个友好的 Discord 社区。这里有众多频道，包括但不限于：截图分享、问答交流，以及 Kotlin 讨论。'
     url: "/community/discord/"
-    btn_label: "Join Us"
+    btn_label: "加入我们"
     btn_class: "btn--primary"
 feature_row2:
   - image_path: /assets/images/jams.jpeg
-    alt: "Game Jams"
-    title: "Game Jams"
-    excerpt: "Our community regularly offers game jams for libGDX centered around different themes. These are ideal oppurtunities to get to know both libGDX and our community."
+    alt: "Game Jam"
+    title: "Game Jam"
+    excerpt: "我们的社区会定期围绕不同主题举办 libGDX Game Jam。这是同时了解 libGDX 和我们社区的绝佳机会。"
     url: "/community/jams/"
-    btn_label: "Read More"
+    btn_label: "阅读更多"
     btn_class: "btn--primary"
 feature_row3:
   - image_path: /assets/images/reddit.png
     alt: "Reddit"
     title: "Reddit"
-    excerpt: "libGDX also has a friendly Reddit community. Feel free to join us."
+    excerpt: "libGDX 还有一个友好的 Reddit 社区。欢迎随时加入我们。"
     url: "https://www.reddit.com/r/libgdx/"
-    btn_label: "Join Us"
+    btn_label: "加入我们"
     btn_class: "btn--primary"
   - image_path: /assets/images/forum.jpeg
-    alt: "Forum"
-    title: "Forum"
-    excerpt: "Our forums have been archived due to spam issues, but can still be used as reference."
+    alt: "论坛"
+    title: "论坛"
+    excerpt: "我们的论坛因垃圾信息问题已经归档，但仍可作为参考。"
     url: "https://web.archive.org/web/20201028185002/https://www.badlogicgames.com/forum/"
-    btn_label: "Read Archived Forums"
+    btn_label: "查看归档论坛"
     btn_class: "btn--primary"
   - image_path: /assets/images/irc.jpeg
     alt: "IRC"
     title: "IRC"
-    excerpt: "Our community used to be on IRC, but nowadays we are active on [Discord](/community/discord/)."
+    excerpt: "我们的社区曾经活跃在 IRC 上，如今我们则活跃在 [Discord](/community/discord/) 上。"
 ---
 
 {% include feature_row type="left" %}

@@ -28,7 +28,7 @@ Blender 是多用途工具，某些操作陷阱会让模型不适合游戏开发
 
 还要注意，Blender 导出时 1 单位等于 1 米，而 libGDX 导入时 1 单位等于 1 厘米，因此导入模型会大 100 倍。将导出选项从默认值 1.00 改为 0.01 即可修复。
 
-![Changing Blender fbx export options.](/assets/wiki/images/importing-blender-models-in-libgdx1.png)
+![正在更改 Blender 的 fbx 导出选项。](/assets/wiki/images/importing-blender-models-in-libgdx1.png)
 
 ### 设置坐标系（上轴）
 Blender 使用的坐标系（z-up）不同于游戏中最常见的坐标系（y-up）。Blender FBX 导出器提供将坐标系改为 y-up 的选项（甚至可能是导出器默认值），不要使用此选项，而应保持 Blender 的默认设置（z-up）。

@@ -244,53 +244,53 @@ implementation "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-io
 ***
 
 #### FreeTypeFont Gradle
-**Core Dependency:**
+**Core 依赖：**
 ```gradle
 api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
 ```
-**Desktop Dependency:**
+**桌面端依赖：**
 ```gradle
 implementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
 ```
-**Android Dependency:**
+**Android 依赖：**
 ```gradle
 natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-arm64-v8a"
 natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a"
 natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"
 natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
 ```
-**iOS Dependency:**
+**iOS 依赖：**
 ```gradle
 implementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-ios"
 ```
-**iOS-MOE Dependency:**
+**iOS-MOE 依赖：**
 ```gradle
 natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-ios"
 ```
-**HTML Dependency:**
+**HTML 依赖：**
 不兼容！替代方案请参阅 [gdx-freetype-gwt](https://github.com/intrigus/gdx-freetype-gwt)。
 
 ***
 
 #### Controllers Gradle
-**Core Dependency:**
+**Core 依赖：**
 ```gradle
 api "com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion"
 ```
-**Desktop Dependency:**
+**桌面端依赖：**
 ```gradle
 implementation "com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"
 ```
-**Android Dependency:**
+**Android 依赖：**
 ```gradle
 implementation "com.badlogicgames.gdx-controllers:gdx-controllers-android:$gdxControllersVersion"
 ```
-**iOS Dependency:**
+**iOS 依赖：**
 ```gradle
 implementation "com.badlogicgames.gdx-controllers:gdx-controllers-ios:$gdxControllersVersion"
 ```
 
-**HTML Dependency:**
+**HTML 依赖：**
 ```gradle
 implementation "com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion:sources"
 implementation("com.badlogicgames.gdx-controllers:gdx-controllers-gwt:$gdxControllersVersion:sources"){exclude group: "com.badlogicgames.gdx", module: "gdx-backend-gwt"}
@@ -300,20 +300,20 @@ implementation("com.badlogicgames.gdx-controllers:gdx-controllers-gwt:$gdxContro
 ***
 
 #### Tools Gradle
-**Core Dependency:**
+**Core 依赖：**
 不要将其放入 core！
 
-**Desktop Dependency (LWJGL2 Legacy Desktop only):**
+**桌面端依赖（仅限 LWJGL2 旧版桌面端）：**
 ```gradle
 api "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
 ```
-**Android Dependency:**
+**Android 依赖：**
 不兼容！
 
-**iOS Dependency:**
+**iOS 依赖：**
 不兼容！
 
-**HTML Dependency:**
+**HTML 依赖：**
 不兼容！
 
 ***
@@ -321,17 +321,17 @@ api "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
 #### Box2DLights Gradle
 * **注意：**此扩展还需要 [Box2D](#box2d-gradle) 扩展
 
-**Core Dependency:**
+**Core 依赖：**
 ```gradle
 api "com.badlogicgames.box2dlights:box2dlights:$box2dlightsVersion"
 ```
-**Desktop Dependency:**
+**桌面端依赖：**
 不需要原生依赖。
 
-**Android Dependency:**
+**Android 依赖：**
 不需要原生依赖。
 
-**HTML Dependency:**
+**HTML 依赖：**
 ```gradle
 implementation "com.badlogicgames.box2dlights:box2dlights:$box2dlightsVersion:sources"
 ```
@@ -343,18 +343,18 @@ implementation "com.badlogicgames.box2dlights:box2dlights:$box2dlightsVersion:so
 
 * **注意：**此扩展的发布周期不依赖主 libGDX 库，因此在两个 libGDX 版本之间发布新版本并不罕见。如果想引入新版本（或其他版本），请查看 [https://repo1.maven.org/maven2/com/badlogicgames/ashley/ashley/](https://repo1.maven.org/maven2/com/badlogicgames/ashley/ashley/)，并修改 `ext` 部分的 `ashleyVersion` 值。
 
-**Core Dependency:**
+**Core 依赖：**
 ```gradle
 api "com.badlogicgames.ashley:ashley:$ashleyVersion"
 ```
 
-**Desktop Dependency:**
+**桌面端依赖：**
 不需要原生依赖。
 
-**Android Dependency:**
+**Android 依赖：**
 不需要原生依赖。
 
-**HTML Dependency:**
+**HTML 依赖：**
 ```gradle
 implementation "com.badlogicgames.ashley:ashley:$ashleyVersion:sources"
 ```
@@ -366,18 +366,18 @@ implementation "com.badlogicgames.ashley:ashley:$ashleyVersion:sources"
 
 * **注意：**此扩展的发布周期不依赖主 libGDX 库，因此在两个 libGDX 版本之间发布新版本并不罕见。如果想引入新版本（或其他版本），请查看 [https://repo1.maven.org/maven2/com/badlogicgames/gdx/gdx-ai/](https://repo1.maven.org/maven2/com/badlogicgames/gdx/gdx-ai/)，并修改 `ext` 部分的 `aiVersion` 值。
 
-**Core Dependency:**
+**Core 依赖：**
 ```gradle
 api "com.badlogicgames.gdx:gdx-ai:$aiVersion"
 ```
 
-**Desktop Dependency:**
+**桌面端依赖：**
 不需要原生依赖。
 
-**Android Dependency:**
+**Android 依赖：**
 不需要原生依赖。
 
-**HTML Dependency:**
+**HTML 依赖：**
 ```gradle
 implementation "com.badlogicgames.gdx:gdx-ai:$aiVersion:sources"
 ```
@@ -447,7 +447,7 @@ project(":core") {
 ```
 
 之后需要刷新依赖，IDE 才能看到它，因此请运行：
-Command line - `$ ./gradlew --refresh-dependencies`  
+命令行 - `$ ./gradlew --refresh-dependencies`  
 Eclipse - `$ ./gradlew eclipse`  
 IntelliJ - `$ ./gradlew idea`  
 

@@ -1,120 +1,120 @@
 ---
 permalink: /dev/tools/
-title: "Tools"
+title: "工具"
 classes: wide
 header:
   overlay_color: "#000"
   overlay_filter: "0.4"
   overlay_image: /assets/images/dev/tools.jpeg
-  caption: "Photo credit: [**Marvin Meyer**](https://unsplash.com/photos/SYTO3xs06fU)"
+  caption: "图片来源：[**Marvin Meyer**](https://unsplash.com/photos/SYTO3xs06fU)"
 
-excerpt: "There are different tools – both official and community-made – that can help make the development process for libGDX much easier."
+excerpt: "有许多工具——既有官方的，也有社区制作的——能让 libGDX 的开发过程轻松许多。"
 
 feature_row:
   - image_path: /assets/images/dev/tools/spine.jpg
     title: "Spine"
-    excerpt: 'An animation tool that focuses on 2D game animations'
+    excerpt: '专注于 2D 游戏动画的动画工具'
     url: "http://en.esotericsoftware.com/"
-    btn_label: "Documentation & Download"
+    btn_label: "文档与下载"
     btn_class: "btn--primary"
     tags: ["Paid"]
   - image_path: /assets/images/dev/tools/talos.jpg
     title: "Talos"
-    excerpt: 'A node based, open source VFX Editor with powerful interface'
+    excerpt: '基于节点的开源 VFX 编辑器，界面功能强大'
     url: "https://talosvfx.com"
-    btn_label: "Documentation & Download"
+    btn_label: "文档与下载"
     btn_class: "btn--primary"
     tags: ["Free"]
   - image_path: /assets/images/dev/tools/hyperlap.gif
     title: "HyperLap2D"
-    excerpt: 'A visual editor for complex 2D worlds and scenes'
+    excerpt: '面向复杂 2D 世界与场景的可视化编辑器'
     url: "https://github.com/rednblackgames/HyperLap2D"
-    btn_label: "Documentation & Download"
+    btn_label: "文档与下载"
     btn_class: "btn--primary"
     tags: ["Free"]
 
 feature_row2:
   - image_path: /assets/images/dev/tools/gdx-liftoff.png
     title: "gdx-liftoff"
-    excerpt: 'The official libGDX project generator'
+    excerpt: '官方的 libGDX 项目生成器'
     url: "/wiki/start/project-generation"
-    btn_label: "Documentation & Download"
+    btn_label: "文档与下载"
     btn_class: "btn--primary"
     tags: ["Free"]
   - image_path: /assets/images/dev/tools/skin_composer.png
     title: "Skin Composer"
-    excerpt: "A skin creator for libGDX's scene2d.ui"
+    excerpt: "为 libGDX 的 scene2d.ui 创建皮肤的工具"
     url: "https://github.com/raeleus/skin-composer/wiki"
-    btn_label: "Documentation & Download"
+    btn_label: "文档与下载"
     btn_class: "btn--primary"
     tags: ["Free"]
   - image_path: /assets/images/dev/tools/particle_editor.png
     title: "Particle Editor"
-    excerpt: 'A powerful tool for making 2D particle effects'
+    excerpt: '制作 2D 粒子效果的强大工具'
     url: "/wiki/tools/2d-particle-editor"
-    btn_label: "Documentation & Download"
+    btn_label: "文档与下载"
     btn_class: "btn--primary"
     tags: ["Free"]
 
 feature_row3:
   - image_path: /assets/images/dev/tools/flame.gif
     title: "Flame"
-    excerpt: 'A powerful 3D particle editor for libGDX'
+    excerpt: 'libGDX 的强大 3D 粒子编辑器'
     url: "/wiki/graphics/3d/3d-particle-effects"
-    btn_label: "Documentation & Download"
+    btn_label: "文档与下载"
     btn_class: "btn--primary"
     tags: ["Free"]
   - image_path: /assets/images/dev/tools/hiero.png
     title: "Hiero"
-    excerpt: 'A bitmap font packing tool compatible with libGDX'
+    excerpt: '与 libGDX 兼容的位图字体打包工具'
     url: "/wiki/tools/hiero"
-    btn_label: "Documentation & Download"
+    btn_label: "文档与下载"
     btn_class: "btn--primary"
     tags: ["Free"]
   - image_path: /assets/images/dev/tools/fbx_conv.gif
     title: "fbx-conv"
-    excerpt: 'A tool for converting 3D models to libGDX-friendly formats'
+    excerpt: '将 3D 模型转换为 libGDX 友好格式的工具'
     url: "https://github.com/libgdx/fbx-conv"
-    btn_label: "Documentation & Download"
+    btn_label: "文档与下载"
     btn_class: "btn--primary"
     tags: ["Free"]
 
 feature_row4:
   - image_path: /assets/images/dev/tools/tiled.png
     title: "Tiled"
-    excerpt: 'A flexible 2D level editor for your game'
+    excerpt: '为你的游戏打造的灵活 2D 关卡编辑器'
     url: "https://www.mapeditor.org"
-    btn_label: "Documentation & Download"
+    btn_label: "文档与下载"
     btn_class: "btn--primary"
     tags: ["Free"]
   - image_path: /assets/images/dev/tools/texture_packer.jpeg
     title: "Texture Packer"
-    excerpt: 'A tool for packing images into atlases'
+    excerpt: '将图片打包成图集的工具'
     url: "/wiki/tools/texture-packer"
-    btn_label: "Documentation & Download"
+    btn_label: "文档与下载"
     btn_class: "btn--primary"
     tags: ["Free"]
   - image_path: /assets/images/dev/tools/texture_packer_pro.png
     title: "Texture Packer Pro"
-    excerpt: 'Create sprite sheets and optimize your game graphics'
+    excerpt: '创建精灵图（sprite sheet），优化你的游戏图形'
     url: "https://www.codeandweb.com/texturepacker"
-    btn_label: "Documentation & Download"
+    btn_label: "文档与下载"
     btn_class: "btn--primary"
     tags: ["Free", "Paid"]
     
 feature_row5:
   - image_path: /assets/images/dev/tools/tiled_map_packer.gif
     title: "Tiled Map Packer"
-    excerpt: 'A tool for packing TiledMap tilesets into an atlas'
+    excerpt: '将 TiledMap tileset 打包成图集的工具'
     url: "/wiki/tools/tiled-map-packer"
-    btn_label: "Documentation & Download"
+    btn_label: "文档与下载"
     btn_class: "btn--primary"
     tags: ["Free"]
   - image_path: /assets/images/dev/tools/pixscape.gif
     title: "Pixscape"
-    excerpt: 'A visual 2D and 2.5D game engine built on LibGDX'
+    excerpt: '基于 LibGDX 的可视化 2D 与 2.5D 游戏引擎'
     url: "https://pixscape.games/"
-    btn_label: "Documentation & Download"
+    btn_label: "文档与下载"
     btn_class: "btn--primary"
     tags: ["Free"]
     

@@ -8,6 +8,7 @@
 # and so on.
 #
 title: "libGDX 中文 Wiki"
+locale: "zh-CN"
 minimal_mistakes_skin: "default"
 minimal_mistakes_skin_dark: "dark"
 

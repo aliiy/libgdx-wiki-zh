@@ -41,7 +41,7 @@ gdxVersion=1.12.1
 #### 更新到 1.9.6
 * 替换 HTML 项目的 soundmanager 文件，否则 Web Application 可能无法启动。请参阅 [#2246](https://github.com/libgdx/libgdx/pull/4426)。
 
-## Gradle Versions Plugin
+## Gradle Versions 插件
 
 与 Maven Versions Plugin 类似，[Gradle Versions Plugin](https://github.com/ben-manes/gradle-versions-plugin) 提供了简单的 `dependencyUpdates` 任务，用于确定哪些依赖项有可用更新。
 

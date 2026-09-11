@@ -8,4 +8,4 @@ sitemap: false
 
 <!-- Always link to this page instead of directly linking to the discord, in case the link ever changes -->
 
-Redirecting... If you are not redirected automatically, click [here](https://discord.gg/6pgDK9F).
+正在跳转……如果你没有被自动跳转，请点击[这里](https://discord.gg/6pgDK9F)。

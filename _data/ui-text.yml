@@ -1,0 +1,17 @@
+# 站点界面文案（简体中文）
+# 由模板通过 site.data.ui-text[site.locale] 读取，locale 在 _config.yml 中设置
+zh-CN:
+  date_label: "更新于："
+  less_than: "少于"
+  minute_read: "分钟阅读"
+  more_label: "了解更多"
+  related_label: "你可能也喜欢"
+  follow_label: "关注我们："
+  feed_label: "RSS 订阅"
+  search_label: "切换搜索"
+  search_placeholder_text: "输入搜索关键词…"
+  results_found: "条结果"
+  menu_label: "切换菜单"
+  toc_label: "本页目录"
+  ext_link_label: "直达链接"
+  meta_label:

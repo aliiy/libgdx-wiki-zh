@@ -59,11 +59,11 @@ java -jar runnable-tiledmappacker.jar ./maps ./maps-packed -v --strip-unused
 
 - **按地图**（默认）：每张地图都有自己的图集。
 
-  *Command*: `java -jar tiledmappacker.jar ./maps`.
+  *命令*：`java -jar tiledmappacker.jar ./maps`。
 
 - **合并**：所有地图中的图块集都打包到一个超大图集中，因此所有地图只需一个图集。此选项从 TiledMapPacker 诞生起就存在，但仍然*不推荐*使用，因为嵌套文件夹和绝对图块集路径可能导致它失效。
 
-  *Option*: `--combine-tilesets`.
+  *选项*：`--combine-tilesets`。
 
 
 ## 典型工作流
@@ -98,15 +98,15 @@ java -jar runnable-tiledmappacker.jar ./maps ./maps-packed -v --strip-unused
 
 在最坏情况下，一张地图可能使用三个不同的图块集，其中包括一个 “collection-of-images” 图块集，并包含八个用于视差背景效果的图像层。
 
-![TiledMap UI Layers](/assets/wiki/images/tiledmappacker1.png)
+![TiledMap UI 图层](/assets/wiki/images/tiledmappacker1.png)
 
 可以看到，如果通过 `TmxMapLoader` 加载该地图，会浪费多少绘制调用。以下示例中的绘制调用数量会根据屏幕位置在 12 到 14 之间变化。
 
-![Unoptimized TMX Map](/assets/wiki/images/tiledmappacker2.gif)
+![未优化的 TMX 地图](/assets/wiki/images/tiledmappacker2.gif)
 
 但使用 TiledMapPacker 和 AtlasTmxMapLoader 可以显著减少绘制调用，在此示例中可降至 1 次。
 
-![Optimized Atlas TMX Map](/assets/wiki/images/tiledmappacker3.gif)
+![优化后的图集 TMX 地图](/assets/wiki/images/tiledmappacker3.gif)
 
 ## 示例测试
 * [运行 TiledMapPacker](https://github.com/libgdx/libgdx/blob/master/extensions/gdx-tools/src/com/badlogic/gdx/tiledmappacker/TiledMapPackerTest.java)

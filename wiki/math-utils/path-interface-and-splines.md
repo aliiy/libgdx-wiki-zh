@@ -40,7 +40,7 @@ Path 可以定义为二维或三维，因为它是接受 Vector 派生类的模�
 
 推荐使用第二种方式，因为这是 Path 接口唯一保证支持的方式。
 
-# Snippets
+# 代码片段
 
 ### 缓存样条
 
@@ -156,13 +156,13 @@ Path 可以定义为二维或三维，因为它是接受 Vector 派生类的模�
 
 由于经过 dataSet 点的样条弧长并不恒定，从 0 移动到 1 时，精灵可能会因各种因素时快时慢。为消除这一现象，我们需要改变时间变量的变化率。
 只需将速度除以变化率的长度即可。
-Instead of
+原本的写法：
 
 ```java
     current += Gdx.graphics.getDeltaTime() * speed;
 ```
 
-change to:
+改为：
 
 ```java
     myCatmull.derivativeAt(out, current);

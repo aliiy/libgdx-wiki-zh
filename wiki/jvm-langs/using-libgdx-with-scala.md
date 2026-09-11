@@ -122,4 +122,4 @@ Scala 开发者通常会选择 Gradle 或 SBT 作为构建工具。本教程介�
 各编辑器对应的 sbt 插件详情请参阅[这里](https://github.com/ajhager/libgdx-sbt-project.g8/wiki/IDE-Plugins)。
 
 ## 其他资源
-[Develop Games in Scala with libgdx](https://web.archive.org/web/20140401024419/http://raintomorrow.cc/post/70000607238/develop-games-in-scala-with-libgdx-getting-started)
+[使用 libGDX 在 Scala 中开发游戏](https://web.archive.org/web/20140401024419/http://raintomorrow.cc/post/70000607238/develop-games-in-scala-with-libgdx-getting-started)

@@ -354,7 +354,7 @@ public void render() {
 如果想使用更高层次的处理方式，应使用视口，请参阅[视口 Wiki 文章](/wiki/graphics/viewports)。
 
 
-*The following resize strategy will ensure that you will always see 30 units in the x axis no matter what pixel-width your device has.*
+*以下 resize 策略可以保证，无论设备的像素宽度是多少，你在 x 轴上始终能看到 30 个单位。*
 ```java
 	@Override
 	public void resize(int width, int height) {
@@ -365,7 +365,7 @@ public void render() {
 
 ```
 
-*The following resize strategy will show less/more of the world depending on the resolution*
+*以下 resize 策略会根据分辨率显示更少或更多的世界内容*
 ```java
 	@Override
 	public void resize(int width, int height) {
@@ -399,7 +399,7 @@ public void render() {
 
 | *方法* | *描述* |
 |:--------:|:--------------|
-| `lookAt(float x, float y, float z)` |Recalculates the direction of the camera to look at the point defined by the coordinates on all axes. - The z axis is ignored for 2D |
-| `translate(float x, float y, float z)` | Moves the camera by the given amount on each axis. - Note that z is ignored for the OrthographicCamera |
-| `rotate(float angle, float axisX, float axisY, float axisZ)` | Rotates the direction and up vector of this camera by the given angle around the given axis. The direction and up vector will not be orthogonalized. The angle is persisted so the camera will be rotated by `angle` relative to its previous rotation.|
-| `update()` |  Recalculates the projection and view matrix of the camera and the frustum planes |
+| `lookAt(float x, float y, float z)` | 重新计算摄像机的方向，使其看向由各轴上坐标所定义的点。- 2D 情况下会忽略 z 轴 |
+| `translate(float x, float y, float z)` | 在每个轴上将摄像机移动给定的距离。- 注意 OrthographicCamera 会忽略 z |
+| `rotate(float angle, float axisX, float axisY, float axisZ)` | 将摄像机的方向向量和上向量绕给定轴旋转给定角度。方向向量和上向量不会被正交化。该角度会被保留，因此摄像机会在上一次旋转的基础上再旋转 `angle`。|
+| `update()` |  重新计算摄像机的投影矩阵、视图矩阵和视锥体平面 |

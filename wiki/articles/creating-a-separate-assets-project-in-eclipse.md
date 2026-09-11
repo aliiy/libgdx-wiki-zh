@@ -42,14 +42,14 @@ title: 在 Eclipse 中创建独立资源项目
 
 我的 MyGame-Assets 项目通常类似下面的树形结构，每个目录下再根据具体游戏的需要组织子文件夹。如果你设置了构建器，或为不同设备准备了不同美术资源，也没有问题：整理好 MyGame-Assets 项目后重新创建链接文件夹即可。
 
-/assets (where the optimized game binaries are actually stored)
+/assets（实际存放优化后游戏二进制文件的位置）
      /data`
           /graphics`
           /maps
           /screens
           /shaders
           /sounds
-/assets-workfiles (where source/unoptimized files go, with a matching structure to assets)
+/assets-workfiles（存放源文件/未优化文件的位置，目录结构与 assets 相同）
 
 
 \* 在确实有必要之前，我不建议仅为资源设置构建器，这通常要等到游戏开发周期的后期。接近可发布状态前应保持简单务实；确认确实需要构建器后，找出最适合的方案，最后再单独处理资源打包优化。这样才能衡量效果，并最大化投入产出比。

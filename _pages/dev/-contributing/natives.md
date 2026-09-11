@@ -1,12 +1,12 @@
 ---
 permalink: /dev/natives/
-title: "Building the libGDX Natives"
+title: "构建 libGDX 原生库"
 classes: wide
 header:
   overlay_color: "#000"
   overlay_filter: "0.3"
   overlay_image: /assets/images/dev/dev.jpeg
-  caption: "Photo credit: [**Florian Olivo**](https://unsplash.com/photos/Ek9Znm8lQ1U)"
+  caption: "图片来源：[**Florian Olivo**](https://unsplash.com/photos/Ek9Znm8lQ1U)"
 
 sidebar:
   nav: "dev"
@@ -14,55 +14,55 @@ sidebar:
 
 {% include breadcrumbs.html %}
 
-# Prerequisites
-Building the natives is slightly more involved. The natives are built for every platform we target:
+# 前置条件
+构建原生库要稍微复杂一些。我们会为我们面向的所有平台构建原生库：
 
-- Windows (32 and 64 bit), Linux (arm32, arm64, x86_64), macOS (arm64, x86_64)
-- Android (armeabi-v7a, arm64-v8a, x86, x86_64)
-- iOS (armv7, arm64, x86_64)
+- Windows（32 位和 64 位）、Linux（arm32、arm64、x86_64）、macOS（arm64、x86_64）
+- Android（armeabi-v7a、arm64-v8a、x86、x86_64）
+- iOS（armv7、arm64、x86_64）
 
-To do this we use [GitHub Actions](https://github.com/libgdx/libgdx/actions), which compiles the Windows, Linux and Android natives on a Linux host and the macOS and iOS natives on a mac host. If you are interested in the behind-the-scenes stuff, you should take a look at the [gdx-jnigen project](https://github.com/libgdx/gdx-jnigen).
+为此我们使用 [GitHub Actions](https://github.com/libgdx/libgdx/actions)，它在 Linux 主机上编译 Windows、Linux 和 Android 的原生库，在 mac 主机上编译 macOS 和 iOS 的原生库。如果你对幕后细节感兴趣，可以看看 [gdx-jnigen 项目](https://github.com/libgdx/gdx-jnigen)。
 
-Please note that the information below may not be up to date. If you are interested in building libGDX's natives yourself, be sure to check out our actual [build configuration](https://github.com/libgdx/libgdx/blob/master/.github/workflows/build-publish.yml) on GitHub.
+请注意，以下信息可能不是最新的。如果你想自己构建 libGDX 的原生库，请务必查看 GitHub 上我们实际使用的[构建配置](https://github.com/libgdx/libgdx/blob/master/.github/workflows/build-publish.yml)。
 {: .notice--info}
 
-# Linux host
-What you need:
+# Linux 主机
+你需要：
 
-- 64 bit Linux distro (we use Ubuntu 18.04)
+- 64 位 Linux 发行版（我们使用 Ubuntu 18.04）
 - openjdk-7-jdk
-- Ant 1.9.3+ (must be on path)
-- Android NDK r13b (ANDROID_NDK and NDK_HOME variables set)
-- Android SDK with latest targets (ANDROID_SDK variable set)
-- Compilers
-- gcc, g++, gcc-multilib, g++-multilib, (64 bit Linux compilers)
-- mesa-common-dev, libxxf86vm-dev, libxrandr-dev, libx11-dev:i386, jglfw only
-- mingw-w64 (Windows compiler 32 bit and 64 bit)
-- ccache (optional)
+- Ant 1.9.3+（必须在 PATH 中）
+- Android NDK r13b（需设置 ANDROID_NDK 和 NDK_HOME 变量）
+- Android SDK，包含最新的 targets（需设置 ANDROID_SDK 变量）
+- 编译器
+- gcc、g++、gcc-multilib、g++-multilib（64 位 Linux 编译器）
+- mesa-common-dev、libxxf86vm-dev、libxrandr-dev、libx11-dev:i386（仅 jglfw 需要）
+- mingw-w64（32 位和 64 位的 Windows 编译器）
+- ccache（可选）
 - lib32z1
 
-# macOS host
-What you need:
+# macOS 主机
+你需要：
 
 - JDK 8+
-- XCode, through Mac app store
-- XCode command line utilities for latest XCode
-- Ant 1.9.3+ (must be on path, use homebrew)
-- ccache (optional, use homebrew)
+- XCode，通过 Mac App Store 获取
+- 最新版 XCode 的命令行工具
+- Ant 1.9.3+（必须在 PATH 中，可用 homebrew 安装）
+- ccache（可选，可用 homebrew 安装）
 
-# Compiling
-Compiling the natives is handled through Gradle.
+# 编译
+原生库的编译通过 Gradle 完成。
 
-To compile the **macOS and iOS** natives, run:
+要编译 **macOS 和 iOS** 的原生库，请运行：
 
 ```
 ./gradlew jnigen jnigenBuildMacOsX64 jnigenBuildMacOsXARM64 jnigenBuildIOS
 ```
 
-To compile the **Windows, Linux and Android** natives, run:
+要编译 **Windows、Linux 和 Android** 的原生库，请运行：
 
 ```
 ./gradlew jnigen jnigenBuild
 ```
 
-You can also run each individual platforms tasks to build natives for just that platform, for example just the Android natives, just run `./gradlew jnigen jnigenBuildAndroid`. You can get the list of available tasks by running `./gradlew tasks`.
+你也可以单独运行某个平台自己的任务，只构建该平台的原生库。例如只构建 Android 的原生库，只需运行 `./gradlew jnigen jnigenBuildAndroid`。运行 `./gradlew tasks` 可以查看所有可用任务的列表。

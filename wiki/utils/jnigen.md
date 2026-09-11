@@ -144,7 +144,7 @@ apply plugin: "com.badlogicgames.gdx.gdx-jnigen"
 
 用于分发的任务是 `jnigenJarNatives<destintation>`。它们会将生成的本机库打包进 jar，以便由 `SharedLibraryLoader` 加载。这些 jar 应随应用分发。
 
-Destintation: `Desktop`, `Àndroid`, `IOS`  
+Destintation 取值：`Desktop`、`Àndroid`、`IOS`  
 
 每个目标还可以根据需要配置额外的链接器标志和其他选项。
 关于所有选项及其应用方式的完整文档，请参阅 jnigen[文档](https://github.com/libgdx/gdx-jnigen#gdx-jnigen-gradle-quickstart)。

@@ -6,10 +6,10 @@ title: 在 libGDX 中使用 Smaato
   * [简介](#introduction)
   * [配置](#configuration)
   * [回顾](#recap)
- * [Banner](#banner)
- * [Interstitial](#interstitial)
- * [Rewarded](#rewarded)
- * [Test Ads](#test-ads)
+ * [横幅广告](#banner)
+ * [插屏广告](#interstitial)
+ * [激励广告](#rewarded)
+ * [测试广告](#test-ads)
 
 # 简介
 
@@ -363,14 +363,14 @@ public class AndroidLauncher extends AndroidApplication {
 
 # 测试广告
 
-| Adspace ID    | Type               |
+| 广告位 ID    | 类型               |
 | ------------- | ------------------ |
-| 130626424     | Rich Media         |
-| 130635694     | Static Image       |
+| 130626424     | 富媒体             |
+| 130635694     | 静态图片           |
 | 130635706     | MRAID              |
-| 130626426     | Rich Media / Video |
-| 130626427     | Video              |
-| 130626428     | Rewarded           |
+| 130626426     | 富媒体 / 视频      |
+| 130626427     | 视频               |
+| 130626428     | 激励广告           |
 
 请将 Publisher Id 1100042525 与上述每个广告位配合使用。
 
